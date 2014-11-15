@@ -1,0 +1,1 @@
+Contains freeciv tiles by Peter <freeciv AT maubp.freeserve.co.uk>

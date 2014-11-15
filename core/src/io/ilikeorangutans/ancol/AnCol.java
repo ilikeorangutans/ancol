@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.MapViewport;
@@ -16,7 +15,6 @@ import io.ilikeorangutans.ecs.Facade;
 
 public class AnCol extends ApplicationAdapter {
     private SpriteBatch batch;
-    private Texture img;
 
     private OrthographicCamera camera;
 
@@ -49,7 +47,6 @@ public class AnCol extends ApplicationAdapter {
         bus.subscribe(viewport);
 
         batch = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
 
         bus = new SimpleEventBus();
         facade = new Facade(bus);
@@ -61,12 +58,11 @@ public class AnCol extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
-
         renderer.render();
     }
 
