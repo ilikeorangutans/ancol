@@ -1,14 +1,15 @@
 package io.ilikeorangutans.ancol.map;
 
+import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.bus.Emitter;
+import io.ilikeorangutans.bus.Subscribe;
 
-import java.awt.*;
 
 /**
  * Describes a viewport in terms of size and position on the map and provides facilities to convert coordinates within
  * this viewport to map coordinates and vice versa.
  */
-public class MapViewport {
+public class MapViewport implements MapToScreen, ScreenToMap {
 
     private final Emitter emitter;
     private final Map map;
@@ -63,8 +64,8 @@ public class MapViewport {
         maxX = mapWidthInPixels - width;
         maxY = mapHeightInPixels - height;
 
-        widthInTiles = (int) Math.ceil((float)width / (float)tileWidth);
-        heightInTiles = (int) Math.ceil((float)height / (float)tileHeight);
+        widthInTiles = (int) Math.ceil((float) width / (float) tileWidth) + 1;
+        heightInTiles = (int) Math.ceil((float) height / (float) tileHeight) + 1;
     }
 
     public void moveTo(int x, int y) {
@@ -87,10 +88,20 @@ public class MapViewport {
         return val;
     }
 
+    /**
+     * Returns the width of the viewport in tiles.
+     *
+     * @return
+     */
     public int getWidthInTiles() {
         return widthInTiles;
     }
 
+    /**
+     * Returns the height of the viewport in tiles.
+     *
+     * @return
+     */
     public int getHeightInTiles() {
         return heightInTiles;
     }
@@ -102,22 +113,8 @@ public class MapViewport {
      * @param y
      * @return
      */
+    @Override
     public Point mapToScreen(int x, int y) {
-        // map: 1000x1000
-        // @0,0 100x100
-
-        // 0,100 -> 0,0
-        // 0,0 -> 0,100
-
-        // @50,50
-
-        // 100,100 -> 50,50
-
-        // @900,900
-
-        // 900,900 -> 0,100
-        // 1000,1000 -> 100,0
-
         int cx = x - this.x;
         int cy = viewHeightInPixels - (y - this.y);
         return new Point(cx, cy);
@@ -130,9 +127,21 @@ public class MapViewport {
      * @param y
      * @return
      */
+    @Override
     public Point screenToMap(int x, int y) {
+        int px = x + this.x;
+        int py = y + this.y;
 
-        return new Point();
+        return new Point(px, py);
+    }
+
+    /**
+     * Converts a map relative coordinate to a tile coordinate.
+     *
+     * @return
+     */
+    public Point mapToTile(Point m) {
+        return new Point((int) Math.floor(m.x / tileWidth), (int) Math.floor(m.y / tileHeight));
     }
 
     @Override
@@ -146,6 +155,21 @@ public class MapViewport {
                 ", mapHeightInPixels=" + mapHeightInPixels +
                 ", widthInTiles=" + widthInTiles +
                 ", heightInTiles=" + heightInTiles +
+                ", min=" + getFirstVisibleTile() +
                 '}';
+    }
+
+    @Subscribe
+    public void onScrollEvent(ScrollEvent e) {
+        moveBy(e.deltaX, e.deltaY);
+    }
+
+    /**
+     * Returns the first currently visible tile in this viewport, that is the top left tile that is visible.
+     *
+     * @return //
+     */
+    public Point getFirstVisibleTile() {
+        return mapToTile(screenToMap(0, 0));
     }
 }

@@ -8,7 +8,6 @@ import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.MapViewport;
 import io.ilikeorangutans.ecs.Entities;
 
-import java.awt.*;
 
 /**
  *
@@ -36,6 +35,8 @@ public class AnColRenderer {
 
     public void render() {
 
+        final Point min = viewport.getFirstVisibleTile();
+
         batch.begin();
 
         for (int iy = 0; iy < viewport.getHeightInTiles(); iy++) {
@@ -43,16 +44,14 @@ public class AnColRenderer {
             for (int ix = 0; ix < viewport.getWidthInTiles(); ix++) {
 
                 Sprite draw = grass;
-                if (iy % 2 == 0)
+                if (ix + min.x < iy + min.y)
                     draw = water;
 
-                Point p = viewport.mapToScreen(ix * 60, iy * 60);
-                draw.setPosition(p.x, p.y);
+                Point p = viewport.mapToScreen((ix + min.x) * 60, (iy + min.y) * 60);
+                draw.setPosition(p.x, p.y - 60);
 
                 draw.draw(batch);
-
             }
-
         }
 
         batch.end();

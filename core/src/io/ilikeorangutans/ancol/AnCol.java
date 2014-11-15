@@ -28,23 +28,25 @@ public class AnCol extends ApplicationAdapter {
 
     private AnColRenderer renderer;
 
-    private InputProcessor inputProcessor;
+    private InputProcessor[] inputProcessors;
 
-    public AnCol(EventBus bus, InputProcessor inputProcessor) {
+    public AnCol(EventBus bus, InputProcessor... inputProcessors) {
         this.bus = bus;
-        this.inputProcessor = inputProcessor;
+        this.inputProcessors = inputProcessors;
     }
 
     @Override
     public void create() {
 
-        Gdx.input.setInputProcessor(inputProcessor);
+        for (InputProcessor ip : inputProcessors)
+            Gdx.input.setInputProcessor(ip);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
 
         Map map = new RandomMap();
-        viewport = new MapViewport(bus, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, map);
+        viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, map);
+        bus.subscribe(viewport);
 
         batch = new SpriteBatch();
         img = new Texture("badlogic.jpg");

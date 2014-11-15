@@ -1,7 +1,6 @@
 package io.ilikeorangutans.ancol.android.launcher;
 
 import android.os.Bundle;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.input.GestureDetector;
@@ -21,7 +20,6 @@ public class AndroidLauncher extends AndroidApplication {
         EventBus bus = new SimpleEventBus();
 
         AnColGestureListener anColGestureListener = new AnColGestureListener(bus);
-        anColGestureListener.setEventBus(bus);
 
         initialize(new AnCol(bus, new GestureDetector(anColGestureListener)), config);
     }

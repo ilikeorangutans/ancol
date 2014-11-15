@@ -2,19 +2,20 @@ package io.ilikeorangutans.ancol.android.launcher;
 
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import io.ilikeorangutans.ancol.EventBusInjectable;
-import io.ilikeorangutans.bus.Emitter;
+import io.ilikeorangutans.ancol.map.ScrollEvent;
 import io.ilikeorangutans.bus.EventBus;
 
 /**
  *
  */
-public class AnColGestureListener implements GestureDetector.GestureListener, EventBusInjectable {
+public class AnColGestureListener implements GestureDetector.GestureListener {
+
+    private static final String TAG = AnColGestureListener.class.getName();
 
     private EventBus bus;
 
-    public AnColGestureListener(Emitter bus) {
-
+    public AnColGestureListener(EventBus bus) {
+        this.bus = bus;
     }
 
     @Override
@@ -39,6 +40,9 @@ public class AnColGestureListener implements GestureDetector.GestureListener, Ev
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
+
+        bus.fire(new ScrollEvent((int) -deltaX, (int) -deltaY));
+
         return false;
     }
 
@@ -57,9 +61,4 @@ public class AnColGestureListener implements GestureDetector.GestureListener, Ev
         return false;
     }
 
-    @Override
-    public void setEventBus(EventBus bus) {
-
-        this.bus = bus;
-    }
 }
