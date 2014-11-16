@@ -3,7 +3,7 @@ package io.ilikeorangutans.ancol;
 /**
  *
  */
-public class Point {
+public final class Point {
 
     public int x, y;
 

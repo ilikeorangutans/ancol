@@ -1,32 +1,37 @@
 package io.ilikeorangutans.ecs;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  */
 public class Entity {
 
-    private final List<Component> components;
-    private final Set<ComponentType> types = new HashSet<ComponentType>();
+    private final Map<ComponentType, Component> components = new HashMap<ComponentType, Component>();
     private boolean alive = true;
 
     public Entity(Component... components) {
-        this.components = Arrays.asList(components);
         for (Component c : components) {
-            types.add(ComponentType.fromComponent(c));
+            this.components.put(ComponentType.fromComponent(c), c);
         }
     }
 
     public boolean hasComponent(ComponentType componentType) {
-        return types.contains(componentType);
+        return components.containsKey(componentType);
+    }
+
+    public <T extends Component> T getComponent(Class<T> type) {
+        final ComponentType componentType = ComponentType.fromClass(type);
+
+        if (!hasComponent(componentType))
+            throw new IllegalArgumentException("Entity does not have component of type " + type.getName());
+
+        return (T) components.get(componentType);
     }
 
     /**
-     * Returns true if this entity is still in use. If this returns false, the entity should be removed from the
-     * simulation.
-     *
-     * @return
+     * @return Returns true if this entity is still in use. If this returns false, the entity should be removed from the simulation.
      */
     public boolean isAlive() {
         return alive;

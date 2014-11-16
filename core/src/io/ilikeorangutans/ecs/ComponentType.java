@@ -9,6 +9,11 @@ import java.util.Map;
 public class ComponentType {
 
     private static final Map<String, ComponentType> types = new HashMap<String, ComponentType>();
+    private final String type;
+
+    private ComponentType(String type) {
+        this.type = type;
+    }
 
     public static ComponentType fromComponent(Component c) {
         return fromClass(c.getClass());
@@ -26,17 +31,11 @@ public class ComponentType {
         return ct;
     }
 
-    private final String type;
-
     private static String componentClassToType(Class<?> clazz) {
-        if (!clazz.isAssignableFrom(Component.class))
+        if (!Component.class.isAssignableFrom(clazz))
             throw new IllegalArgumentException("No component passed to create component type.");
 
         return clazz.getName();
-    }
-
-    private ComponentType(String type) {
-        this.type = type;
     }
 
     @Override

@@ -13,7 +13,7 @@ public class Entities {
     private Map<ComponentType, List<Entity>> entitiesByType = new HashMap<ComponentType, List<Entity>>();
 
     public Entity create(Component... components) {
-        Entity e = new Entity();
+        Entity e = new Entity(components);
 
         for (Component c : components) {
             final ComponentType type = ComponentType.fromComponent(c);
@@ -51,10 +51,11 @@ public class Entities {
         Arrays.sort(types, sortByNumberOfComponents);
 
         final List<Entity> result = entitiesByType.get(types[0]);
-
         for (ListIterator<Entity> li = result.listIterator(); li.hasNext(); ) {
             Entity cur = li.next();
+
             for (int i = 1; i < types.length; i++) {
+
                 if (!cur.hasComponent(types[i])) {
                     li.remove();
                 }

@@ -31,12 +31,10 @@ public class MapViewport implements MapToScreen, ScreenToMap {
      * Size of the viewport in tiles with padding to fill in case of scrolling.
      */
     private int widthInTiles, heightInTiles;
-
     /**
      * Dimensions of the tiles.
      */
     private int tileWidth, tileHeight;
-
     /**
      * Maximum x and y values for the current dimensions of the viewport.
      */
@@ -55,6 +53,14 @@ public class MapViewport implements MapToScreen, ScreenToMap {
         mapHeightInPixels = map.getHeight() * tileHeight;
 
         resize(viewWidth, viewHeight);
+    }
+
+    public int getTileWidth() {
+        return tileWidth;
+    }
+
+    public int getTileHeight() {
+        return tileHeight;
     }
 
     public void resize(int width, int height) {
@@ -172,4 +178,16 @@ public class MapViewport implements MapToScreen, ScreenToMap {
     public Point getFirstVisibleTile() {
         return mapToTile(screenToMap(0, 0));
     }
+
+    /**
+     * Returns true if the given map relative coordinates are visible in this viewport.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public boolean isVisible(int x, int y) {
+        return this.x - getTileWidth() < x && this.x + viewWidthInPixels > x && this.y - getTileHeight() < y && this.y + viewHeightInPixels > y;
+    }
+
 }

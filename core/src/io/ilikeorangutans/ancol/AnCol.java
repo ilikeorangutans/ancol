@@ -6,12 +6,17 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import io.ilikeorangutans.ancol.graphics.AnColRenderer;
+import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.MapViewport;
+import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.RandomMap;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.SimpleEventBus;
+import io.ilikeorangutans.ecs.Entity;
 import io.ilikeorangutans.ecs.Facade;
+import io.ilikeorangutans.ecs.NameComponent;
 
 public class AnCol extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -53,6 +58,10 @@ public class AnCol extends ApplicationAdapter {
         facade.init();
 
         renderer = new AnColRenderer(batch, viewport, map, facade.getEntities());
+
+        facade.getEntities().create(new PositionComponent(10, 10), new RenderableComponent(), new NameComponent("test entity 1"));
+        facade.getEntities().create(new PositionComponent(7, 14), new RenderableComponent(), new NameComponent("test entity 2"));
+        facade.getEntities().create(new PositionComponent(1, 1), new RenderableComponent(), new NameComponent("test entity 3"));
 
     }
 
