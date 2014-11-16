@@ -22,4 +22,9 @@ public class RandomMap implements Map {
     public int getHeight() {
         return height;
     }
+
+    @Override
+    public Tile getTileAt(int x, int y) {
+        return null;
+    }
 }

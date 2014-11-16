@@ -10,6 +10,10 @@ public class Engine {
 
     private final List<System> systems = new ArrayList<System>();
 
+    public void add(System s) {
+        systems.add(s);
+    }
+
     public void step(float deltaTime) {
         for (System s : systems) {
             s.step(deltaTime);

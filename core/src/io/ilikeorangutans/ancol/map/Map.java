@@ -1,7 +1,5 @@
 package io.ilikeorangutans.ancol.map;
 
-import com.badlogic.gdx.math.Rectangle;
-
 /**
  *
  */
@@ -20,5 +18,7 @@ public interface Map {
      * @return
      */
     int getHeight();
+
+    Tile getTileAt(int x, int y);
 
 }
