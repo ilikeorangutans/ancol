@@ -9,7 +9,7 @@ import io.ilikeorangutans.bus.Subscribe;
  * Describes a viewport in terms of size and position on the map and provides facilities to convert coordinates within
  * this viewport to map coordinates and vice versa.
  */
-public class MapViewport implements MapToScreen, ScreenToMap {
+public class MapViewport implements MapToScreen, ScreenToMap, ScreenToTile {
 
     private final Emitter emitter;
     private final Map map;
@@ -194,4 +194,11 @@ public class MapViewport implements MapToScreen, ScreenToMap {
         return this.x - getTileWidth() < x && this.x + viewWidthInPixels > x && this.y - getTileHeight() < y && this.y + viewHeightInPixels > y;
     }
 
+    @Override
+    public Point screenToTile(int x, int y) {
+        Point p = screenToMap(x, y);
+        p.x = p.x / getTileWidth();
+        p.y = p.y / getTileHeight();
+        return p;
+    }
 }

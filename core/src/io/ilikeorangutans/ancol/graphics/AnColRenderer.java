@@ -66,8 +66,8 @@ public class AnColRenderer {
                     draw = grass;
                 }
 
-                Point p = viewport.mapToScreen((ix + min.x) * 60, (iy + min.y) * 60);
-                draw.setPosition(p.x, p.y - 60);
+                Point p = viewport.mapToScreen((ix + min.x) * viewport.getTileWidth(), (iy + min.y) * viewport.getTileHeight());
+                draw.setPosition(p.x, p.y - viewport.getTileHeight());
 
                 draw.draw(batch);
             }
@@ -91,13 +91,13 @@ public class AnColRenderer {
                 SelectableComponent sc = e.getComponent(SelectableComponent.class);
 
                 if (sc.isSelected()) {
-                    select.setPosition(point.x, point.y - 60);
+                    select.setPosition(point.x, point.y - viewport.getTileHeight());
                     select.draw(batch);
                 }
             }
 
 
-            explorer.setPosition(point.x, point.y - 60);
+            explorer.setPosition(point.x, point.y - viewport.getTileHeight());
             explorer.draw(batch);
         }
 

@@ -2,17 +2,22 @@ package io.ilikeorangutans.ancol.android.launcher;
 
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.RequiresScreenToMap;
+import io.ilikeorangutans.ancol.map.ScreenToMap;
 import io.ilikeorangutans.ancol.map.ScrollEvent;
+import io.ilikeorangutans.ancol.select.SelectEvent;
 import io.ilikeorangutans.bus.EventBus;
 
 /**
  *
  */
-public class AnColGestureListener implements GestureDetector.GestureListener {
+public class AnColGestureListener implements GestureDetector.GestureListener, RequiresScreenToMap {
 
     private static final String TAG = AnColGestureListener.class.getName();
 
     private EventBus bus;
+    private ScreenToMap screenToMap;
 
     public AnColGestureListener(EventBus bus) {
         this.bus = bus;
@@ -25,7 +30,9 @@ public class AnColGestureListener implements GestureDetector.GestureListener {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        return false;
+        Point p = screenToMap.screenToMap((int) x, (int) y);
+        bus.fire(new SelectEvent(p.x, p.y));
+        return true;
     }
 
     @Override
@@ -61,4 +68,8 @@ public class AnColGestureListener implements GestureDetector.GestureListener {
         return false;
     }
 
+    @Override
+    public void setScreenToMap(ScreenToMap screenToMap) {
+        this.screenToMap = screenToMap;
+    }
 }
