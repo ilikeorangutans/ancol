@@ -12,9 +12,13 @@ public class PositionComponent implements Component {
 
     private int x, y;
 
+    /**
+     * Timestamp when this component was positioned at the current location. Used for sorting entities on a tile.
+     */
+    private long positioned;
+
     public PositionComponent(int x, int y) {
-        this.x = x;
-        this.y = y;
+        set(x, y);
     }
 
     @Override
@@ -25,6 +29,7 @@ public class PositionComponent implements Component {
     public void set(int x, int y) {
         this.x = x;
         this.y = y;
+        positioned = System.currentTimeMillis();
     }
 
     public int getX() {

@@ -12,6 +12,13 @@ public class SelectableComponent implements Component {
 
     private boolean selected;
 
+    public SelectableComponent() {
+    }
+
+    public SelectableComponent(boolean selected) {
+        this.selected = selected;
+    }
+
     public boolean isSelected() {
         return selected;
     }

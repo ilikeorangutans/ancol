@@ -8,6 +8,8 @@ import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.MapViewport;
 import io.ilikeorangutans.ancol.map.PositionComponent;
+import io.ilikeorangutans.ancol.map.Tile;
+import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entities;
 import io.ilikeorangutans.ecs.Entity;
@@ -29,6 +31,7 @@ public class AnColRenderer {
     private Sprite grass;
     private Sprite water;
     private Sprite explorer;
+    private Sprite select;
 
     public AnColRenderer(SpriteBatch batch, MapViewport viewport, Map map, Entities entities) {
         this.batch = batch;
@@ -43,6 +46,7 @@ public class AnColRenderer {
         unitTexture = new Texture(Gdx.files.internal("units.png"));
         explorer = new Sprite(unitTexture, 13 * 60, 60, 60, 60);
 
+        select = new Sprite(new Texture(Gdx.files.internal("select.png")), 0, 0, 60, 60);
     }
 
     public void render() {
@@ -55,9 +59,12 @@ public class AnColRenderer {
 
             for (int ix = 0; ix < viewport.getWidthInTiles(); ix++) {
 
-                Sprite draw = grass;
-                if (ix + min.x < iy + min.y)
-                    draw = water;
+                final Tile tile = map.getTileAt(ix + min.x, iy + min.y);
+
+                Sprite draw = water;
+                if (tile.getType().getId() == 2) {
+                    draw = grass;
+                }
 
                 Point p = viewport.mapToScreen((ix + min.x) * 60, (iy + min.y) * 60);
                 draw.setPosition(p.x, p.y - 60);
@@ -79,6 +86,16 @@ public class AnColRenderer {
                 continue;
 
             Point point = viewport.mapToScreen(x, y);
+
+            if (e.hasComponent(ComponentType.fromClass(SelectableComponent.class))) {
+                SelectableComponent sc = e.getComponent(SelectableComponent.class);
+
+                if (sc.isSelected()) {
+                    select.setPosition(point.x, point.y - 60);
+                    select.draw(batch);
+                }
+            }
+
 
             explorer.setPosition(point.x, point.y - 60);
             explorer.draw(batch);

@@ -61,8 +61,7 @@ public class AnCol extends ApplicationAdapter {
 
         facade.getEntities().create(new PositionComponent(10, 10), new RenderableComponent(), new NameComponent("test entity 1"), new SelectableComponent());
         facade.getEntities().create(new PositionComponent(7, 14), new RenderableComponent(), new NameComponent("test entity 2"), new SelectableComponent());
-        facade.getEntities().create(new PositionComponent(1, 1), new RenderableComponent(), new NameComponent("test entity 3"), new SelectableComponent());
-
+        facade.getEntities().create(new PositionComponent(1, 1), new RenderableComponent(), new NameComponent("test entity 3"), new SelectableComponent(true));
 
     }
 

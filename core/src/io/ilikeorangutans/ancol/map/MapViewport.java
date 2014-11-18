@@ -176,6 +176,10 @@ public class MapViewport implements MapToScreen, ScreenToMap {
      * @return //
      */
     public Point getFirstVisibleTile() {
+
+        // TODO: bug here that will crash in the renderer when scrolling to the bottom right corner of the map.
+        // This method does not take into account that we're rendering Ht + 1 tiles, where Ht is the height of the
+        // screen in tiles.
         return mapToTile(screenToMap(0, 0));
     }
 
