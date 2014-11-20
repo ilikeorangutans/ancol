@@ -9,6 +9,7 @@ import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.MapViewport;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.Tile;
+import io.ilikeorangutans.ancol.move.MovableComponent;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entities;
@@ -32,6 +33,7 @@ public class AnColRenderer {
     private Sprite water;
     private Sprite explorer;
     private Sprite select;
+    private Sprite flag;
 
     public AnColRenderer(SpriteBatch batch, MapViewport viewport, Map map, Entities entities) {
         this.batch = batch;
@@ -42,6 +44,7 @@ public class AnColRenderer {
         terrainTexture = new Texture(Gdx.files.internal("tiles.png"));
         grass = new Sprite(terrainTexture, 0, 60, 60, 60);
         water = new Sprite(terrainTexture, 0, 540, 60, 60);
+        flag = new Sprite(terrainTexture, 16 * 60, 9 * 60, 60, 60);
 
         unitTexture = new Texture(Gdx.files.internal("units.png"));
         explorer = new Sprite(unitTexture, 13 * 60, 60, 60, 60);
@@ -93,6 +96,17 @@ public class AnColRenderer {
                 if (sc.isSelected()) {
                     select.setPosition(point.x, point.y - viewport.getTileHeight());
                     select.draw(batch);
+
+                    if (e.hasComponent(ComponentType.fromClass(MovableComponent.class))) {
+                        MovableComponent mc = e.getComponent(MovableComponent.class);
+
+                        if (mc.hasDestination()) {
+                            Point destination = mc.getDestination();
+                            Point screen = viewport.mapToScreen(destination.x * viewport.getTileWidth(), destination.y * viewport.getTileHeight());
+                            flag.setPosition(screen.x, screen.y - viewport.getTileHeight());
+                            flag.draw(batch);
+                        }
+                    }
                 }
             }
 

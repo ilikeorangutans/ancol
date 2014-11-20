@@ -8,6 +8,7 @@ import io.ilikeorangutans.ancol.RequiresScreenToMap;
 import io.ilikeorangutans.ancol.map.ScreenToMap;
 import io.ilikeorangutans.ancol.map.ScreenToTile;
 import io.ilikeorangutans.ancol.map.ScrollEvent;
+import io.ilikeorangutans.ancol.move.MoveEvent;
 import io.ilikeorangutans.ancol.select.SelectEvent;
 import io.ilikeorangutans.bus.EventBus;
 
@@ -58,10 +59,12 @@ class DesktopInputProcessor implements InputProcessor, RequiresScreenToMap {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-
         Point p = ((ScreenToTile) screenToMap).screenToTile((int) screenX, (int) screenY);
-        bus.fire(new SelectEvent(p.x, p.y));
+        if (button == 0) {
+            bus.fire(new SelectEvent(p.x, p.y));
+        } else if (button == 1) {
+            bus.fire(new MoveEvent(p));
+        }
 
         return false;
     }

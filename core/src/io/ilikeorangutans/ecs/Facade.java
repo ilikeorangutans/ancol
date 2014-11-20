@@ -1,6 +1,5 @@
 package io.ilikeorangutans.ecs;
 
-import io.ilikeorangutans.bus.Bus;
 import io.ilikeorangutans.bus.EventBus;
 
 /**
@@ -29,5 +28,13 @@ public class Facade {
 
     public Entities getEntities() {
         return entities;
+    }
+
+    public void step() {
+        engine.step(0.0f);
+    }
+
+    public void addSystem(System s) {
+        engine.add(s);
     }
 }
