@@ -8,7 +8,7 @@ import io.ilikeorangutans.ecs.Entity;
  */
 public class SelectedEvent implements Event {
 
-    final Entity entity;
+    public final Entity entity;
 
     public SelectedEvent(Entity entity) {
         this.entity = entity;

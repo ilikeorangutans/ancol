@@ -17,11 +17,7 @@ public class AndroidLauncher extends AndroidApplication {
         config.useAccelerometer = false;
         config.useCompass = false;
 
-        EventBus bus = new SimpleEventBus();
-
-        AnColGestureListener anColGestureListener = new AnColGestureListener(bus);
-
-        initialize(new AnCol(bus, new GestureDetector(anColGestureListener)), config);
+        initialize(new AnCol(), config);
     }
 
 }

@@ -1,27 +1,37 @@
-package io.ilikeorangutans.ancol.desktop;
+package io.ilikeorangutans.ancol.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import io.ilikeorangutans.ancol.Point;
-import io.ilikeorangutans.ancol.RequiresScreenToMap;
-import io.ilikeorangutans.ancol.map.ScreenToMap;
 import io.ilikeorangutans.ancol.map.ScreenToTile;
 import io.ilikeorangutans.ancol.map.ScrollEvent;
 import io.ilikeorangutans.ancol.move.MoveEvent;
 import io.ilikeorangutans.ancol.select.SelectEvent;
+import io.ilikeorangutans.ancol.select.SelectedEvent;
 import io.ilikeorangutans.bus.EventBus;
+import io.ilikeorangutans.bus.Subscribe;
+import io.ilikeorangutans.ecs.Entity;
 
 /**
- * Created by jakob on 14-11-18.
+ *
  */
-class DesktopInputProcessor implements InputProcessor, RequiresScreenToMap {
-    private final EventBus bus;
-    private int lastX, lastY;
-    private ScreenToMap screenToMap;
+public class AnColInputProcessor implements InputProcessor {
 
-    public DesktopInputProcessor(EventBus bus) {
+    private final EventBus bus;
+    private final ScreenToTile screenToTile;
+    private int lastX, lastY;
+    private Entity selectedEntity;
+    private boolean dragging = false;
+
+    public AnColInputProcessor(EventBus bus, ScreenToTile screenToTile) {
         this.bus = bus;
+        this.screenToTile = screenToTile;
+    }
+
+    @Subscribe
+    public void onSelectedEntity(SelectedEvent event) {
+        selectedEntity = event.entity;
     }
 
     @Override
@@ -52,39 +62,53 @@ class DesktopInputProcessor implements InputProcessor, RequiresScreenToMap {
 
     @Override
     public boolean keyTyped(char character) {
-        if (character == 'q')
+        if (character == 'q') {
             Gdx.app.exit();
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Point p = ((ScreenToTile) screenToMap).screenToTile((int) screenX, (int) screenY);
-        if (button == 0) {
-            bus.fire(new SelectEvent(p.x, p.y));
-        } else if (button == 1) {
-            bus.fire(new MoveEvent(p));
+            return true;
         }
 
         return false;
     }
 
     @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        final boolean wasDragging = dragging;
+        dragging = false;
+
+        final Point destination = screenToTile.screenToTile(screenX, screenY);
+
+        if ((button == 0 && wasDragging) || button == 1 && !wasDragging) {
+            bus.fire(new MoveEvent(destination));
+            return true;
+        } else if (button == 0) {
+            bus.fire(new SelectEvent(destination.x, destination.y));
+            return true;
+        }
+
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
+        dragging = true;
+
         if (Gdx.input.isButtonPressed(1)) {
             bus.fire(new ScrollEvent(lastX - screenX, lastY - screenY));
 
             lastX = screenX;
             lastY = screenY;
+            return true;
         }
+
         return false;
     }
+
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
@@ -98,10 +122,5 @@ class DesktopInputProcessor implements InputProcessor, RequiresScreenToMap {
     @Override
     public boolean scrolled(int amount) {
         return false;
-    }
-
-    @Override
-    public void setScreenToMap(ScreenToMap screenToMap) {
-        this.screenToMap = screenToMap;
     }
 }
