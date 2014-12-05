@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.game.cmd.BuildColonyCommand;
+import io.ilikeorangutans.ancol.game.event.CommandEvent;
 import io.ilikeorangutans.ancol.map.ScreenToTile;
 import io.ilikeorangutans.ancol.map.ScrollEvent;
 import io.ilikeorangutans.ancol.move.MoveEvent;
@@ -49,6 +51,9 @@ public class AnColInputProcessor implements InputProcessor {
                 break;
             case Input.Keys.DOWN:
                 bus.fire(new ScrollEvent(0, 30));
+                break;
+            case Input.Keys.B:
+                bus.fire(new CommandEvent(new BuildColonyCommand()));
                 break;
         }
 

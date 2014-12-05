@@ -19,6 +19,8 @@ public class SimpleEventBus implements EventBus {
         if (event == null)
             return;
 
+        System.out.println("SimpleEventBus.fire " + event);
+
         final String key = event.getClass().getName();
         if (!handlers.containsKey(key))
             return;

@@ -30,6 +30,14 @@ public class Entity {
         return (T) components.get(componentType);
     }
 
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "components=" + components +
+                ", alive=" + alive +
+                '}';
+    }
+
     /**
      * @return Returns true if this entity is still in use. If this returns false, the entity should be removed from the simulation.
      */

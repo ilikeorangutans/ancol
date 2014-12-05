@@ -7,34 +7,23 @@ import io.ilikeorangutans.bus.EventBus;
  */
 public class Facade {
 
-    private final EventBus bus;
+	private final EventBus bus;
 
-    private Engine engine;
+	private Engine engine;
 
-    private Entities entities;
+	private SimpleEntities entities;
 
-    public Facade(EventBus bus) {
-        this.bus = bus;
-    }
+	public Facade(EventBus bus) {
+		this.bus = bus;
+	}
 
-    public void init() {
-        engine = new Engine();
-        entities = new Entities();
-    }
+	public void init() {
+		engine = new Engine();
+		entities = new SimpleEntities();
+	}
 
-    public void shutdown() {
+	public SimpleEntities getEntities() {
+		return entities;
+	}
 
-    }
-
-    public Entities getEntities() {
-        return entities;
-    }
-
-    public void step() {
-        engine.step(0.0f);
-    }
-
-    public void addSystem(System s) {
-        engine.add(s);
-    }
 }

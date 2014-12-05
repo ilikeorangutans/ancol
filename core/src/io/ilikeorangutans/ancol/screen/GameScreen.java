@@ -7,10 +7,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.ilikeorangutans.ancol.game.*;
+import io.ilikeorangutans.ancol.game.cmd.CommandManager;
+import io.ilikeorangutans.ancol.game.event.TurnConcludedEvent;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.input.AnColInputProcessor;
@@ -21,133 +25,173 @@ import io.ilikeorangutans.ancol.map.RandomMap;
 import io.ilikeorangutans.ancol.move.MovableComponent;
 import io.ilikeorangutans.ancol.move.MoveSystem;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
-import io.ilikeorangutans.ancol.select.SelectionSystem;
+import io.ilikeorangutans.ancol.select.SelectionHandler;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.SimpleEventBus;
+import io.ilikeorangutans.ecs.Engine;
 import io.ilikeorangutans.ecs.Facade;
 import io.ilikeorangutans.ecs.NameComponent;
-
-import java.awt.event.InputEvent;
 
 /**
  *
  */
 public class GameScreen implements Screen {
 
-    private final Stage stage;
-    private final Game game;
-    private final Skin skin;
-
-    private SpriteBatch batch;
-
-    private OrthographicCamera camera;
-
-    private Facade facade;
-
-    private EventBus bus;
-
-    private MapViewport viewport;
-
-    private AnColRenderer renderer;
+	private final Game game;
+	private final Skin skin;
+	/**
+	 * We use this engine to perform turn based updates as opposed to continuous updates.
+	 */
+	private final Engine turnbasedEngine;
+	private Stage stage;
+	private SpriteBatch batch;
+	private OrthographicCamera camera;
+	private Facade facade;
+	private EventBus bus;
+	private MapViewport viewport;
+	private AnColRenderer renderer;
 
 
-    public GameScreen(Game game, Skin skin) {
-        this.game = game;
-        this.skin = skin;
+	public GameScreen(Game game, Skin skin) {
+		this.game = game;
+		this.skin = skin;
 
-        stage = new Stage();
+		bus = new SimpleEventBus();
 
-        bus = new SimpleEventBus();
+		Map map = new RandomMap();
+		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, map);
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false);
+		setupUI(skin);
+		setupInputProcessing();
+		setupRendering();
 
-        Map map = new RandomMap();
-        viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, map);
-        bus.subscribe(viewport);
+		bus.subscribe(viewport);
 
+		facade = new Facade(bus);
+		facade.init();
 
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        AnColInputProcessor anColInputProcessor = new AnColInputProcessor(bus, viewport);
-        bus.subscribe(anColInputProcessor);
-        inputMultiplexer.addProcessor(anColInputProcessor);
-        inputMultiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(inputMultiplexer);
+		SelectionHandler selectionHandler = new SelectionHandler(facade.getEntities(), bus);
+		bus.subscribe(selectionHandler);
 
-        TextButton tb = new TextButton("Step", skin, "default");
-        tb.setPosition(Gdx.graphics.getWidth() - 50, 50);
-        tb.addListener(new ClickListener() {
+		CommandManager commandManager = new CommandManager();
+		bus.subscribe(commandManager);
 
-            public void clicked(InputEvent event, float x, float y) {
-                facade.step();
-            }
-        });
-        stage.addActor(tb);
+		turnbasedEngine = new Engine();
 
+		Player p1 = new Player(1, "player 1");
+		PlayerTurnSystem playerTurnSystem = new PlayerTurnSystem(bus);
+		bus.subscribe(playerTurnSystem);
 
-        batch = new SpriteBatch();
+		playerTurnSystem.addPlayer(p1);
 
-        facade = new Facade(bus);
-        facade.init();
+		ActionPointSystem actionPointSystem = new ActionPointSystem(bus, turnbasedEngine);
+		bus.subscribe(actionPointSystem);
 
-        SelectionSystem selectionSystem = new SelectionSystem(facade.getEntities(), bus);
-        bus.subscribe(selectionSystem);
+		MoveSystem moveSystem = new MoveSystem(facade.getEntities(), bus);
+		bus.subscribe(moveSystem);
+		turnbasedEngine.add(moveSystem);
 
-        MoveSystem moveSystem = new MoveSystem(facade.getEntities(), bus);
-        bus.subscribe(moveSystem);
-        facade.addSystem(moveSystem);
+		renderer = new AnColRenderer(batch, viewport, map, facade.getEntities());
 
-        renderer = new AnColRenderer(batch, viewport, map, facade.getEntities());
+		setupSampleEntities(p1);
+	}
 
-        facade.getEntities().create(new PositionComponent(10, 10), new RenderableComponent(), new NameComponent("test entity 1"), new SelectableComponent(), new MovableComponent());
-        facade.getEntities().create(new PositionComponent(4, 4), new RenderableComponent(), new NameComponent("test entity 2"), new SelectableComponent(), new MovableComponent());
-        facade.getEntities().create(new PositionComponent(1, 1), new RenderableComponent(), new NameComponent("test entity 3"), new SelectableComponent(), new MovableComponent());
+	private void setupSampleEntities(Player p1) {
+		facade.getEntities().create(
+				new PositionComponent(10, 10),
+				new RenderableComponent(),
+				new NameComponent("test entity 1"),
+				new SelectableComponent(),
+				new MovableComponent(),
+				new PlayerOwnedComponent(p1),
+				new ControllableComponent());
+		facade.getEntities().create(
+				new PositionComponent(4, 4),
+				new RenderableComponent(),
+				new NameComponent("test entity 2"),
+				new SelectableComponent(),
+				new MovableComponent(),
+				new PlayerOwnedComponent(p1),
+				new ControllableComponent());
+		facade.getEntities().create(
+				new PositionComponent(1, 3),
+				new RenderableComponent(),
+				new NameComponent("test entity 3"),
+				new SelectableComponent(),
+				new MovableComponent(),
+				new PlayerOwnedComponent(p1),
+				new ControllableComponent());
+	}
 
-    }
+	private void setupRendering() {
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false);
+		batch = new SpriteBatch();
+	}
 
-    @Override
-    public void render(float delta) {
+	private void setupUI(Skin skin) {
+		stage = new Stage();
+		TextButton tb = new TextButton("End Turn", skin, "default");
+		tb.setPosition(Gdx.graphics.getWidth() - tb.getWidth() - 20, 20);
+		tb.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				bus.fire(new TurnConcludedEvent());
+			}
+		});
+		stage.addActor(tb);
+	}
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	private void setupInputProcessing() {
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		AnColInputProcessor anColInputProcessor = new AnColInputProcessor(bus, viewport);
+		bus.subscribe(anColInputProcessor);
+		inputMultiplexer.addProcessor(stage);
+		inputMultiplexer.addProcessor(anColInputProcessor);
+		Gdx.input.setInputProcessor(inputMultiplexer);
+	}
 
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
-        renderer.render();
+	@Override
+	public void render(float delta) {
 
-        stage.draw();
-    }
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-    @Override
-    public void resize(int width, int height) {
-        viewport.resize(width, height);
-    }
+		camera.update();
+		batch.setProjectionMatrix(camera.combined);
+		renderer.render();
 
-    @Override
-    public void show() {
+		stage.draw();
+	}
 
-    }
+	@Override
+	public void resize(int width, int height) {
+		viewport.resize(width, height);
+	}
 
-    @Override
-    public void hide() {
+	@Override
+	public void show() {
 
-    }
+	}
 
-    @Override
-    public void pause() {
+	@Override
+	public void hide() {
 
-    }
+	}
 
-    @Override
-    public void resume() {
+	@Override
+	public void pause() {
 
-    }
+	}
 
-    @Override
-    public void dispose() {
-        stage.dispose();
+	@Override
+	public void resume() {
 
-        stage.dispose();
-        batch.dispose();
-    }
+	}
+
+	@Override
+	public void dispose() {
+		stage.dispose();
+		batch.dispose();
+	}
 }
