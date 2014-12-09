@@ -16,60 +16,60 @@ import java.util.List;
  */
 public class MoveSystem implements io.ilikeorangutans.ecs.System {
 
-    private final Entities entities;
+	private final Entities entities;
 
-    private final Emitter emitter;
+	private final Emitter emitter;
 
-    public MoveSystem(Entities entities, Emitter emitter) {
-        this.entities = entities;
-        this.emitter = emitter;
-    }
+	public MoveSystem(Entities entities, Emitter emitter) {
+		this.entities = entities;
+		this.emitter = emitter;
+	}
 
-    @Override
-    public void step(float deltaTime) {
-        List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(MovableComponent.class), ComponentType.fromClass(PositionComponent.class));
+	@Override
+	public void step(float deltaTime) {
+		List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(MovableComponent.class, PositionComponent.class));
 
-        for (Entity e : ents) {
-            final MovableComponent mc = e.getComponent(MovableComponent.class);
-            if (!mc.hasDestination())
-                continue;
+		for (Entity e : ents) {
+			final MovableComponent mc = e.getComponent(MovableComponent.class);
+			if (!mc.hasDestination())
+				continue;
 
-            final PositionComponent pc = e.getComponent(PositionComponent.class);
+			final PositionComponent pc = e.getComponent(PositionComponent.class);
 
-            final Point dst = mc.getDestination();
-            boolean arrived = pc.getX() == dst.x && pc.getY() == dst.y;
-            if (arrived) {
-                mc.setDestination(null);
-                continue;
-            }
+			final Point dst = mc.getDestination();
+			boolean arrived = pc.getX() == dst.x && pc.getY() == dst.y;
+			if (arrived) {
+				mc.setDestination(null);
+				continue;
+			}
 
-            int deltax = 0, deltay = 0;
+			int deltax = 0, deltay = 0;
 
-            if (dst.x < pc.getX()) deltax = -1;
-            if (dst.x > pc.getX()) deltax = 1;
-            if (dst.y < pc.getY()) deltay = -1;
-            if (dst.y > pc.getY()) deltay = 1;
+			if (dst.x < pc.getX()) deltax = -1;
+			if (dst.x > pc.getX()) deltax = 1;
+			if (dst.y < pc.getY()) deltay = -1;
+			if (dst.y > pc.getY()) deltay = 1;
 
-            pc.set(pc.getX() + deltax, pc.getY() + deltay);
+			pc.set(pc.getX() + deltax, pc.getY() + deltay);
 
-            emitter.fire(new MovedEvent(e, new Point(pc.getX(), pc.getY())));
-        }
-    }
+			emitter.fire(new MovedEvent(e, new Point(pc.getX(), pc.getY())));
+		}
+	}
 
-    @Subscribe
-    public void onMoveEvent(MoveEvent moveEvent) {
-        List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(SelectableComponent.class), ComponentType.fromClass(MovableComponent.class));
+	@Subscribe
+	public void onMoveEvent(MoveEvent moveEvent) {
+		List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(SelectableComponent.class, MovableComponent.class));
 
-        for (Entity e : ents) {
-            final SelectableComponent sc = e.getComponent(SelectableComponent.class);
+		for (Entity e : ents) {
+			final SelectableComponent sc = e.getComponent(SelectableComponent.class);
 
-            if (!sc.isSelected()) {
-                continue;
-            }
+			if (!sc.isSelected()) {
+				continue;
+			}
 
-            MovableComponent mc = e.getComponent(MovableComponent.class);
-            mc.setDestination(moveEvent.destination);
-        }
-    }
+			MovableComponent mc = e.getComponent(MovableComponent.class);
+			mc.setDestination(moveEvent.destination);
+		}
+	}
 
 }

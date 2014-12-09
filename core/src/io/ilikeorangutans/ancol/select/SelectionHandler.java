@@ -14,43 +14,43 @@ import java.util.List;
  */
 public class SelectionHandler {
 
-    private final Entities entities;
+	private final Entities entities;
 
-    private final Emitter emitter;
-    private Entity previouslySelected;
+	private final Emitter emitter;
+	private Entity previouslySelected;
 
-    public SelectionHandler(Entities entities, Emitter emitter) {
-        this.entities = entities;
-        this.emitter = emitter;
-    }
+	public SelectionHandler(Entities entities, Emitter emitter) {
+		this.entities = entities;
+		this.emitter = emitter;
+	}
 
-    @Subscribe
-    public void onSelectEvent(SelectEvent selectEvent) {
+	@Subscribe
+	public void onSelectEvent(SelectEvent selectEvent) {
 
-        List<Entity> selectable = entities.getEntityByType(ComponentType.fromClass(PositionComponent.class), ComponentType.fromClass(SelectableComponent.class));
+		List<Entity> selectable = entities.getEntityByType(ComponentType.fromClass(PositionComponent.class, SelectableComponent.class));
 
-        for (Entity e : selectable) {
-            PositionComponent pc = e.getComponent(PositionComponent.class);
+		for (Entity e : selectable) {
+			PositionComponent pc = e.getComponent(PositionComponent.class);
 
-            if (pc.getX() == selectEvent.x && pc.getY() == selectEvent.y) {
+			if (pc.getX() == selectEvent.x && pc.getY() == selectEvent.y) {
 
-                selectEntity(e);
+				selectEntity(e);
 
-                return;
-            }
-        }
-    }
+				return;
+			}
+		}
+	}
 
-    private void selectEntity(Entity e) {
+	private void selectEntity(Entity e) {
 
-        if (previouslySelected != null) {
-            previouslySelected.getComponent(SelectableComponent.class).setSelected(false);
-        }
-        previouslySelected = e;
-        SelectableComponent sc = e.getComponent(SelectableComponent.class);
-        sc.setSelected(!sc.isSelected());
+		if (previouslySelected != null) {
+			previouslySelected.getComponent(SelectableComponent.class).setSelected(false);
+		}
+		previouslySelected = e;
+		SelectableComponent sc = e.getComponent(SelectableComponent.class);
+		sc.setSelected(!sc.isSelected());
 
-        emitter.fire(new SelectedEvent(e));
-    }
+		emitter.fire(new SelectedEvent(e));
+	}
 
 }

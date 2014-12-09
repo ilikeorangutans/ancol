@@ -8,57 +8,72 @@ import java.util.Map;
  */
 public class ComponentType {
 
-    private static final Map<String, ComponentType> types = new HashMap<String, ComponentType>();
-    private final String type;
+	private static final Map<String, ComponentType> types = new HashMap<String, ComponentType>();
+	private final String type;
 
-    private ComponentType(String type) {
-        this.type = type;
-    }
+	private ComponentType(String type) {
+		this.type = type;
+	}
 
-    public static ComponentType fromComponent(Component c) {
-        return fromClass(c.getClass());
-    }
+	public static ComponentType fromComponent(Component c) {
+		return fromClass(c.getClass())[0];
+	}
 
-    public static ComponentType fromClass(Class<?> c) {
-        final String type = componentClassToType(c);
+	public static ComponentType[] fromClass(Class<?>... classes) {
 
-        if (types.containsKey(type))
-            return types.get(type);
+		ComponentType[] result = new ComponentType[classes.length];
+		int i = 0;
 
-        ComponentType ct = new ComponentType(type);
-        types.put(type, ct);
+		for (Class<?> c : classes) {
 
-        return ct;
-    }
 
-    private static String componentClassToType(Class<?> clazz) {
-        if (!Component.class.isAssignableFrom(clazz))
-            throw new IllegalArgumentException("No component passed to create component type.");
+			final String type = componentClassToType(c);
 
-        return clazz.getName();
-    }
+			ComponentType ct;
+			if (types.containsKey(type)) {
+				ct = types.get(type);
+			} else {
+				ct = new ComponentType(type);
+				types.put(type, ct);
+			}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+			result[i] = ct;
+			i++;
 
-        ComponentType that = (ComponentType) o;
+		}
 
-        if (!type.equals(that.type)) return false;
+		return result;
 
-        return true;
-    }
+	}
 
-    @Override
-    public int hashCode() {
-        return type.hashCode();
-    }
+	private static String componentClassToType(Class<?> clazz) {
+		if (!Component.class.isAssignableFrom(clazz))
+			throw new IllegalArgumentException("No component passed to create component type.");
 
-    @Override
-    public String toString() {
-        return "ComponentType{" +
-                "type='" + type + '\'' +
-                '}';
-    }
+		return clazz.getName();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ComponentType that = (ComponentType) o;
+
+		if (!type.equals(that.type)) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return type.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "ComponentType{" +
+				"type='" + type + '\'' +
+				'}';
+	}
 }

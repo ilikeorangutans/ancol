@@ -8,7 +8,7 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class PlayerOwnedComponent implements Component {
 
-    public static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(PlayerOwnedComponent.class);
+    public static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(PlayerOwnedComponent.class)[0];
 
     private Player player;
 

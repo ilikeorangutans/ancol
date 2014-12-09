@@ -8,7 +8,7 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class PositionComponent implements Component {
 
-    private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(PositionComponent.class);
+    private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(PositionComponent.class)[0];
 
     private int x, y;
 

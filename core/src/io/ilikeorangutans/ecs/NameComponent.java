@@ -5,20 +5,20 @@ package io.ilikeorangutans.ecs;
  */
 public class NameComponent implements Component {
 
-    private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(NameComponent.class);
+	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(NameComponent.class)[0];
 
-    private final String name;
+	private final String name;
 
-    public NameComponent(String name) {
-        this.name = name;
-    }
+	public NameComponent(String name) {
+		this.name = name;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public ComponentType getType() {
-        return COMPONENT_TYPE;
-    }
+	@Override
+	public ComponentType getType() {
+		return COMPONENT_TYPE;
+	}
 }
