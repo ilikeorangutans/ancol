@@ -12,9 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.ilikeorangutans.ancol.game.*;
+import io.ilikeorangutans.ancol.game.ActionPointSystem;
+import io.ilikeorangutans.ancol.game.ControllableComponent;
+import io.ilikeorangutans.ancol.game.Player;
+import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.cmd.CommandManager;
-import io.ilikeorangutans.ancol.game.event.TurnConcludedEvent;
+import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
+import io.ilikeorangutans.ancol.game.turn.PlayerTurnSystem;
+import io.ilikeorangutans.ancol.game.turn.TurnConcludedEvent;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.input.AnColInputProcessor;
@@ -23,11 +28,11 @@ import io.ilikeorangutans.ancol.map.MapViewport;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.RandomMap;
 import io.ilikeorangutans.ancol.move.MovableComponent;
-import io.ilikeorangutans.ancol.move.MoveSystem;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.ancol.select.SelectionHandler;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.SimpleEventBus;
+import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.Engine;
 import io.ilikeorangutans.ecs.Facade;
 import io.ilikeorangutans.ecs.NameComponent;
@@ -78,22 +83,28 @@ public class GameScreen implements Screen {
 
 		turnbasedEngine = new Engine();
 
-		Player p1 = new Player(1, "player 1");
 		PlayerTurnSystem playerTurnSystem = new PlayerTurnSystem(bus);
 		bus.subscribe(playerTurnSystem);
 
-		playerTurnSystem.addPlayer(p1);
+		Player p1 = new Player(1, "player 1");
+		Player p2 = new Player(2, "player 2");
 
-		ActionPointSystem actionPointSystem = new ActionPointSystem(bus, turnbasedEngine);
+		playerTurnSystem.addPlayer(p1);
+		playerTurnSystem.addPlayer(p2);
+
+
+		ActionPointSystem actionPointSystem = new ActionPointSystem(bus, facade.getEntities());
 		bus.subscribe(actionPointSystem);
 
-		MoveSystem moveSystem = new MoveSystem(facade.getEntities(), bus);
-		bus.subscribe(moveSystem);
-		turnbasedEngine.add(moveSystem);
+//		MoveSystem moveSystem = new MoveSystem(facade.getEntities(), bus);
+//		bus.subscribe(moveSystem);
+//		turnbasedEngine.add(moveSystem);
 
 		renderer = new AnColRenderer(batch, viewport, map, facade.getEntities());
 
 		setupSampleEntities(p1);
+
+		playerTurnSystem.start();
 	}
 
 	private void setupSampleEntities(Player p1) {
@@ -140,6 +151,12 @@ public class GameScreen implements Screen {
 			}
 		});
 		stage.addActor(tb);
+
+		final TextButton tb2 = new TextButton("Current Player", skin, "default");
+		tb2.setDisabled(true);
+		tb2.setPosition(10, 10);
+		bus.subscribe(new MyObject(tb2));
+		stage.addActor(tb2);
 	}
 
 	private void setupInputProcessing() {
@@ -193,5 +210,18 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		stage.dispose();
 		batch.dispose();
+	}
+
+	public static class MyObject {
+		private final TextButton tb2;
+
+		public MyObject(TextButton tb2) {
+			this.tb2 = tb2;
+		}
+
+		@Subscribe
+		public void onBeginTurn(BeginTurnEvent bte) {
+			tb2.setText(bte.player.getName());
+		}
 	}
 }
