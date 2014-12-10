@@ -32,6 +32,10 @@ public class SimpleEntities implements Entities {
 				entitiesByType.put(type, new ArrayList<Entity>());
 			}
 
+			if (c instanceof EntityAwareComponent) {
+				((EntityAwareComponent) c).setEntity(e);
+			}
+
 			componentsByType.get(type).add(c);
 			entitiesByType.get(type).add(e);
 		}
