@@ -19,7 +19,7 @@ public class Facade {
 
 	public void init() {
 		engine = new Engine();
-		entities = new SimpleEntities();
+		entities = new SimpleEntities(bus);
 	}
 
 	public SimpleEntities getEntities() {

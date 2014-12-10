@@ -1,5 +1,8 @@
 package io.ilikeorangutans.ecs;
 
+import io.ilikeorangutans.bus.Emitter;
+import io.ilikeorangutans.ecs.event.EntityUpdatedEvent;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,44 +11,54 @@ import java.util.Map;
  */
 public class Entity {
 
-    private final Map<ComponentType, Component> components = new HashMap<ComponentType, Component>();
-    private boolean alive = true;
+	private final Map<ComponentType, Component> components = new HashMap<ComponentType, Component>();
+	private final Emitter emitter;
+	private boolean alive = true;
 
-    public Entity(Component... components) {
-        for (Component c : components) {
-            this.components.put(ComponentType.fromComponent(c), c);
-        }
-    }
 
-    public boolean hasComponent(ComponentType... componentType) {
-        return components.containsKey(componentType[0]);
-    }
+	public Entity(Emitter emitter, Component... components) {
+		this.emitter = emitter;
+		for (Component c : components) {
+			this.components.put(ComponentType.fromComponent(c), c);
+		}
+	}
 
-    public <T extends Component> T getComponent(Class<T> type) {
-        final ComponentType componentType = ComponentType.fromClass(type)[0];
+	public boolean hasComponent(ComponentType... componentType) {
+		return components.containsKey(componentType[0]);
+	}
 
-        if (!hasComponent(componentType))
-            throw new IllegalArgumentException("Entity does not have component of type " + type.getName());
+	public <T extends Component> T getComponent(Class<T> type) {
+		final ComponentType componentType = ComponentType.fromClass(type)[0];
 
-        return (T) components.get(componentType);
-    }
+		if (!hasComponent(componentType))
+			throw new IllegalArgumentException("Entity does not have component of type " + type.getName());
 
-    @Override
-    public String toString() {
-        return "Entity{" +
-                "components=" + components +
-                ", alive=" + alive +
-                '}';
-    }
+		return (T) components.get(componentType);
+	}
 
-    /**
-     * @return Returns true if this entity is still in use. If this returns false, the entity should be removed from the simulation.
-     */
-    public boolean isAlive() {
-        return alive;
-    }
+	@Override
+	public String toString() {
+		return "Entity{" +
+				"components=" + components +
+				", alive=" + alive +
+				'}';
+	}
 
-    public void kill() {
-        alive = false;
-    }
+	/**
+	 * @return Returns true if this entity is still in use. If this returns false, the entity should be removed from the simulation.
+	 */
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void kill() {
+		alive = false;
+	}
+
+	/**
+	 * Fires off an event notifying listeners that this entity has been modified.
+	 */
+	public void updated() {
+		emitter.fire(new EntityUpdatedEvent(this));
+	}
 }
