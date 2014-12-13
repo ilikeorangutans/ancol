@@ -19,11 +19,11 @@ import java.util.List;
  */
 public class ActivitySystem {
 
-	private final Emitter bus;
+	private final Emitter emitter;
 	private final Entities entities;
 
-	public ActivitySystem(Emitter bus, Entities entities) {
-		this.bus = bus;
+	public ActivitySystem(Emitter emitter, Entities entities) {
+		this.emitter = emitter;
 		this.entities = entities;
 	}
 
@@ -38,7 +38,12 @@ public class ActivitySystem {
 		if (activityComponent.hasActivity())
 			return;
 
-		e.command.apply(bus, entity);
+		// TODO: Might wanna do this via an event...?
+		ControllableComponent controllableComponent = entity.getComponent(ControllableComponent.class);
+		controllableComponent.getNextCommand();
+
+		e.command.apply(emitter, entity);
+		emitter.fire(new SimulateEntityEvent(entity));
 		entity.updated();
 	}
 
@@ -49,7 +54,7 @@ public class ActivitySystem {
 		ActivityComponent activityComponent = entity.getComponent(ActivityComponent.class);
 
 		while (activityComponent.hasActivity() && activityComponent.canPerform()) {
-			activityComponent.step(bus);
+			activityComponent.step(emitter);
 		}
 
 	}
@@ -61,7 +66,6 @@ public class ActivitySystem {
 	 */
 	@Subscribe
 	public void onBeginTurn(BeginTurnEvent bte) {
-		System.out.println("ActionPointSystem.onBeginTurn for " + bte.player);
 		replenishActionPoints(bte.player);
 	}
 

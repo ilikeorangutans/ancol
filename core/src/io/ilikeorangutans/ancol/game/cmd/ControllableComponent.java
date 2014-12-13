@@ -36,4 +36,7 @@ public class ControllableComponent implements Component {
 		return commands.remove();
 	}
 
+	public int getQueueLength() {
+		return commands.size();
+	}
 }

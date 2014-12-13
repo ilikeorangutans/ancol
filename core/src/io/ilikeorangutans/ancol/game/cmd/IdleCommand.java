@@ -2,7 +2,6 @@ package io.ilikeorangutans.ancol.game.cmd;
 
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.IdleActivity;
-import io.ilikeorangutans.ancol.game.event.SimulateEntityEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.ecs.Entity;
 
@@ -23,7 +22,5 @@ public class IdleCommand implements Command {
 		}
 
 		activityComponent.setActivity(new IdleActivity());
-
-		bus.fire(new SimulateEntityEvent(entity));
 	}
 }

@@ -10,7 +10,7 @@ public class IdleActivity implements Activity {
 
 	@Override
 	public String getName() {
-		return "idle";
+		return "idling";
 	}
 
 	@Override

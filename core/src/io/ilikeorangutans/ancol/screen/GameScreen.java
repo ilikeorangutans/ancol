@@ -164,7 +164,7 @@ public class GameScreen implements Screen {
 		bus.subscribe(new CurrentPlayerListener(tb2));
 		stage.addActor(tb2);
 
-		TextButton tb3 = new TextButton("Selected Unit (Points) (activity)", skin, "default");
+		TextButton tb3 = new TextButton("Selected Unit (Points) (activity) (queue)", skin, "default");
 		tb3.setDisabled(true);
 		tb3.setPosition(20 + tb2.getWidth(), 10);
 		bus.subscribe(new SelectedUnitListener(tb3));
@@ -263,7 +263,9 @@ public class GameScreen implements Screen {
 			} else {
 				NameComponent nc = selected.getComponent(NameComponent.class);
 				ActivityComponent ac = selected.getComponent(ActivityComponent.class);
-				tb2.setText(nc.getName() + " (" + ac.getPointsLeft() + ") (" + (ac.hasActivity() ? ac.getActivity().getName() : "idle") + ")");
+				ControllableComponent cc = selected.getComponent(ControllableComponent.class);
+
+				tb2.setText(nc.getName() + " (" + ac.getPointsLeft() + ") (" + (ac.hasActivity() ? ac.getActivity().getName() : "idle") + ") (" + (cc.hasCommands() ? cc.getQueueLength() : "-") + ")");
 			}
 		}
 	}

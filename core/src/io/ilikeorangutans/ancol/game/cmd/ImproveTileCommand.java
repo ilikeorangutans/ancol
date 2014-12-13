@@ -14,6 +14,5 @@ public class ImproveTileCommand implements Command {
 	public void apply(Emitter bus, Entity entity) {
 		ActivityComponent ac = entity.getComponent(ActivityComponent.class);
 		ac.setActivity(new ImproveTileActivity());
-
 	}
 }

@@ -21,7 +21,7 @@ public class BuildColonyActivity implements Activity {
 			complete = true;
 		}
 
-		System.out.println("BuildColonyActivity.perform BUILDING COLONY");
+		// TODO: Build colony.
 	}
 
 	@Override

@@ -29,7 +29,6 @@ public class ImproveTileActivity implements Activity {
 		actionPoints.consume(consume);
 
 		// TODO: improve tile
-		System.out.println("ImproveTileActivity.perform IMPROVING TILE");
 
 		if (remaining == 0) {
 			complete = true;
