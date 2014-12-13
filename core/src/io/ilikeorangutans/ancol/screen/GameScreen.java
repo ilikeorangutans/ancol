@@ -12,11 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.ilikeorangutans.ancol.game.ActionPointSystem;
-import io.ilikeorangutans.ancol.game.ControllableComponent;
 import io.ilikeorangutans.ancol.game.Player;
 import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
-import io.ilikeorangutans.ancol.game.cmd.CommandManager;
+import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
+import io.ilikeorangutans.ancol.game.activity.ActivitySystem;
+import io.ilikeorangutans.ancol.game.cmd.CommandEventHandler;
+import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.turn.PlayerTurnSystem;
 import io.ilikeorangutans.ancol.game.turn.TurnConcludedEvent;
@@ -28,14 +29,18 @@ import io.ilikeorangutans.ancol.map.MapViewport;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.RandomMap;
 import io.ilikeorangutans.ancol.move.MovableComponent;
+import io.ilikeorangutans.ancol.move.MoveSystem;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
+import io.ilikeorangutans.ancol.select.SelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectionHandler;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.SimpleEventBus;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.Engine;
+import io.ilikeorangutans.ecs.Entity;
 import io.ilikeorangutans.ecs.Facade;
 import io.ilikeorangutans.ecs.NameComponent;
+import io.ilikeorangutans.ecs.event.EntityUpdatedEvent;
 
 /**
  *
@@ -43,7 +48,6 @@ import io.ilikeorangutans.ecs.NameComponent;
 public class GameScreen implements Screen {
 
 	private final Game game;
-	private final Skin skin;
 	/**
 	 * We use this engine to perform turn based updates as opposed to continuous updates.
 	 */
@@ -59,7 +63,6 @@ public class GameScreen implements Screen {
 
 	public GameScreen(Game game, Skin skin) {
 		this.game = game;
-		this.skin = skin;
 
 		bus = new SimpleEventBus();
 
@@ -78,7 +81,7 @@ public class GameScreen implements Screen {
 		SelectionHandler selectionHandler = new SelectionHandler(facade.getEntities(), bus);
 		bus.subscribe(selectionHandler);
 
-		CommandManager commandManager = new CommandManager();
+		CommandEventHandler commandManager = new CommandEventHandler(bus);
 		bus.subscribe(commandManager);
 
 		turnbasedEngine = new Engine();
@@ -93,12 +96,12 @@ public class GameScreen implements Screen {
 		playerTurnSystem.addPlayer(p2);
 
 
-		ActionPointSystem actionPointSystem = new ActionPointSystem(bus, facade.getEntities());
+		ActivitySystem actionPointSystem = new ActivitySystem(bus, facade.getEntities());
 		bus.subscribe(actionPointSystem);
 
-//		MoveSystem moveSystem = new MoveSystem(facade.getEntities(), bus);
-//		bus.subscribe(moveSystem);
-//		turnbasedEngine.add(moveSystem);
+		MoveSystem moveSystem = new MoveSystem(facade.getEntities(), bus);
+		bus.subscribe(moveSystem);
+		turnbasedEngine.add(moveSystem);
 
 		renderer = new AnColRenderer(batch, viewport, map, facade.getEntities());
 
@@ -115,7 +118,8 @@ public class GameScreen implements Screen {
 				new SelectableComponent(),
 				new MovableComponent(),
 				new PlayerOwnedComponent(p1),
-				new ControllableComponent());
+				new ControllableComponent(),
+				new ActivityComponent(2));
 		facade.getEntities().create(
 				new PositionComponent(4, 4),
 				new RenderableComponent(),
@@ -123,7 +127,8 @@ public class GameScreen implements Screen {
 				new SelectableComponent(),
 				new MovableComponent(),
 				new PlayerOwnedComponent(p1),
-				new ControllableComponent());
+				new ControllableComponent(),
+				new ActivityComponent(2));
 		facade.getEntities().create(
 				new PositionComponent(1, 3),
 				new RenderableComponent(),
@@ -131,7 +136,8 @@ public class GameScreen implements Screen {
 				new SelectableComponent(),
 				new MovableComponent(),
 				new PlayerOwnedComponent(p1),
-				new ControllableComponent());
+				new ControllableComponent(),
+				new ActivityComponent(2));
 	}
 
 	private void setupRendering() {
@@ -155,8 +161,14 @@ public class GameScreen implements Screen {
 		final TextButton tb2 = new TextButton("Current Player", skin, "default");
 		tb2.setDisabled(true);
 		tb2.setPosition(10, 10);
-		bus.subscribe(new MyObject(tb2));
+		bus.subscribe(new CurrentPlayerListener(tb2));
 		stage.addActor(tb2);
+
+		TextButton tb3 = new TextButton("Selected Unit (Points) (activity)", skin, "default");
+		tb3.setDisabled(true);
+		tb3.setPosition(20 + tb2.getWidth(), 10);
+		bus.subscribe(new SelectedUnitListener(tb3));
+		stage.addActor(tb3);
 	}
 
 	private void setupInputProcessing() {
@@ -212,16 +224,47 @@ public class GameScreen implements Screen {
 		batch.dispose();
 	}
 
-	public static class MyObject {
+	public static class CurrentPlayerListener {
 		private final TextButton tb2;
 
-		public MyObject(TextButton tb2) {
+		public CurrentPlayerListener(TextButton tb2) {
 			this.tb2 = tb2;
 		}
 
 		@Subscribe
 		public void onBeginTurn(BeginTurnEvent bte) {
 			tb2.setText(bte.player.getName());
+		}
+	}
+
+	public static class SelectedUnitListener {
+		private final TextButton tb2;
+		private Entity selected;
+
+		public SelectedUnitListener(TextButton tb2) {
+			this.tb2 = tb2;
+		}
+
+		@Subscribe
+		public void onUpdated(EntityUpdatedEvent e) {
+			if (selected == e.entity)
+				updateLabel();
+		}
+
+		@Subscribe
+		public void onSelected(SelectedEvent e) {
+			selected = e.entity;
+			updateLabel();
+		}
+
+		private void updateLabel() {
+			if (selected == null) {
+				tb2.setText("none (0) (nothing)");
+			} else {
+				NameComponent nc = selected.getComponent(NameComponent.class);
+				ActivityComponent ac = selected.getComponent(ActivityComponent.class);
+				tb2.setText(nc.getName() + " (" + ac.getPointsLeft() + ") (" + (ac.hasActivity() ? ac.getActivity().getName() : "idle") + ")");
+			}
 		}
 	}
 }
