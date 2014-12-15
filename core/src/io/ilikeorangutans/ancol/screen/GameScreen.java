@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.ilikeorangutans.ancol.game.Player;
 import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
@@ -147,7 +148,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void setupUI(Skin skin) {
-		stage = new Stage();
+		stage = new Stage(new ScreenViewport());
 		TextButton tb = new TextButton("End Turn", skin, "default");
 		tb.setPosition(Gdx.graphics.getWidth() - tb.getWidth() - 20, 20);
 		tb.addListener(new ClickListener() {
@@ -190,11 +191,13 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		renderer.render();
 
+		stage.act();
 		stage.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
 		viewport.resize(width, height);
 	}
 

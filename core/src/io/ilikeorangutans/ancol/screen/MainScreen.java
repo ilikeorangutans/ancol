@@ -9,80 +9,80 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
  *
  */
 public class MainScreen implements Screen {
 
-    private final Stage stage;
-    private final Skin skin;
-    private final Game game;
+	private final Stage stage;
 
-    public MainScreen(final Game game, final Skin skin) {
-        this.game = game;
-        this.skin = skin;
-        this.stage = new Stage();
+	public MainScreen(final Game game, final Skin skin) {
 
-        Gdx.input.setInputProcessor(stage);
+		stage = new Stage(new ScreenViewport());
 
-        TextButton quit = new TextButton("Quit", skin, "default");
-        quit.setPosition(100, 100);
-        quit.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
-        });
-        stage.addActor(quit);
+		Gdx.input.setInputProcessor(stage);
 
-        TextButton startGame = new TextButton("Start Game", skin, "default");
-        startGame.setPosition(100, 200);
-        startGame.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game, skin));
-            }
-        });
-        stage.addActor(startGame);
-    }
+		TextButton quit = new TextButton("Quit", skin, "default");
+		quit.setPosition(100, 100);
+		quit.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Gdx.app.exit();
+			}
+		});
+		stage.addActor(quit);
 
-    @Override
-    public void render(float delta) {
+		TextButton startGame = new TextButton("Start Game", skin, "default");
+		startGame.setPosition(100, 200);
+		startGame.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.setScreen(new GameScreen(game, skin));
+			}
+		});
+		stage.addActor(startGame);
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	}
 
-        stage.draw();
-    }
+	@Override
+	public void render(float delta) {
 
-    @Override
-    public void resize(int width, int height) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-    }
+		stage.act();
+		stage.draw();
+	}
 
-    @Override
-    public void show() {
+	@Override
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
+	}
 
-    }
+	@Override
+	public void show() {
 
-    @Override
-    public void hide() {
+	}
 
-    }
+	@Override
+	public void hide() {
 
-    @Override
-    public void pause() {
+	}
 
-    }
+	@Override
+	public void pause() {
 
-    @Override
-    public void resume() {
+	}
 
-    }
+	@Override
+	public void resume() {
 
-    @Override
-    public void dispose() {
-        stage.dispose();
-    }
+	}
+
+	@Override
+	public void dispose() {
+		stage.dispose();
+	}
 }
