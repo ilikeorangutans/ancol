@@ -31,6 +31,7 @@ import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.RandomMap;
 import io.ilikeorangutans.ancol.move.MovableComponent;
 import io.ilikeorangutans.ancol.move.MoveSystem;
+import io.ilikeorangutans.ancol.path.DumbPathFinder;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.ancol.select.SelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectionHandler;
@@ -174,7 +175,7 @@ public class GameScreen implements Screen {
 
 	private void setupInputProcessing() {
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		AnColInputProcessor anColInputProcessor = new AnColInputProcessor(bus, viewport);
+		AnColInputProcessor anColInputProcessor = new AnColInputProcessor(bus, viewport, new DumbPathFinder());
 		bus.subscribe(anColInputProcessor);
 		inputMultiplexer.addProcessor(stage);
 		inputMultiplexer.addProcessor(anColInputProcessor);

@@ -13,4 +13,11 @@ public class CommandEvent implements Event {
 	public CommandEvent(Command command) {
 		this.command = command;
 	}
+
+	@Override
+	public String toString() {
+		return "CommandEvent{" +
+				"command=" + command +
+				'}';
+	}
 }

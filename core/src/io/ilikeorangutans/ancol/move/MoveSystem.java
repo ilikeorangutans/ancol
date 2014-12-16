@@ -39,7 +39,7 @@ public class MoveSystem implements io.ilikeorangutans.ecs.System {
 			final Point dst = mc.getDestination();
 			boolean arrived = pc.getX() == dst.x && pc.getY() == dst.y;
 			if (arrived) {
-				mc.setDestination(null);
+				mc.setPath(null);
 				continue;
 			}
 
@@ -55,21 +55,21 @@ public class MoveSystem implements io.ilikeorangutans.ecs.System {
 			emitter.fire(new MovedEvent(e, new Point(pc.getX(), pc.getY())));
 		}
 	}
-
-	@Subscribe
-	public void onMoveEvent(MoveEvent moveEvent) {
-		List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(SelectableComponent.class, MovableComponent.class));
-
-		for (Entity e : ents) {
-			final SelectableComponent sc = e.getComponent(SelectableComponent.class);
-
-			if (!sc.isSelected()) {
-				continue;
-			}
-
-			MovableComponent mc = e.getComponent(MovableComponent.class);
-			mc.setDestination(moveEvent.destination);
-		}
-	}
+//
+//	@Subscribe
+//	public void onMoveEvent(MoveEvent moveEvent) {
+//		List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(SelectableComponent.class, MovableComponent.class));
+//
+//		for (Entity e : ents) {
+//			final SelectableComponent sc = e.getComponent(SelectableComponent.class);
+//
+//			if (!sc.isSelected()) {
+//				continue;
+//			}
+//
+//			MovableComponent mc = e.getComponent(MovableComponent.class);
+//			mc.set(moveEvent.destination);
+//		}
+//	}
 
 }

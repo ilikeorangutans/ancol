@@ -101,12 +101,19 @@ public class AnColRenderer {
 						MovableComponent mc = e.getComponent(MovableComponent.class);
 
 						if (mc.hasDestination()) {
-							Point destination = mc.getDestination();
-							Point screen = viewport.mapToScreen(destination.x * viewport.getTileWidth(), destination.y * viewport.getTileHeight());
-							flag.setPosition(screen.x, screen.y - viewport.getTileHeight());
-							flag.draw(batch);
+
+							for (Point p : mc.getPath().segments) {
+								Point screen = viewport.mapToScreen(p.x * viewport.getTileWidth(), p.y * viewport.getTileHeight());
+								flag.setPosition(screen.x, screen.y - viewport.getTileHeight());
+								flag.draw(batch);
+							}
+
+
 						}
+
+
 					}
+
 				}
 			}
 

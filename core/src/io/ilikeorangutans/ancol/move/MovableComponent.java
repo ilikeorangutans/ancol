@@ -1,6 +1,7 @@
 package io.ilikeorangutans.ancol.move;
 
 import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.path.Path;
 import io.ilikeorangutans.ecs.Component;
 import io.ilikeorangutans.ecs.ComponentType;
 
@@ -9,28 +10,31 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class MovableComponent implements Component {
 
-    private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(MovableComponent.class)[0];
+	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(MovableComponent.class)[0];
+	private Path path;
 
-    private Point destination;
+	public static ComponentType getComponentType() {
+		return COMPONENT_TYPE;
+	}
 
-    public static ComponentType getComponentType() {
-        return COMPONENT_TYPE;
-    }
+	public Point getDestination() {
+		return path == null ? null : path.getDestination();
+	}
 
-    public Point getDestination() {
-        return destination;
-    }
+	@Override
+	public ComponentType getType() {
+		return COMPONENT_TYPE;
+	}
 
-    public void setDestination(Point destination) {
-        this.destination = destination;
-    }
+	public boolean hasDestination() {
+		return getDestination() != null;
+	}
 
-    @Override
-    public ComponentType getType() {
-        return COMPONENT_TYPE;
-    }
+	public Path getPath() {
+		return path;
+	}
 
-    public boolean hasDestination() {
-        return destination != null;
-    }
+	public void setPath(Path path) {
+		this.path = path;
+	}
 }
