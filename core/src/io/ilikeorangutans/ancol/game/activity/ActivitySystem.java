@@ -2,6 +2,7 @@ package io.ilikeorangutans.ancol.game.activity;
 
 import io.ilikeorangutans.ancol.game.Player;
 import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
+import io.ilikeorangutans.ancol.game.cmd.Command;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandQueuedEvent;
 import io.ilikeorangutans.ancol.game.event.SimulateEntityEvent;
@@ -28,23 +29,34 @@ public class ActivitySystem {
 	}
 
 	@Subscribe
-	public void onCommandQueuedEvent(CommandQueuedEvent e) {
+	public void onCommandQueued(CommandQueuedEvent e) {
 		final Entity entity = e.entity;
 		if (!entity.hasComponent(ComponentType.fromClass(ControllableComponent.class))) {
 			throw new IllegalArgumentException("Cannot simulate entity " + entity + ", it doesn't have a controllable component.");
 		}
 
+		scheduleActivity(entity, e.command);
+	}
+
+	private void scheduleActivity(Entity entity, Command command) {
 		ActivityComponent activityComponent = entity.getComponent(ActivityComponent.class);
-		if (activityComponent.hasActivity())
+		if (activityComponent.hasActivity()) {
 			return;
+		}
 
-		// TODO: Might wanna do this via an event...?
-		ControllableComponent controllableComponent = entity.getComponent(ControllableComponent.class);
-		controllableComponent.getNextCommand();
-
-		e.command.apply(emitter, entity);
+		command.apply(emitter, entity);
 		emitter.fire(new SimulateEntityEvent(entity));
 		entity.updated();
+	}
+
+	private Command getNextCommand(Entity entity) {
+		ControllableComponent controllableComponent = entity.getComponent(ControllableComponent.class);
+		return controllableComponent.getNextCommand();
+	}
+
+	@Subscribe
+	public void onActivityComplete(ActivityCompleteEvent ace) {
+		scheduleActivity(ace.entity, getNextCommand(ace.entity));
 	}
 
 	@Subscribe
@@ -55,8 +67,8 @@ public class ActivitySystem {
 
 		while (activityComponent.hasActivity() && activityComponent.canPerform()) {
 			activityComponent.step(emitter);
+			entity.updated();
 		}
-
 	}
 
 	/**

@@ -4,7 +4,7 @@ import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.bus.Event;
 
 /**
- *
+ * Instructs the MoveSystem to move
  */
 public class MoveEvent implements Event {
 

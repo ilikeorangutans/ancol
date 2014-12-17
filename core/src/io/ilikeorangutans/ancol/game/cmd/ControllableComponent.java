@@ -30,6 +30,7 @@ public class ControllableComponent implements Component {
 
 	public Command getNextCommand() {
 		if (!hasCommands()) {
+			// TODO: this might not be a good idea... ?
 			return new IdleCommand();
 		}
 

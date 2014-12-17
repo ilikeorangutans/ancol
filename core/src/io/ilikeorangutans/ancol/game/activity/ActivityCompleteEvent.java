@@ -16,4 +16,12 @@ public class ActivityCompleteEvent implements Event {
 		this.entity = entity;
 		this.activity = activity;
 	}
+
+	@Override
+	public String toString() {
+		return "ActivityCompleteEvent{" +
+				"entity=" + entity.hashCode() +
+				", activity=" + activity +
+				'}';
+	}
 }

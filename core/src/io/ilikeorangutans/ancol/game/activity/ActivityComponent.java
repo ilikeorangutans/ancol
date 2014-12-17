@@ -41,8 +41,8 @@ public class ActivityComponent implements EntityAwareComponent {
 		activity.perform(emitter, actionPoints);
 
 		if (activity.isComplete()) {
-			emitter.fire(new ActivityCompleteEvent(entity, activity));
 			activity = null;
+			emitter.fire(new ActivityCompleteEvent(entity, activity));
 		}
 
 		entity.updated();
@@ -83,4 +83,5 @@ public class ActivityComponent implements EntityAwareComponent {
 	public void setActivity(Activity activity) {
 		this.activity = activity;
 	}
+
 }

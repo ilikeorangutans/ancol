@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -17,8 +18,11 @@ import io.ilikeorangutans.ancol.game.Player;
 import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.ActivitySystem;
+import io.ilikeorangutans.ancol.game.cmd.BuildColonyCommand;
 import io.ilikeorangutans.ancol.game.cmd.CommandEventHandler;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
+import io.ilikeorangutans.ancol.game.cmd.ImproveTileCommand;
+import io.ilikeorangutans.ancol.game.cmd.event.CommandEvent;
 import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.turn.PlayerTurnSystem;
 import io.ilikeorangutans.ancol.game.turn.TurnConcludedEvent;
@@ -150,27 +154,61 @@ public class GameScreen implements Screen {
 
 	private void setupUI(Skin skin) {
 		stage = new Stage(new ScreenViewport());
-		TextButton tb = new TextButton("End Turn", skin, "default");
-		tb.setPosition(Gdx.graphics.getWidth() - tb.getWidth() - 20, 20);
+		Table table = new Table(skin);
+		table.left().bottom();
+		stage.addActor(table);
+
+		TextButton tb;
+
+		final TextButton tb2 = new TextButton("Current Player", skin, "default");
+		tb2.setDisabled(true);
+
+		bus.subscribe(new CurrentPlayerListener(tb2));
+		table.add(tb2).pad(17);
+
+		TextButton tb3 = new TextButton("Selected Unit (Points) (activity) (queue)", skin, "default");
+		tb3.setDisabled(true);
+		bus.subscribe(new SelectedUnitListener(tb3));
+		table.add(tb3).pad(17);
+
+		tb = new TextButton("Fortify", skin, "default");
+		table.add(tb);
+
+		tb = new TextButton("Colony", skin, "default");
+		tb.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				bus.fire(new CommandEvent(new BuildColonyCommand()));
+			}
+		});
+		table.add(tb);
+
+		tb = new TextButton("Road", skin, "default");
+		tb.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+			}
+		});
+		table.add(tb);
+
+		tb = new TextButton("Improve", skin, "default");
+		tb.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				bus.fire(new CommandEvent(new ImproveTileCommand()));
+			}
+		});
+		table.add(tb);
+
+		tb = new TextButton("End Turn", skin, "default");
 		tb.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				bus.fire(new TurnConcludedEvent());
 			}
 		});
-		stage.addActor(tb);
+		table.add(tb).pad(34);
 
-		final TextButton tb2 = new TextButton("Current Player", skin, "default");
-		tb2.setDisabled(true);
-		tb2.setPosition(10, 10);
-		bus.subscribe(new CurrentPlayerListener(tb2));
-		stage.addActor(tb2);
-
-		TextButton tb3 = new TextButton("Selected Unit (Points) (activity) (queue)", skin, "default");
-		tb3.setDisabled(true);
-		tb3.setPosition(20 + tb2.getWidth(), 10);
-		bus.subscribe(new SelectedUnitListener(tb3));
-		stage.addActor(tb3);
 	}
 
 	private void setupInputProcessing() {
@@ -269,7 +307,7 @@ public class GameScreen implements Screen {
 				ActivityComponent ac = selected.getComponent(ActivityComponent.class);
 				ControllableComponent cc = selected.getComponent(ControllableComponent.class);
 
-				tb2.setText(nc.getName() + " (" + ac.getPointsLeft() + ") (" + (ac.hasActivity() ? ac.getActivity().getName() : "idle") + ") (" + (cc.hasCommands() ? cc.getQueueLength() : "-") + ")");
+				tb2.setText(nc.getName() + " (" + ac.getPointsLeft() + ") (" + (ac.hasActivity() ? ac.getActivity().getName() : "idle") + ") (" + (cc.hasCommands() ? cc.getQueueLength() + " queued" : "-") + ")");
 			}
 		}
 	}

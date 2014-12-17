@@ -30,7 +30,7 @@ public class ImproveTileActivity implements Activity {
 
 		// TODO: improve tile
 
-		if (remaining == 0) {
+		if (remaining <= 0) {
 			complete = true;
 		}
 	}

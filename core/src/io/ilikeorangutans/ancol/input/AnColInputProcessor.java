@@ -105,7 +105,8 @@ public class AnColInputProcessor implements InputProcessor {
 
 		final Point destination = screenToTile.screenToTile(screenX, screenY);
 
-		if (button == 1 && !wasDragging) {
+
+		if (button == Input.Buttons.RIGHT && !wasDragging) {
 			if (selectedEntity != null && selectedEntity.hasComponent(ComponentType.fromClass(PositionComponent.class))) {
 
 				PositionComponent positionComponent = selectedEntity.getComponent(PositionComponent.class);
@@ -115,7 +116,7 @@ public class AnColInputProcessor implements InputProcessor {
 			}
 
 
-		} else if (button == 0) {
+		} else if (button == Input.Buttons.LEFT) {
 			bus.fire(new SelectEvent(destination.x, destination.y));
 			return true;
 		}
@@ -128,7 +129,7 @@ public class AnColInputProcessor implements InputProcessor {
 
 		dragging = true;
 
-		if (Gdx.input.isButtonPressed(1)) {
+		if (Gdx.input.isButtonPressed(1) || Gdx.input.isTouched(1)) {
 			bus.fire(new ScrollEvent(lastX - screenX, lastY - screenY));
 
 			lastX = screenX;

@@ -1,5 +1,8 @@
 package io.ilikeorangutans.ancol.game.cmd;
 
+import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
+import io.ilikeorangutans.ancol.game.activity.MoveActivity;
+import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.move.MovableComponent;
 import io.ilikeorangutans.ancol.path.Path;
 import io.ilikeorangutans.bus.Emitter;
@@ -26,6 +29,11 @@ public class MoveCommand implements Command {
 		final MovableComponent mc = entity.getComponent(MovableComponent.class);
 
 		mc.setPath(path);
+
+		ActivityComponent ac = entity.getComponent(ActivityComponent.class);
+		PositionComponent pc = entity.getComponent(PositionComponent.class);
+
+		ac.setActivity(new MoveActivity(path, pc, mc));
 	}
 
 }
