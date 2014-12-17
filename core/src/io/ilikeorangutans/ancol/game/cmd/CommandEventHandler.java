@@ -38,6 +38,7 @@ public class CommandEventHandler {
 		cc.add(e.command);
 
 		emitter.fire(new CommandQueuedEvent(entity, e.command));
+		entity.updated();
 	}
 
 }
