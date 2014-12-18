@@ -5,11 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.cmd.IdleCommand;
-import io.ilikeorangutans.ancol.game.cmd.ImproveTileCommand;
-import io.ilikeorangutans.ancol.game.cmd.MoveCommand;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandEvent;
 import io.ilikeorangutans.ancol.game.event.SimulateEntityEvent;
-import io.ilikeorangutans.ancol.map.PositionComponent;
+import io.ilikeorangutans.ancol.input.action.AnColActions;
+import io.ilikeorangutans.ancol.input.action.MoveAction;
 import io.ilikeorangutans.ancol.map.ScreenToTile;
 import io.ilikeorangutans.ancol.map.ScrollEvent;
 import io.ilikeorangutans.ancol.path.PathFinder;
@@ -17,7 +16,6 @@ import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectEvent;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.Subscribe;
-import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entity;
 
 /**
@@ -27,21 +25,19 @@ public class AnColInputProcessor implements InputProcessor {
 
 	private final EventBus bus;
 	private final ScreenToTile screenToTile;
+	private final AnColActions actions;
 	private PathFinder pathFinder;
 	private int lastX, lastY;
 	private Entity selectedEntity;
 	private boolean dragging = false;
 
-	private Action buildAction;
-
-
-	public AnColInputProcessor(EventBus bus, ScreenToTile screenToTile, PathFinder pathFinder) {
+	public AnColInputProcessor(EventBus bus, ScreenToTile screenToTile, PathFinder pathFinder, AnColActions actions) {
 		this.bus = bus;
 		this.screenToTile = screenToTile;
 		this.pathFinder = pathFinder;
 
-		buildAction = new BuildAction(bus);
-		bus.subscribe(buildAction);
+
+		this.actions = actions;
 	}
 
 	@Subscribe
@@ -66,10 +62,10 @@ public class AnColInputProcessor implements InputProcessor {
 				bus.fire(new ScrollEvent(0, 30));
 				break;
 			case Input.Keys.B:
-				buildAction.perform();
+				actions.getBuildColonyAction().perform();
 				break;
 			case Input.Keys.P:
-				bus.fire(new CommandEvent(new ImproveTileCommand()));
+				actions.getImproveTileAction().perform();
 				break;
 			case Input.Keys.SPACE:
 				bus.fire(new CommandEvent(new IdleCommand()));
@@ -112,15 +108,9 @@ public class AnColInputProcessor implements InputProcessor {
 
 
 		if (button == Input.Buttons.RIGHT && !wasDragging) {
-			if (selectedEntity != null && selectedEntity.hasComponent(ComponentType.fromClass(PositionComponent.class))) {
-
-				PositionComponent positionComponent = selectedEntity.getComponent(PositionComponent.class);
-
-				bus.fire(new CommandEvent(new MoveCommand(pathFinder.find(null, new Point(positionComponent.getX(), positionComponent.getY()), destination))));
-				return true;
-			}
-
-
+			MoveAction moveAction = actions.getMoveAction();
+			moveAction.setDestination(destination);
+			moveAction.perform();
 		} else if (button == Input.Buttons.LEFT) {
 			bus.fire(new SelectEvent(destination.x, destination.y));
 			return true;

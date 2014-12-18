@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.input;
+package io.ilikeorangutans.ancol.input.action;
 
 import io.ilikeorangutans.ancol.game.cmd.BuildColonyCommand;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandEvent;
@@ -10,12 +10,12 @@ import io.ilikeorangutans.ecs.Entity;
 /**
  *
  */
-public class BuildAction extends Action {
+public class BuildColonyAction extends Action {
 
 	private final Emitter emitter;
 	private Entity entity;
 
-	public BuildAction(Emitter emitter) {
+	public BuildColonyAction(Emitter emitter) {
 		this.emitter = emitter;
 	}
 
@@ -33,6 +33,6 @@ public class BuildAction extends Action {
 
 	@Override
 	public void doPerform() {
-		emitter.fire(new CommandEvent(new BuildColonyCommand()));
+		emitter.fire(new CommandEvent(new BuildColonyCommand(entity)));
 	}
 }
