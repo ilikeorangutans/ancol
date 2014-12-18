@@ -50,7 +50,7 @@ public class SelectionHandler {
 		SelectableComponent sc = e.getComponent(SelectableComponent.class);
 		sc.setSelected(!sc.isSelected());
 
-		emitter.fire(new SelectedEvent(e));
+		emitter.fire(new EntitySelectedEvent(e));
 	}
 
 }

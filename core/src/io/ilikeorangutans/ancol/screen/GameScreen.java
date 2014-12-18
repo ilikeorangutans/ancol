@@ -37,7 +37,7 @@ import io.ilikeorangutans.ancol.move.MovableComponent;
 import io.ilikeorangutans.ancol.move.MoveSystem;
 import io.ilikeorangutans.ancol.path.DumbPathFinder;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
-import io.ilikeorangutans.ancol.select.SelectedEvent;
+import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectionHandler;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.SimpleEventBus;
@@ -294,7 +294,7 @@ public class GameScreen implements Screen {
 		}
 
 		@Subscribe
-		public void onSelected(SelectedEvent e) {
+		public void onSelected(EntitySelectedEvent e) {
 			selected = e.entity;
 			updateLabel();
 		}

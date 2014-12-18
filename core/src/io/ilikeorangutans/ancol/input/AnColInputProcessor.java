@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import io.ilikeorangutans.ancol.Point;
-import io.ilikeorangutans.ancol.game.cmd.BuildColonyCommand;
 import io.ilikeorangutans.ancol.game.cmd.IdleCommand;
 import io.ilikeorangutans.ancol.game.cmd.ImproveTileCommand;
 import io.ilikeorangutans.ancol.game.cmd.MoveCommand;
@@ -14,8 +13,8 @@ import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.ScreenToTile;
 import io.ilikeorangutans.ancol.map.ScrollEvent;
 import io.ilikeorangutans.ancol.path.PathFinder;
+import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectEvent;
-import io.ilikeorangutans.ancol.select.SelectedEvent;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
@@ -33,14 +32,20 @@ public class AnColInputProcessor implements InputProcessor {
 	private Entity selectedEntity;
 	private boolean dragging = false;
 
+	private Action buildAction;
+
+
 	public AnColInputProcessor(EventBus bus, ScreenToTile screenToTile, PathFinder pathFinder) {
 		this.bus = bus;
 		this.screenToTile = screenToTile;
 		this.pathFinder = pathFinder;
+
+		buildAction = new BuildAction(bus);
+		bus.subscribe(buildAction);
 	}
 
 	@Subscribe
-	public void onSelectedEntity(SelectedEvent event) {
+	public void onSelectedEntity(EntitySelectedEvent event) {
 		selectedEntity = event.entity;
 	}
 
@@ -61,7 +66,7 @@ public class AnColInputProcessor implements InputProcessor {
 				bus.fire(new ScrollEvent(0, 30));
 				break;
 			case Input.Keys.B:
-				bus.fire(new CommandEvent(new BuildColonyCommand()));
+				buildAction.perform();
 				break;
 			case Input.Keys.P:
 				bus.fire(new CommandEvent(new ImproveTileCommand()));

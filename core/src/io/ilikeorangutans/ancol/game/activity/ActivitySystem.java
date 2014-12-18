@@ -35,7 +35,7 @@ public class ActivitySystem {
 			throw new IllegalArgumentException("Cannot simulate entity " + entity + ", it doesn't have a controllable component.");
 		}
 
-		scheduleActivity(entity, e.command);
+		scheduleActivity(entity, getNextCommand(entity));
 	}
 
 	private void scheduleActivity(Entity entity, Command command) {

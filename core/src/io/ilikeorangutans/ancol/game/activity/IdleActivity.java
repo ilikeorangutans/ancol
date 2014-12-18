@@ -8,6 +8,8 @@ import io.ilikeorangutans.bus.Emitter;
  */
 public class IdleActivity implements Activity {
 
+	public static final IdleActivity IDLE_ACTIVITY = new IdleActivity();
+
 	@Override
 	public String getName() {
 		return "idling";
@@ -23,4 +25,14 @@ public class IdleActivity implements Activity {
 		return true;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+
+		if (obj instanceof IdleActivity)
+			return true;
+
+		return false;
+	}
 }

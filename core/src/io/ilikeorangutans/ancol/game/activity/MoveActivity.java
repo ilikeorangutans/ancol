@@ -18,7 +18,6 @@ public class MoveActivity implements Activity {
 	private int step = 0;
 
 	public MoveActivity(Path path, PositionComponent positionComponent, MovableComponent movableComponent) {
-
 		this.path = path;
 		this.positionComponent = positionComponent;
 		this.movableComponent = movableComponent;
@@ -35,13 +34,13 @@ public class MoveActivity implements Activity {
 
 		actionPoints.consume(1);
 		Point p = path.segments[step];
+
 		positionComponent.set(p.x, p.y);
 		step++;
 
 		if (isComplete()) {
 			movableComponent.setPath(null);
 		}
-
 	}
 
 	@Override

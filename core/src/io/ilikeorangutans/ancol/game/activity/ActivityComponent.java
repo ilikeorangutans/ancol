@@ -49,6 +49,9 @@ public class ActivityComponent implements EntityAwareComponent {
 	}
 
 	public boolean hasActivity() {
+		if (IdleActivity.IDLE_ACTIVITY.equals(activity))
+			return false;
+
 		return activity != null;
 	}
 

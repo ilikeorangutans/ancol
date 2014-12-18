@@ -2,7 +2,7 @@ package io.ilikeorangutans.ancol.game.cmd;
 
 import io.ilikeorangutans.ancol.game.cmd.event.CommandEvent;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandQueuedEvent;
-import io.ilikeorangutans.ancol.select.SelectedEvent;
+import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
@@ -21,7 +21,7 @@ public class CommandEventHandler {
 	}
 
 	@Subscribe
-	public void onSelected(SelectedEvent e) {
+	public void onSelected(EntitySelectedEvent e) {
 		entity = e.entity;
 	}
 
