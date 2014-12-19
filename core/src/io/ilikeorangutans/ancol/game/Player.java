@@ -29,9 +29,10 @@ public class Player {
 
 		Player player = (Player) o;
 
-		if (id != player.id) return false;
+		if (id == player.id)
+			return true;
 
-		return true;
+		return false;
 	}
 
 	@Override
@@ -46,4 +47,5 @@ public class Player {
 				", id=" + id +
 				'}';
 	}
+
 }

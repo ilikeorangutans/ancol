@@ -38,10 +38,6 @@ import io.ilikeorangutans.ecs.NameComponent;
 public class GameScreen implements Screen {
 
 	private final Game game;
-	/**
-	 * We use this engine to perform turn based updates as opposed to continuous updates.
-	 */
-	private final AnColActions actions;
 	private final GameScreenUI ui;
 	private final EventBus bus;
 	private SpriteBatch batch;
@@ -52,14 +48,17 @@ public class GameScreen implements Screen {
 
 	public GameScreen(Game game, Skin skin) {
 		this.game = game;
-
 		bus = new SimpleEventBus();
-		actions = new AnColActions(bus, new DumbPathFinder());
+
+		AnColActions actions = new AnColActions(bus, new DumbPathFinder());
 		ui = new GameScreenUI(bus, actions, skin);
 		ui.setupUI(skin);
 
+		Player p1 = new Player(1, "player 1");
+		Player p2 = new Player(2, "player 2");
+
 		Map map = new RandomMap();
-		Map playerMap = new PlayerVisibilityMap(map);
+		Map playerMap = new PlayerVisibilityMap(map, p1);
 		bus.subscribe(playerMap);
 		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, playerMap);
 
@@ -82,9 +81,6 @@ public class GameScreen implements Screen {
 		PlayerTurnSystem playerTurnSystem = new PlayerTurnSystem(bus);
 		bus.subscribe(playerTurnSystem);
 
-		Player p1 = new Player(1, "player 1");
-		Player p2 = new Player(2, "player 2");
-
 		playerTurnSystem.addPlayer(p1);
 		playerTurnSystem.addPlayer(p2);
 
@@ -98,10 +94,9 @@ public class GameScreen implements Screen {
 		playerTurnSystem.start();
 	}
 
-
 	private void setupSampleEntities(Player p1) {
 		facade.getEntities().create(
-				new PositionComponent(10, 10),
+				new PositionComponent(11, 10),
 				new RenderableComponent(),
 				new NameComponent("test entity 1"),
 				new SelectableComponent(),
@@ -111,7 +106,7 @@ public class GameScreen implements Screen {
 				new ActivityComponent(2),
 				new VisionComponent(1));
 		facade.getEntities().create(
-				new PositionComponent(4, 4),
+				new PositionComponent(6, 5),
 				new RenderableComponent(),
 				new NameComponent("test entity 2"),
 				new SelectableComponent(),
@@ -121,7 +116,7 @@ public class GameScreen implements Screen {
 				new ActivityComponent(2),
 				new VisionComponent(1));
 		facade.getEntities().create(
-				new PositionComponent(1, 3),
+				new PositionComponent(5, 3),
 				new RenderableComponent(),
 				new NameComponent("test entity 3"),
 				new SelectableComponent(),

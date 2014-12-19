@@ -1,5 +1,7 @@
 package io.ilikeorangutans.ancol.map;
 
+import io.ilikeorangutans.ancol.game.Player;
+import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.map.tile.Tile;
 import io.ilikeorangutans.ancol.map.tile.TileType;
@@ -17,12 +19,14 @@ import java.util.BitSet;
 public class PlayerVisibilityMap implements Map {
 
 	private final Map delegate;
+	private final Player player;
 
 	private final BitSet visibility;
 	private final Tile UNEXPLORED_TILE = new Tile(new TileType("unexplored", 0));
 
-	public PlayerVisibilityMap(Map delegate) {
+	public PlayerVisibilityMap(Map delegate, Player player) {
 		this.delegate = delegate;
+		this.player = player;
 		visibility = new BitSet(getWidth() * getHeight());
 		visibility.clear();
 	}
@@ -59,6 +63,13 @@ public class PlayerVisibilityMap implements Map {
 	}
 
 	public void updateVisibility(Entity entity) {
+		if (!entity.hasComponent(ComponentType.fromClasses(PlayerOwnedComponent.class)))
+			return;
+		final boolean ownedByPlayer = entity.getComponent(PlayerOwnedComponent.class).getPlayer().equals(player);
+		if (!ownedByPlayer)
+			return;
+
+
 		if (!entity.hasComponent(ComponentType.fromClasses(VisionComponent.class)))
 			throw new IllegalArgumentException("Cannot update visibility for " + entity + ", it does not have a VisionComponent.");
 
