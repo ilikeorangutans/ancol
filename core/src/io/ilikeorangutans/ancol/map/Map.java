@@ -1,5 +1,7 @@
 package io.ilikeorangutans.ancol.map;
 
+import io.ilikeorangutans.ancol.map.tile.Tile;
+
 /**
  *
  */

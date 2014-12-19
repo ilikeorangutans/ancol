@@ -22,7 +22,7 @@ public class MoveCommand implements Command {
 
 	@Override
 	public void apply(Emitter bus, Entity entity) {
-		if (!entity.hasComponent(ComponentType.fromClass(MovableComponent.class))) {
+		if (!entity.hasComponent(ComponentType.fromClasses(MovableComponent.class))) {
 			throw new IllegalArgumentException("Cannot apply MoveCommand for entity " + entity + " that does not have MovableComponent");
 		}
 
@@ -33,7 +33,7 @@ public class MoveCommand implements Command {
 		ActivityComponent ac = entity.getComponent(ActivityComponent.class);
 		PositionComponent pc = entity.getComponent(PositionComponent.class);
 
-		ac.setActivity(new MoveActivity(path, pc, mc));
+		ac.setActivity(new MoveActivity(path, entity, pc, mc));
 	}
 
 }

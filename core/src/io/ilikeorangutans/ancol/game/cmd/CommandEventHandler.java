@@ -30,7 +30,7 @@ public class CommandEventHandler {
 		if (entity == null)
 			return;
 
-		if (!entity.hasComponent(ComponentType.fromClass(ControllableComponent.class)))
+		if (!entity.hasComponent(ComponentType.fromClasses(ControllableComponent.class)))
 			throw new IllegalStateException("Cannot give command to " + entity);
 
 		ControllableComponent cc = entity.getComponent(ControllableComponent.class);

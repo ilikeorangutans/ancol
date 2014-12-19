@@ -14,7 +14,7 @@ import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
 import io.ilikeorangutans.ancol.input.AnColInputProcessor;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
-import io.ilikeorangutans.ancol.map.ScreenToTile;
+import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.path.DumbPathFinder;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.bus.EventBus;

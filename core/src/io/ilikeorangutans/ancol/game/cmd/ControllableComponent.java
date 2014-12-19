@@ -11,7 +11,7 @@ import java.util.Queue;
  */
 public class ControllableComponent implements Component {
 
-	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(ControllableComponent.class)[0];
+	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(ControllableComponent.class)[0];
 
 	private final Queue<Command> commands = new LinkedList<Command>();
 

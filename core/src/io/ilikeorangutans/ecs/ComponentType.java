@@ -16,10 +16,10 @@ public class ComponentType {
 	}
 
 	public static ComponentType fromComponent(Component c) {
-		return fromClass(c.getClass())[0];
+		return fromClasses(c.getClass())[0];
 	}
 
-	public static ComponentType[] fromClass(Class<?>... classes) {
+	public static ComponentType[] fromClasses(Class<?>... classes) {
 
 		ComponentType[] result = new ComponentType[classes.length];
 		int i = 0;

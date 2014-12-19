@@ -31,7 +31,7 @@ public class ActivitySystem {
 	@Subscribe
 	public void onCommandQueued(CommandQueuedEvent e) {
 		final Entity entity = e.entity;
-		if (!entity.hasComponent(ComponentType.fromClass(ControllableComponent.class))) {
+		if (!entity.hasComponent(ComponentType.fromClasses(ControllableComponent.class))) {
 			throw new IllegalArgumentException("Cannot simulate entity " + entity + ", it doesn't have a controllable component.");
 		}
 
@@ -87,7 +87,7 @@ public class ActivitySystem {
 	 * @param player
 	 */
 	private void replenishActionPoints(Player player) {
-		List<Entity> entityByType = entities.getEntityByType(ComponentType.fromClass(PlayerOwnedComponent.class, ActivityComponent.class));
+		List<Entity> entityByType = entities.getEntityByType(ComponentType.fromClasses(PlayerOwnedComponent.class, ActivityComponent.class));
 
 		for (Entity entity : entityByType) {
 			PlayerOwnedComponent playerOwned = entity.getComponent(PlayerOwnedComponent.class);

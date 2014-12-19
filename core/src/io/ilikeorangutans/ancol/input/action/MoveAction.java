@@ -46,7 +46,7 @@ public class MoveAction extends Action {
 		entity = event.entity;
 
 		setEnabled(false);
-		if (hasEntity() && entity.hasComponent(ComponentType.fromClass(PositionComponent.class))) {
+		if (hasEntity() && entity.hasComponent(ComponentType.fromClasses(PositionComponent.class))) {
 			setEnabled(true);
 		}
 	}

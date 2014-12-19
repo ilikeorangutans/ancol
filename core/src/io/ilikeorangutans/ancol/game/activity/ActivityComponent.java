@@ -11,7 +11,7 @@ import io.ilikeorangutans.ecs.EntityAwareComponent;
  */
 public class ActivityComponent implements EntityAwareComponent {
 
-	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(ActivityComponent.class)[0];
+	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(ActivityComponent.class)[0];
 
 	private final ActionPoints actionPoints;
 

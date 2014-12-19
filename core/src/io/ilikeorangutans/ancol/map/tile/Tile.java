@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.map;
+package io.ilikeorangutans.ancol.map.tile;
 
 /**
  *

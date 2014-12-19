@@ -4,8 +4,10 @@ import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.actionpoint.ActionPoints;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.move.MovableComponent;
+import io.ilikeorangutans.ancol.move.MovedEvent;
 import io.ilikeorangutans.ancol.path.Path;
 import io.ilikeorangutans.bus.Emitter;
+import io.ilikeorangutans.ecs.Entity;
 
 /**
  *
@@ -13,12 +15,14 @@ import io.ilikeorangutans.bus.Emitter;
 public class MoveActivity implements Activity {
 
 	private final Path path;
+	private final Entity entity;
 	private final PositionComponent positionComponent;
 	private final MovableComponent movableComponent;
 	private int step = 0;
 
-	public MoveActivity(Path path, PositionComponent positionComponent, MovableComponent movableComponent) {
+	public MoveActivity(Path path, Entity entity, PositionComponent positionComponent, MovableComponent movableComponent) {
 		this.path = path;
+		this.entity = entity;
 		this.positionComponent = positionComponent;
 		this.movableComponent = movableComponent;
 	}
@@ -37,6 +41,8 @@ public class MoveActivity implements Activity {
 
 		positionComponent.set(p.x, p.y);
 		step++;
+
+		emitter.fire(new MovedEvent(entity, p));
 
 		if (isComplete()) {
 			movableComponent.setPath(null);

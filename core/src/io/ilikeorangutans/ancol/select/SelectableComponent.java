@@ -8,7 +8,7 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class SelectableComponent implements Component {
 
-    private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(SelectableComponent.class)[0];
+    private static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(SelectableComponent.class)[0];
 
     private boolean selected;
 

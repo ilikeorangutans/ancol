@@ -27,7 +27,7 @@ public class SelectionHandler {
 	@Subscribe
 	public void onSelectEvent(SelectEvent selectEvent) {
 
-		List<Entity> selectable = entities.getEntityByType(ComponentType.fromClass(PositionComponent.class, SelectableComponent.class));
+		List<Entity> selectable = entities.getEntityByType(ComponentType.fromClasses(PositionComponent.class, SelectableComponent.class));
 
 		for (Entity e : selectable) {
 			PositionComponent pc = e.getComponent(PositionComponent.class);

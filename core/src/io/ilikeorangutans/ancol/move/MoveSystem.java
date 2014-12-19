@@ -2,9 +2,7 @@ package io.ilikeorangutans.ancol.move;
 
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.map.PositionComponent;
-import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.bus.Emitter;
-import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entities;
 import io.ilikeorangutans.ecs.Entity;
@@ -27,7 +25,7 @@ public class MoveSystem implements io.ilikeorangutans.ecs.System {
 
 	@Override
 	public void step(float deltaTime) {
-		List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(MovableComponent.class, PositionComponent.class));
+		List<Entity> ents = entities.getEntityByType(ComponentType.fromClasses(MovableComponent.class, PositionComponent.class));
 
 		for (Entity e : ents) {
 			final MovableComponent mc = e.getComponent(MovableComponent.class);
@@ -58,7 +56,7 @@ public class MoveSystem implements io.ilikeorangutans.ecs.System {
 //
 //	@Subscribe
 //	public void onMoveEvent(MoveEvent moveEvent) {
-//		List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(SelectableComponent.class, MovableComponent.class));
+//		List<Entity> ents = entities.getEntityByType(ComponentType.fromClasses(SelectableComponent.class, MovableComponent.class));
 //
 //		for (Entity e : ents) {
 //			final SelectableComponent sc = e.getComponent(SelectableComponent.class);

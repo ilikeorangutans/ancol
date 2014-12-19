@@ -28,7 +28,7 @@ public class Entity {
 	}
 
 	public <T extends Component> T getComponent(Class<T> type) {
-		final ComponentType componentType = ComponentType.fromClass(type)[0];
+		final ComponentType componentType = ComponentType.fromClasses(type)[0];
 
 		if (!hasComponent(componentType))
 			throw new IllegalArgumentException("Entity does not have component of type " + type.getName());

@@ -14,13 +14,15 @@ import io.ilikeorangutans.ancol.game.activity.ActivitySystem;
 import io.ilikeorangutans.ancol.game.cmd.CommandEventHandler;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.turn.PlayerTurnSystem;
+import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.Map;
-import io.ilikeorangutans.ancol.map.MapViewport;
+import io.ilikeorangutans.ancol.map.PlayerVisibilityMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.RandomMap;
+import io.ilikeorangutans.ancol.map.viewport.MapViewport;
 import io.ilikeorangutans.ancol.move.MovableComponent;
 import io.ilikeorangutans.ancol.path.DumbPathFinder;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
@@ -57,7 +59,9 @@ public class GameScreen implements Screen {
 		ui.setupUI(skin);
 
 		Map map = new RandomMap();
-		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, map);
+		Map playerMap = new PlayerVisibilityMap(map);
+		bus.subscribe(playerMap);
+		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, playerMap);
 
 		ui.setupInputProcessing(viewport);
 
@@ -87,7 +91,7 @@ public class GameScreen implements Screen {
 		ActivitySystem actionPointSystem = new ActivitySystem(bus, facade.getEntities());
 		bus.subscribe(actionPointSystem);
 
-		renderer = new AnColRenderer(batch, viewport, map, facade.getEntities());
+		renderer = new AnColRenderer(batch, viewport, playerMap, facade.getEntities());
 
 		setupSampleEntities(p1);
 
@@ -104,7 +108,8 @@ public class GameScreen implements Screen {
 				new MovableComponent(),
 				new PlayerOwnedComponent(p1),
 				new ControllableComponent(),
-				new ActivityComponent(2));
+				new ActivityComponent(2),
+				new VisionComponent(1));
 		facade.getEntities().create(
 				new PositionComponent(4, 4),
 				new RenderableComponent(),
@@ -113,7 +118,8 @@ public class GameScreen implements Screen {
 				new MovableComponent(),
 				new PlayerOwnedComponent(p1),
 				new ControllableComponent(),
-				new ActivityComponent(2));
+				new ActivityComponent(2),
+				new VisionComponent(1));
 		facade.getEntities().create(
 				new PositionComponent(1, 3),
 				new RenderableComponent(),
@@ -122,7 +128,8 @@ public class GameScreen implements Screen {
 				new MovableComponent(),
 				new PlayerOwnedComponent(p1),
 				new ControllableComponent(),
-				new ActivityComponent(2));
+				new ActivityComponent(2),
+				new VisionComponent(1));
 	}
 
 	private void setupRendering() {

@@ -10,7 +10,7 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class MovableComponent implements Component {
 
-	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(MovableComponent.class)[0];
+	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(MovableComponent.class)[0];
 	private Path path;
 
 	public static ComponentType getComponentType() {

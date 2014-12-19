@@ -5,7 +5,7 @@ package io.ilikeorangutans.ecs;
  */
 public class NameComponent implements Component {
 
-	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(NameComponent.class)[0];
+	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(NameComponent.class)[0];
 
 	private final String name;
 

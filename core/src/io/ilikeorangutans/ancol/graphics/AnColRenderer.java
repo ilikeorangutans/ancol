@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.map.Map;
-import io.ilikeorangutans.ancol.map.MapViewport;
 import io.ilikeorangutans.ancol.map.PositionComponent;
-import io.ilikeorangutans.ancol.map.Tile;
+import io.ilikeorangutans.ancol.map.tile.Tile;
+import io.ilikeorangutans.ancol.map.viewport.MapViewport;
 import io.ilikeorangutans.ancol.move.MovableComponent;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.ecs.ComponentType;
@@ -31,6 +31,7 @@ public class AnColRenderer {
 	private Texture unitTexture;
 	private Sprite grass;
 	private Sprite water;
+	private Sprite unexplored;
 	private Sprite explorer;
 	private Sprite select;
 	private Sprite flag;
@@ -45,6 +46,7 @@ public class AnColRenderer {
 		grass = new Sprite(terrainTexture, 0, 60, 60, 60);
 		water = new Sprite(terrainTexture, 0, 540, 60, 60);
 		flag = new Sprite(terrainTexture, 16 * 60, 9 * 60, 60, 60);
+		unexplored = new Sprite(terrainTexture, 0, 13 * 60, 60, 60);
 
 		unitTexture = new Texture(Gdx.files.internal("units.png"));
 		explorer = new Sprite(unitTexture, 13 * 60, 60, 60, 60);
@@ -64,10 +66,19 @@ public class AnColRenderer {
 
 				final Tile tile = map.getTileAt(ix + min.x, iy + min.y);
 
-				Sprite draw = water;
-				if (tile.getType().getId() == 2) {
-					draw = grass;
+
+				Sprite draw = unexplored;
+				switch (tile.getType().getId()) {
+					case 1:
+						draw = water;
+						break;
+					case 2:
+						draw = grass;
+						break;
+					default:
+						draw = unexplored;
 				}
+
 
 				Point p = viewport.mapToScreen((ix + min.x) * viewport.getTileWidth(), (iy + min.y) * viewport.getTileHeight());
 				draw.setPosition(p.x, p.y - viewport.getTileHeight());
@@ -76,7 +87,7 @@ public class AnColRenderer {
 			}
 		}
 
-		List<Entity> renderables = entities.getEntityByType(ComponentType.fromClass(RenderableComponent.class, PositionComponent.class));
+		List<Entity> renderables = entities.getEntityByType(ComponentType.fromClasses(RenderableComponent.class, PositionComponent.class));
 
 		for (Entity e : renderables) {
 			final PositionComponent pos = e.getComponent(PositionComponent.class);
@@ -90,14 +101,14 @@ public class AnColRenderer {
 
 			Point point = viewport.mapToScreen(x, y);
 
-			if (e.hasComponent(ComponentType.fromClass(SelectableComponent.class))) {
+			if (e.hasComponent(ComponentType.fromClasses(SelectableComponent.class))) {
 				SelectableComponent sc = e.getComponent(SelectableComponent.class);
 
 				if (sc.isSelected()) {
 					select.setPosition(point.x, point.y - viewport.getTileHeight());
 					select.draw(batch);
 
-					if (e.hasComponent(ComponentType.fromClass(MovableComponent.class))) {
+					if (e.hasComponent(ComponentType.fromClasses(MovableComponent.class))) {
 						MovableComponent mc = e.getComponent(MovableComponent.class);
 
 						if (mc.hasDestination()) {

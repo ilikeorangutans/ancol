@@ -8,7 +8,7 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class RenderableComponent implements Component {
 
-	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(RenderableComponent.class)[0];
+	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(RenderableComponent.class)[0];
 
 	@Override
 	public ComponentType getType() {
