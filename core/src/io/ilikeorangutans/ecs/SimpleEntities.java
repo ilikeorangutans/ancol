@@ -1,6 +1,7 @@
 package io.ilikeorangutans.ecs;
 
 import io.ilikeorangutans.bus.Emitter;
+import io.ilikeorangutans.ecs.event.EntityCreatedEvent;
 
 import java.util.*;
 
@@ -39,6 +40,8 @@ public class SimpleEntities implements Entities {
 			componentsByType.get(type).add(c);
 			entitiesByType.get(type).add(e);
 		}
+
+		emitter.fire(new EntityCreatedEvent(e));
 
 		return e;
 	}
