@@ -54,20 +54,20 @@ public class AStarPathFinder implements PathFinder {
 
 
 					Point n = new Point(x, y);
+					Tile tile = map.getTileAt(n);
 
 					if (!movable.canAccess(map.getTileAt(n)))
 						continue;
 
-					float cost = costSoFar.get(current) + heuristic(current, to);
+					float newCost = costSoFar.get(current) + movable.getCost(tile);// heuristic(current, to);
 
-					if (!costSoFar.containsKey(n) || cost < costSoFar.get(n)) {
-						costSoFar.put(n, cost);
-
-						SearchNode node = new SearchNode(n);
-						node.priority = cost;
-						frontier.add(node);
+					if (!costSoFar.containsKey(n) || newCost < costSoFar.get(n)) {
+						costSoFar.put(n, newCost);
+						float priority = newCost + heuristic(n, to);
+						frontier.add(new SearchNode(n, priority));
 						cameFrom.put(n, current);
 					}
+
 				}
 			}
 		}
@@ -99,6 +99,11 @@ public class AStarPathFinder implements PathFinder {
 
 		public SearchNode(Point p) {
 			this.p = p;
+		}
+
+		public SearchNode(Point n, float priority) {
+			this.p = n;
+			this.priority = priority;
 		}
 
 		@Override

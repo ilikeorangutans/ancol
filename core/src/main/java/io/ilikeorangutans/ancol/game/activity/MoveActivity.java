@@ -33,7 +33,7 @@ public class MoveActivity implements Activity {
 
 	@Override
 	public void perform(Emitter emitter, ActionPoints actionPoints) {
-		if (path.isEmpty())
+		if (path.isEmpty() || path.isLastStep())
 			return;
 
 		// TODO: calculate action points based on terrain
