@@ -1,7 +1,6 @@
 package io.ilikeorangutans.ancol.path;
 
 import io.ilikeorangutans.ancol.Point;
-import io.ilikeorangutans.ancol.map.Map;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
  */
 public class DumbPathFinder implements PathFinder {
 	@Override
-	public Path find(Map map, Point from, Point to) {
+	public Path find(Movable movable, Point from, Point to) {
 
 		List<Point> tmp = new ArrayList<Point>();
 

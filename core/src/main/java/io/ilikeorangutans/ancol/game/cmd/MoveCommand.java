@@ -26,6 +26,9 @@ public class MoveCommand implements Command {
 			throw new IllegalArgumentException("Cannot apply MoveCommand for entity " + entity + " that does not have MovableComponent");
 		}
 
+		if (path.isEmpty())
+			return;
+
 		final MovableComponent mc = entity.getComponent(MovableComponent.class);
 
 		mc.setPath(path);

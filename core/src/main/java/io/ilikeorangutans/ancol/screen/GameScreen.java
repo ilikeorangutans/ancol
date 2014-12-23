@@ -22,9 +22,11 @@ import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PlayerVisibilityMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.RandomMap;
+import io.ilikeorangutans.ancol.map.tile.TileTypes;
 import io.ilikeorangutans.ancol.map.viewport.MapViewport;
 import io.ilikeorangutans.ancol.move.MovableComponent;
-import io.ilikeorangutans.ancol.path.DumbPathFinder;
+import io.ilikeorangutans.ancol.path.PathFinder;
+import io.ilikeorangutans.ancol.path.AStarPathFinder;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.ancol.select.SelectionHandler;
 import io.ilikeorangutans.bus.EventBus;
@@ -50,18 +52,26 @@ public class GameScreen implements Screen {
 		this.game = game;
 		bus = new SimpleEventBus();
 
-		AnColActions actions = new AnColActions(bus, new DumbPathFinder());
+		TileTypes tileTypes = new TileTypes();
+		Map map = new RandomMap(tileTypes);
+		PathFinder pathFinder = new AStarPathFinder(map);
+
+		AnColActions actions = new AnColActions(bus, pathFinder);
 		ui = new GameScreenUI(bus, actions, skin);
 		ui.setupUI(skin);
 
 		Player p1 = new Player(1, "player 1");
 		Player p2 = new Player(2, "player 2");
 
-		Map map = new RandomMap();
-		Map playerMap = new PlayerVisibilityMap(map, p1);
+		PlayerTurnSystem playerTurnSystem = new PlayerTurnSystem(bus);
+		bus.subscribe(playerTurnSystem);
+
+		playerTurnSystem.addPlayer(p1);
+		playerTurnSystem.addPlayer(p2);
+
+		Map playerMap = new PlayerVisibilityMap(map, p1, tileTypes.getTypeForId(0));
 		bus.subscribe(playerMap);
 		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, playerMap);
-
 		ui.setupInputProcessing(viewport);
 
 		setupRendering();
@@ -76,13 +86,6 @@ public class GameScreen implements Screen {
 
 		CommandEventHandler commandManager = new CommandEventHandler(bus);
 		bus.subscribe(commandManager);
-
-
-		PlayerTurnSystem playerTurnSystem = new PlayerTurnSystem(bus);
-		bus.subscribe(playerTurnSystem);
-
-		playerTurnSystem.addPlayer(p1);
-		playerTurnSystem.addPlayer(p2);
 
 		ActivitySystem actionPointSystem = new ActivitySystem(bus, facade.getEntities());
 		bus.subscribe(actionPointSystem);

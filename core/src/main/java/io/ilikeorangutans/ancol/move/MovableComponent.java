@@ -1,6 +1,8 @@
 package io.ilikeorangutans.ancol.move;
 
 import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.map.tile.Tile;
+import io.ilikeorangutans.ancol.path.Movable;
 import io.ilikeorangutans.ancol.path.Path;
 import io.ilikeorangutans.ecs.Component;
 import io.ilikeorangutans.ecs.ComponentType;
@@ -8,7 +10,7 @@ import io.ilikeorangutans.ecs.ComponentType;
 /**
  *
  */
-public class MovableComponent implements Component {
+public class MovableComponent implements Component, Movable {
 
 	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(MovableComponent.class)[0];
 	private Path path;
@@ -18,7 +20,7 @@ public class MovableComponent implements Component {
 	}
 
 	public Point getDestination() {
-		return path == null ? null : path.getDestination();
+		return path == null || path.isEmpty() ? null : path.getDestination();
 	}
 
 	@Override
@@ -36,5 +38,15 @@ public class MovableComponent implements Component {
 
 	public void setPath(Path path) {
 		this.path = path;
+	}
+
+	@Override
+	public boolean canAccess(Tile tile) {
+		return tile.getType().getId() != 1;
+	}
+
+	@Override
+	public float getCost(Tile tile) {
+		return 1;
 	}
 }

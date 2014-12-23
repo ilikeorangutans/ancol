@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.map;
 
+import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.Player;
 import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
@@ -20,13 +21,13 @@ public class PlayerVisibilityMap implements Map {
 
 	private final Map delegate;
 	private final Player player;
-
+	private final TileType unexplored;
 	private final BitSet visibility;
-	private final Tile UNEXPLORED_TILE = new Tile(new TileType("unexplored", 0));
 
-	public PlayerVisibilityMap(Map delegate, Player player) {
+	public PlayerVisibilityMap(Map delegate, Player player, TileType unexplored) {
 		this.delegate = delegate;
 		this.player = player;
+		this.unexplored = unexplored;
 		visibility = new BitSet(getWidth() * getHeight());
 		visibility.clear();
 	}
@@ -46,10 +47,15 @@ public class PlayerVisibilityMap implements Map {
 		boolean visible = visibility.get(y * getWidth() + x);
 
 		if (!visible) {
-			return UNEXPLORED_TILE;
+			return new Tile(unexplored);
 		}
 
 		return delegate.getTileAt(x, y);
+	}
+
+	@Override
+	public Tile getTileAt(Point p) {
+		return getTileAt(p.x, p.y);
 	}
 
 	@Subscribe

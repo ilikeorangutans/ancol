@@ -18,7 +18,6 @@ public class MoveActivity implements Activity {
 	private final Entity entity;
 	private final PositionComponent positionComponent;
 	private final MovableComponent movableComponent;
-	private int step = 0;
 
 	public MoveActivity(Path path, Entity entity, PositionComponent positionComponent, MovableComponent movableComponent) {
 		this.path = path;
@@ -34,13 +33,14 @@ public class MoveActivity implements Activity {
 
 	@Override
 	public void perform(Emitter emitter, ActionPoints actionPoints) {
-		// TODO: calculate action points based on terrain
+		if (path.isEmpty())
+			return;
 
+		// TODO: calculate action points based on terrain
 		actionPoints.consume(1);
-		Point p = path.segments[step];
+		Point p = path.nextStep();
 
 		positionComponent.set(p.x, p.y);
-		step++;
 
 		emitter.fire(new MovedEvent(entity, p));
 
@@ -51,7 +51,7 @@ public class MoveActivity implements Activity {
 
 	@Override
 	public boolean isComplete() {
-		return step == path.segments.length;
+		return path.isLastStep();
 	}
 
 }
