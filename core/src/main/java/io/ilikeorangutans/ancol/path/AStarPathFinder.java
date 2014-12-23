@@ -2,7 +2,6 @@ package io.ilikeorangutans.ancol.path;
 
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.map.Map;
-import io.ilikeorangutans.ancol.map.tile.Tile;
 
 import java.util.*;
 
@@ -20,12 +19,10 @@ public class AStarPathFinder implements PathFinder {
 
 	@Override
 	public Path find(Movable movable, Point from, Point to) {
-		Tile targetTile = map.getTileAt(to);
-
 		if (from.equals(to))
 			return new Path(new Point[]{from});
 
-		if (!movable.canAccess(targetTile))
+		if (!movable.canAccess(to))
 			return new Path(new Point[]{from});
 
 		Queue<SearchNode> frontier = new PriorityQueue<SearchNode>();
@@ -52,14 +49,12 @@ public class AStarPathFinder implements PathFinder {
 					if (y == current.y && x == current.x)
 						continue;
 
-
 					Point n = new Point(x, y);
-					Tile tile = map.getTileAt(n);
 
-					if (!movable.canAccess(map.getTileAt(n)))
+					if (!movable.canAccess(n))
 						continue;
 
-					float newCost = costSoFar.get(current) + movable.getCost(tile);// heuristic(current, to);
+					float newCost = costSoFar.get(current) + movable.getCost(n);
 
 					if (!costSoFar.containsKey(n) || newCost < costSoFar.get(n)) {
 						costSoFar.put(n, newCost);
