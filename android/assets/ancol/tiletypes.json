@@ -1,0 +1,16 @@
+{
+  "types": {
+    "0": {
+      "name": "unexplored",
+      "id": 0
+    },
+    "1": {
+      "name": "ocean",
+      "id": 1
+    },
+    "2": {
+      "name": "grassland",
+      "id": 2
+    }
+  }
+}

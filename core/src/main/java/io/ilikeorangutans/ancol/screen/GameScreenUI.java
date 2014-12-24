@@ -32,13 +32,11 @@ public class GameScreenUI {
 
 	private final AnColActions actions;
 
-	private final Skin skin;
 	private Stage stage;
 
-	public GameScreenUI(EventBus bus, AnColActions actions, Skin skin) {
+	public GameScreenUI(EventBus bus, AnColActions actions) {
 		this.bus = bus;
 		this.actions = actions;
-		this.skin = skin;
 	}
 
 	public void setupUI(Skin skin) {

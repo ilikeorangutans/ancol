@@ -66,6 +66,11 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+
+        compile "com.google.code.gson:gson:2.3.1"
+
+//        testCompile "junit:junit:4.11"
+//        testCompile "org.hamcrest:hamcrest-all:1.3"
     }
 }
 

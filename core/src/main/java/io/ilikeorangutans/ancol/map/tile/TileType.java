@@ -22,4 +22,12 @@ public class TileType {
 		return id;
 	}
 
+	@Override
+	public String toString() {
+		return "TileType{" +
+				"name='" + name + '\'' +
+				", id=" + id +
+				'}';
+	}
+
 }

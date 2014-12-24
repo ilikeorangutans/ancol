@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.ilikeorangutans.ancol.game.Player;
 import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
+import io.ilikeorangutans.ancol.game.Startup;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.ActivitySystem;
 import io.ilikeorangutans.ancol.game.cmd.CommandEventHandler;
@@ -17,16 +18,12 @@ import io.ilikeorangutans.ancol.game.turn.PlayerTurnSystem;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
-import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PlayerVisibilityMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
-import io.ilikeorangutans.ancol.map.RandomMap;
 import io.ilikeorangutans.ancol.map.tile.TileTypes;
 import io.ilikeorangutans.ancol.map.viewport.MapViewport;
 import io.ilikeorangutans.ancol.move.MovableComponent;
-import io.ilikeorangutans.ancol.path.AStarPathFinder;
-import io.ilikeorangutans.ancol.path.PathFinder;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.ancol.select.SelectionHandler;
 import io.ilikeorangutans.bus.EventBus;
@@ -52,12 +49,12 @@ public class GameScreen implements Screen {
 		this.game = game;
 		bus = new SimpleEventBus();
 
-		TileTypes tileTypes = new TileTypes();
-		Map map = new RandomMap(tileTypes);
-		PathFinder pathFinder = new AStarPathFinder(map);
+		Startup startup = new Startup(bus);
+		startup.startSampleGame();
 
-		AnColActions actions = new AnColActions(bus, pathFinder);
-		ui = new GameScreenUI(bus, actions, skin);
+		TileTypes tileTypes = startup.getTileTypes();
+
+		ui = new GameScreenUI(bus, startup.getActions());
 		ui.setupUI(skin);
 
 		Player p1 = new Player(1, "player 1");
@@ -69,7 +66,7 @@ public class GameScreen implements Screen {
 		playerTurnSystem.addPlayer(p1);
 		playerTurnSystem.addPlayer(p2);
 
-		Map playerMap = new PlayerVisibilityMap(map, p1, tileTypes.getTypeForId(0));
+		Map playerMap = new PlayerVisibilityMap(startup.getMap(), p1, tileTypes.getTypeForId(0));
 		bus.subscribe(playerMap);
 		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, playerMap);
 		ui.setupInputProcessing(viewport);
