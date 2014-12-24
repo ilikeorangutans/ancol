@@ -1,5 +1,6 @@
-package io.ilikeorangutans.ancol.game.activity;
+package io.ilikeorangutans.ancol.game.activity.event;
 
+import io.ilikeorangutans.ancol.game.activity.Activity;
 import io.ilikeorangutans.bus.Event;
 import io.ilikeorangutans.ecs.Entity;
 
