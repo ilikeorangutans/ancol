@@ -7,16 +7,17 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
+import io.ilikeorangutans.ancol.game.colony.OpenColonyEvent;
 import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
 import io.ilikeorangutans.ancol.input.AnColInputProcessor;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
-import io.ilikeorangutans.ancol.path.DumbPathFinder;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.Subscribe;
@@ -35,6 +36,7 @@ public class GameScreenUI {
 	private final AnColActions actions;
 
 	private Stage stage;
+	private Skin skin;
 
 	public GameScreenUI(EventBus bus, AnColActions actions) {
 		this.bus = bus;
@@ -42,6 +44,7 @@ public class GameScreenUI {
 	}
 
 	public void setupUI(Skin skin) {
+		this.skin = skin;
 		stage = new Stage(new ScreenViewport());
 		Table table = new Table(skin);
 		table.left().bottom();
@@ -102,7 +105,7 @@ public class GameScreenUI {
 
 	public void setupInputProcessing(ScreenToTile screenToTile) {
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		AnColInputProcessor anColInputProcessor = new AnColInputProcessor(bus, screenToTile, new DumbPathFinder(), actions);
+		AnColInputProcessor anColInputProcessor = new AnColInputProcessor(bus, screenToTile, actions);
 		bus.subscribe(anColInputProcessor);
 		inputMultiplexer.addProcessor(stage);
 		inputMultiplexer.addProcessor(anColInputProcessor);
@@ -120,6 +123,29 @@ public class GameScreenUI {
 
 	public void dispose() {
 		stage.dispose();
+	}
+
+	@Subscribe
+	public void onOpenColony(OpenColonyEvent event) {
+		ColonyComponent colony = event.colony.getComponent(ColonyComponent.class);
+
+		final Window window = new Window(colony.getName(), skin);
+		window.setResizable(true);
+		window.setSize(768, Gdx.graphics.getHeight());
+		window.setPosition((Gdx.graphics.getWidth() / 2) - 384, Gdx.graphics.getHeight());
+
+		TextButton closeButton = new TextButton("Close", skin);
+		closeButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				window.setVisible(false);
+
+			}
+		});
+		window.add(closeButton);
+
+		// We need a... uhm... window manager here. Right now we can open the same window multiple times...
+		stage.addActor(window);
 	}
 
 	public static class CurrentPlayerListener {

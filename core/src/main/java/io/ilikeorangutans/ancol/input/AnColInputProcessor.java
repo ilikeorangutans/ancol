@@ -11,7 +11,6 @@ import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.input.action.MoveAction;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.map.viewport.ScrollEvent;
-import io.ilikeorangutans.ancol.path.PathFinder;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectEvent;
 import io.ilikeorangutans.bus.EventBus;
@@ -26,17 +25,13 @@ public class AnColInputProcessor implements InputProcessor {
 	private final EventBus bus;
 	private final ScreenToTile screenToTile;
 	private final AnColActions actions;
-	private PathFinder pathFinder;
 	private int lastX, lastY;
 	private Entity selectedEntity;
 	private boolean dragging = false;
 
-	public AnColInputProcessor(EventBus bus, ScreenToTile screenToTile, PathFinder pathFinder, AnColActions actions) {
+	public AnColInputProcessor(EventBus bus, ScreenToTile screenToTile, AnColActions actions) {
 		this.bus = bus;
 		this.screenToTile = screenToTile;
-		this.pathFinder = pathFinder;
-
-
 		this.actions = actions;
 	}
 

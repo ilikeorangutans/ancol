@@ -14,7 +14,7 @@ import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.ActivitySystem;
 import io.ilikeorangutans.ancol.game.cmd.CommandEventHandler;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
-import io.ilikeorangutans.ancol.game.colony.BuildColonyHandler;
+import io.ilikeorangutans.ancol.game.colony.ColonyHandler;
 import io.ilikeorangutans.ancol.game.turn.PlayerTurnSystem;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
@@ -56,6 +56,7 @@ public class GameScreen implements Screen {
 		TileTypes tileTypes = startup.getTileTypes();
 
 		ui = new GameScreenUI(bus, startup.getActions());
+		bus.subscribe(ui);
 		ui.setupUI(skin);
 
 		Player p1 = new Player(1, "player 1");
@@ -88,8 +89,8 @@ public class GameScreen implements Screen {
 		ActivitySystem actionPointSystem = new ActivitySystem(bus, facade.getEntities());
 		bus.subscribe(actionPointSystem);
 
-		BuildColonyHandler buildColonyHandler = new BuildColonyHandler(facade.getEntities());
-		bus.subscribe(buildColonyHandler);
+		ColonyHandler colonyHandler = new ColonyHandler(bus, facade.getEntities());
+		bus.subscribe(colonyHandler);
 
 		renderer = new AnColRenderer(batch, viewport, playerMap, facade.getEntities());
 
