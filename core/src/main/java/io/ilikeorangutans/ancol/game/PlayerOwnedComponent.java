@@ -8,24 +8,24 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class PlayerOwnedComponent implements Component {
 
-    public static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(PlayerOwnedComponent.class)[0];
+	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(PlayerOwnedComponent.class);
 
-    private Player player;
+	private Player player;
 
-    public PlayerOwnedComponent(Player player) {
-        this.player = player;
-    }
+	public PlayerOwnedComponent(Player player) {
+		this.player = player;
+	}
 
-    public Player getPlayer() {
-        return player;
-    }
+	public Player getPlayer() {
+		return player;
+	}
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
 
-    @Override
-    public ComponentType getType() {
-        return COMPONENT_TYPE;
-    }
+	@Override
+	public ComponentType getType() {
+		return COMPONENT_TYPE;
+	}
 }

@@ -11,7 +11,7 @@ import java.util.Queue;
  */
 public class ControllableComponent implements Component {
 
-	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(ControllableComponent.class)[0];
+	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(ControllableComponent.class);
 
 	private final Queue<Command> commands = new LinkedList<Command>();
 
@@ -39,5 +39,9 @@ public class ControllableComponent implements Component {
 
 	public int getQueueLength() {
 		return commands.size();
+	}
+
+	public void clearCommands() {
+		commands.clear();
 	}
 }

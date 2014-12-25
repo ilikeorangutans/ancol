@@ -19,6 +19,6 @@ public class BuildColonyCommand implements Command {
 	@Override
 	public void apply(Emitter bus, Entity entity) {
 		ActivityComponent ac = builder.getComponent(ActivityComponent.class);
-		ac.setActivity(new BuildColonyActivity());
+		ac.setActivity(new BuildColonyActivity(builder));
 	}
 }

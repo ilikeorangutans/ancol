@@ -11,7 +11,7 @@ import java.util.*;
  * TODO: extract interface which will allow to create "filtering" instances of Entities. For example, an Entities class
  * that will only return Entity's that are visible to a given player.
  */
-public class SimpleEntities implements Entities {
+public class SimpleEntities implements Entities, EntityFactory {
 
 	private final Comparator<ComponentType> sortByNumberOfComponents = new SortByNumberOfEntities();
 	private final Emitter emitter;
@@ -22,6 +22,7 @@ public class SimpleEntities implements Entities {
 		this.emitter = emitter;
 	}
 
+	@Override
 	public Entity create(Component... components) {
 		Entity e = new Entity(emitter, components);
 

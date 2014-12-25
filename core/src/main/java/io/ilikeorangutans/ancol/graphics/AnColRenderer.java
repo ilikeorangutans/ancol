@@ -2,9 +2,11 @@ package io.ilikeorangutans.ancol.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.tile.Tile;
@@ -22,17 +24,18 @@ import java.util.List;
  *
  */
 public class AnColRenderer {
+	private final BitmapFont font;
 	private SpriteBatch batch;
 	private MapViewport viewport;
 	private Map map;
 	private Entities entities;
-
 	private Texture terrainTexture;
 	private Texture unitTexture;
 	private Sprite grass;
 	private Sprite water;
 	private Sprite unexplored;
 	private Sprite explorer;
+	private Sprite colony;
 	private Sprite select;
 	private Sprite flag;
 
@@ -50,8 +53,11 @@ public class AnColRenderer {
 
 		unitTexture = new Texture(Gdx.files.internal("units.png"));
 		explorer = new Sprite(unitTexture, 13 * 60, 60, 60, 60);
+		colony = new Sprite(terrainTexture, 12 * 60, 12 * 60, 60, 60);
 
 		select = new Sprite(new Texture(Gdx.files.internal("select.png")), 0, 0, 60, 60);
+
+		font = new BitmapFont();
 	}
 
 	public void render() {
@@ -96,7 +102,11 @@ public class AnColRenderer {
 			final int x = pos.getX() * viewport.getTileWidth();
 			final int y = pos.getY() * viewport.getTileHeight();
 
-			if (!viewport.isVisible(x, y))
+			if (!viewport.isVisible(x, y)) {
+				continue;
+			}
+			RenderableComponent renderableComponent = e.getComponent(RenderableComponent.class);
+			if (!renderableComponent.isVisible())
 				continue;
 
 			Point point = viewport.mapToScreen(x, y);
@@ -122,9 +132,27 @@ public class AnColRenderer {
 				}
 			}
 
+			Sprite draw;
 
-			explorer.setPosition(point.x, point.y - viewport.getTileHeight());
-			explorer.draw(batch);
+			switch (renderableComponent.getSpriteId()) {
+				case 0:
+					draw = colony;
+					break;
+
+				case 1:
+				default:
+					draw = explorer;
+			}
+
+
+			draw.setPosition(point.x, point.y - viewport.getTileHeight());
+			draw.draw(batch);
+
+			if (e.hasComponent(ComponentType.fromClass(ColonyComponent.class))) {
+				ColonyComponent colony = e.getComponent(ColonyComponent.class);
+
+				font.draw(batch, colony.getName() + " [" + colony.getSize() + "]", point.x, point.y);
+			}
 		}
 
 		batch.end();

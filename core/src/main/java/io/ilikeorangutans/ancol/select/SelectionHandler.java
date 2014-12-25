@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.select;
 
+import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
@@ -27,10 +28,13 @@ public class SelectionHandler {
 	@Subscribe
 	public void onSelectEvent(SelectEvent selectEvent) {
 
-		List<Entity> selectable = entities.getEntityByType(ComponentType.fromClasses(PositionComponent.class, SelectableComponent.class));
+		List<Entity> selectable = entities.getEntityByType(ComponentType.fromClasses(PositionComponent.class, SelectableComponent.class, RenderableComponent.class));
 
 		for (Entity e : selectable) {
 			PositionComponent pc = e.getComponent(PositionComponent.class);
+			RenderableComponent rc = e.getComponent(RenderableComponent.class);
+			if (!rc.isVisible())
+				continue;
 
 			if (pc.getX() == selectEvent.x && pc.getY() == selectEvent.y) {
 

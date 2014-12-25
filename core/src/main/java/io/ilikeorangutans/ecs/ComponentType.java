@@ -16,34 +16,19 @@ public class ComponentType {
 	}
 
 	public static ComponentType fromComponent(Component c) {
-		return fromClasses(c.getClass())[0];
+		return fromClass(c.getClass());
 	}
 
-	public static ComponentType[] fromClasses(Class<?>... classes) {
-
+	public static ComponentType[] fromClasses(Class<? extends Component>... classes) {
 		ComponentType[] result = new ComponentType[classes.length];
 		int i = 0;
 
-		for (Class<?> c : classes) {
-
-
-			final String type = componentClassToType(c);
-
-			ComponentType ct;
-			if (types.containsKey(type)) {
-				ct = types.get(type);
-			} else {
-				ct = new ComponentType(type);
-				types.put(type, ct);
-			}
-
-			result[i] = ct;
+		for (Class<? extends Component> c : classes) {
+			result[i] = fromClass(c);
 			i++;
-
 		}
 
 		return result;
-
 	}
 
 	private static String componentClassToType(Class<?> clazz) {
@@ -51,6 +36,19 @@ public class ComponentType {
 			throw new IllegalArgumentException("No component passed to create component type.");
 
 		return clazz.getName();
+	}
+
+	public static ComponentType fromClass(Class<? extends Component> componentClass) {
+		final String type = componentClassToType(componentClass);
+
+		ComponentType ct;
+		if (types.containsKey(type)) {
+			ct = types.get(type);
+		} else {
+			ct = new ComponentType(type);
+			types.put(type, ct);
+		}
+		return ct;
 	}
 
 	@Override

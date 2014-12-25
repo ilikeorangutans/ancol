@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
+import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
 import io.ilikeorangutans.ancol.input.AnColInputProcessor;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
@@ -19,6 +20,7 @@ import io.ilikeorangutans.ancol.path.DumbPathFinder;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.Subscribe;
+import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entity;
 import io.ilikeorangutans.ecs.NameComponent;
 import io.ilikeorangutans.ecs.event.EntityUpdatedEvent;
@@ -158,10 +160,20 @@ public class GameScreenUI {
 				tb2.setText("none (0) (nothing)");
 			} else {
 				NameComponent nc = selected.getComponent(NameComponent.class);
-				ActivityComponent ac = selected.getComponent(ActivityComponent.class);
-				ControllableComponent cc = selected.getComponent(ControllableComponent.class);
+				StringBuilder sb = new StringBuilder(nc.getName());
 
-				tb2.setText(nc.getName() + " (" + ac.getPointsLeft() + ") (" + (ac.hasActivity() ? ac.getActivity().getName() : "idle") + ") (" + (cc.hasCommands() ? cc.getQueueLength() + " queued" : "-") + ")");
+				if (selected.hasComponent(ComponentType.fromClasses(ActivityComponent.class, ControllableComponent.class))) {
+					ActivityComponent ac = selected.getComponent(ActivityComponent.class);
+					ControllableComponent cc = selected.getComponent(ControllableComponent.class);
+					sb.append(" (" + ac.getPointsLeft() + ") (" + (ac.hasActivity() ? ac.getActivity().getName() : "idle") + ") (" + (cc.hasCommands() ? cc.getQueueLength() + " queued" : "-") + ")");
+				}
+
+				if (selected.hasComponent(ComponentType.fromClass(ColonyComponent.class))) {
+					ColonyComponent cc = selected.getComponent(ColonyComponent.class);
+					sb.append(" (Colony)");
+				}
+
+				tb2.setText(sb.toString());
 			}
 		}
 	}

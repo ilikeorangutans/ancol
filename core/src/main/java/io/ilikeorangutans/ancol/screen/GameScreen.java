@@ -14,6 +14,7 @@ import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.ActivitySystem;
 import io.ilikeorangutans.ancol.game.cmd.CommandEventHandler;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
+import io.ilikeorangutans.ancol.game.colony.BuildColonyHandler;
 import io.ilikeorangutans.ancol.game.turn.PlayerTurnSystem;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
@@ -87,6 +88,9 @@ public class GameScreen implements Screen {
 		ActivitySystem actionPointSystem = new ActivitySystem(bus, facade.getEntities());
 		bus.subscribe(actionPointSystem);
 
+		BuildColonyHandler buildColonyHandler = new BuildColonyHandler(facade.getEntities());
+		bus.subscribe(buildColonyHandler);
+
 		renderer = new AnColRenderer(batch, viewport, playerMap, facade.getEntities());
 
 		setupSampleEntities(p1, playerMap);
@@ -97,7 +101,7 @@ public class GameScreen implements Screen {
 	private void setupSampleEntities(Player p1, Map map) {
 		facade.getEntities().create(
 				new PositionComponent(11, 10),
-				new RenderableComponent(),
+				new RenderableComponent(1),
 				new NameComponent("test entity 1"),
 				new SelectableComponent(),
 				new MovableComponent(map),
@@ -107,7 +111,7 @@ public class GameScreen implements Screen {
 				new VisionComponent(1));
 		facade.getEntities().create(
 				new PositionComponent(6, 5),
-				new RenderableComponent(),
+				new RenderableComponent(1),
 				new NameComponent("test entity 2"),
 				new SelectableComponent(),
 				new MovableComponent(map),
@@ -117,7 +121,7 @@ public class GameScreen implements Screen {
 				new VisionComponent(1));
 		facade.getEntities().create(
 				new PositionComponent(5, 3),
-				new RenderableComponent(),
+				new RenderableComponent(1),
 				new NameComponent("test entity 3"),
 				new SelectableComponent(),
 				new MovableComponent(map),

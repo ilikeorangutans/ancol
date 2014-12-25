@@ -8,27 +8,27 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class SelectableComponent implements Component {
 
-    private static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(SelectableComponent.class)[0];
+	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(SelectableComponent.class);
 
-    private boolean selected;
+	private boolean selected;
 
-    public SelectableComponent() {
-    }
+	public SelectableComponent() {
+	}
 
-    public SelectableComponent(boolean selected) {
-        this.selected = selected;
-    }
+	public SelectableComponent(boolean selected) {
+		this.selected = selected;
+	}
 
-    public boolean isSelected() {
-        return selected;
-    }
+	public boolean isSelected() {
+		return selected;
+	}
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 
-    @Override
-    public ComponentType getType() {
-        return COMPONENT_TYPE;
-    }
+	@Override
+	public ComponentType getType() {
+		return COMPONENT_TYPE;
+	}
 }

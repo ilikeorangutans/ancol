@@ -8,7 +8,7 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class VisionComponent implements Component {
 
-	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClasses(VisionComponent.class)[0];
+	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(VisionComponent.class);
 
 
 	private final int radius;
