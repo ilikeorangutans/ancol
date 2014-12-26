@@ -2,12 +2,11 @@ package io.ilikeorangutans.ancol.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
@@ -19,6 +18,7 @@ import io.ilikeorangutans.ancol.input.AnColInputProcessor;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
+import io.ilikeorangutans.ancol.select.MultipleSelectOptionsEvent;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
@@ -126,26 +126,80 @@ public class GameScreenUI {
 	}
 
 	@Subscribe
-	public void onOpenColony(OpenColonyEvent event) {
-		ColonyComponent colony = event.colony.getComponent(ColonyComponent.class);
+	public void onOpenColony(final OpenColonyEvent event) {
+		final ColonyComponent colony = event.colony.getComponent(ColonyComponent.class);
 
 		final Window window = new Window(colony.getName(), skin);
 		window.setResizable(true);
 		window.setSize(768, Gdx.graphics.getHeight());
 		window.setPosition((Gdx.graphics.getWidth() / 2) - 384, Gdx.graphics.getHeight());
 
+
+		Table buttons = new Table(skin);
+		buttons.pad(11);
+
+		window.add(buttons).expandX().expandY().bottom().right();
+		TextButton renameButton = new TextButton("Rename", skin);
+		renameButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent e, float x, float y) {
+				Dialog d = new Dialog("Rename Colony", skin);
+				final TextField textField = d.getContentTable().add(new TextField(colony.getName(), skin)).getActor();
+
+				d.button(new TextButton("Rename", skin)).addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent e, float x, float y) {
+						colony.setName(textField.getText());
+						window.setTitle(colony.getName());
+						event.colony.updated();
+					}
+				});
+				d.button(new TextButton("Cancel", skin));
+				d.show(stage);
+			}
+		});
+		buttons.add(renameButton).padRight(11);
+
 		TextButton closeButton = new TextButton("Close", skin);
 		closeButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				window.setVisible(false);
-
 			}
 		});
-		window.add(closeButton);
+		buttons.add(closeButton);
 
 		// We need a... uhm... window manager here. Right now we can open the same window multiple times...
 		stage.addActor(window);
+	}
+
+	@Subscribe
+	public void onMultipleSelectOptions(MultipleSelectOptionsEvent e) {
+		final Dialog d = new Dialog("Select", skin);
+
+		EntityListItem[] items = new EntityListItem[e.selectable.size()];
+		int i = 0;
+		for (Entity entity : e.selectable) {
+			items[i] = new EntityListItem(entity);
+			i++;
+		}
+
+		final List<EntityListItem> list = new List<EntityListItem>(skin);
+		list.setItems(items);
+		list.setSelectedIndex(-1);
+		list.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				bus.fire(new EntitySelectedEvent(list.getSelected().entity));
+
+				d.hide();
+			}
+		});
+
+		ScrollPane scrollPane = new ScrollPane(list);
+		d.getContentTable().add(scrollPane);
+		d.getContentTable().pad(11);
+		d.show(stage);
 	}
 
 	public static class CurrentPlayerListener {
@@ -200,6 +254,23 @@ public class GameScreenUI {
 				}
 
 				tb2.setText(sb.toString());
+			}
+		}
+	}
+
+	private class EntityListItem {
+		private final Entity entity;
+
+		public EntityListItem(Entity entity) {
+			this.entity = entity;
+		}
+
+		@Override
+		public String toString() {
+			if (entity.hasComponent(ComponentType.fromClass(ColonyComponent.class))) {
+				return "Colony: " + entity.getComponent(ColonyComponent.class).getName();
+			} else {
+				return entity.getComponent(NameComponent.class).getName();
 			}
 		}
 	}

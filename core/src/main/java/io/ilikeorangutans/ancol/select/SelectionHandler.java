@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.select;
 
+import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.bus.Emitter;
@@ -8,6 +9,7 @@ import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entities;
 import io.ilikeorangutans.ecs.Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,21 +30,35 @@ public class SelectionHandler {
 	@Subscribe
 	public void onSelectEvent(SelectEvent selectEvent) {
 
-		List<Entity> selectable = entities.getEntityByType(ComponentType.fromClasses(PositionComponent.class, SelectableComponent.class, RenderableComponent.class));
+		Point p = new Point(selectEvent.x, selectEvent.y);
+		List<Entity> selectable = getSelectablesAtPoint(p);
 
-		for (Entity e : selectable) {
-			PositionComponent pc = e.getComponent(PositionComponent.class);
+		if (selectable.isEmpty())
+			return;
+
+		if (selectable.size() > 1) {
+			emitter.fire(new MultipleSelectOptionsEvent(selectable));
+		} else {
+			selectEntity(selectable.get(0));
+		}
+	}
+
+	private List<Entity> getSelectablesAtPoint(Point p) {
+		List<Entity> list = entities.getEntityByType(ComponentType.fromClasses(PositionComponent.class, SelectableComponent.class, RenderableComponent.class));
+		List<Entity> result = new ArrayList<Entity>();
+
+		for (Entity e : list) {
 			RenderableComponent rc = e.getComponent(RenderableComponent.class);
 			if (!rc.isVisible())
 				continue;
 
-			if (pc.getX() == selectEvent.x && pc.getY() == selectEvent.y) {
-
-				selectEntity(e);
-
-				return;
+			PositionComponent pc = e.getComponent(PositionComponent.class);
+			if (pc.getX() == p.x && pc.getY() == p.y) {
+				result.add(e);
 			}
 		}
+
+		return result;
 	}
 
 	private void selectEntity(Entity e) {
