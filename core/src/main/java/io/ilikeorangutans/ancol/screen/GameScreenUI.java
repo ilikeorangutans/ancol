@@ -127,50 +127,8 @@ public class GameScreenUI {
 
 	@Subscribe
 	public void onOpenColony(final OpenColonyEvent event) {
-		final ColonyComponent colony = event.colony.getComponent(ColonyComponent.class);
-
-		final Window window = new Window(colony.getName(), skin);
-		window.setResizable(true);
-		window.setSize(768, Gdx.graphics.getHeight());
-		window.setPosition((Gdx.graphics.getWidth() / 2) - 384, Gdx.graphics.getHeight());
-
-
-		Table buttons = new Table(skin);
-		buttons.pad(11);
-
-		window.add(buttons).expandX().expandY().bottom().right();
-		TextButton renameButton = new TextButton("Rename", skin);
-		renameButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent e, float x, float y) {
-				Dialog d = new Dialog("Rename Colony", skin);
-				final TextField textField = d.getContentTable().add(new TextField(colony.getName(), skin)).getActor();
-
-				d.button(new TextButton("Rename", skin)).addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent e, float x, float y) {
-						colony.setName(textField.getText());
-						window.setTitle(colony.getName());
-						event.colony.updated();
-					}
-				});
-				d.button(new TextButton("Cancel", skin));
-				d.show(stage);
-			}
-		});
-		buttons.add(renameButton).padRight(11);
-
-		TextButton closeButton = new TextButton("Close", skin);
-		closeButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				window.setVisible(false);
-			}
-		});
-		buttons.add(closeButton);
-
-		// We need a... uhm... window manager here. Right now we can open the same window multiple times...
-		stage.addActor(window);
+		ColonyUI ui = new ColonyUI(stage, skin, event.colony);
+		ui.setupAndShowUI();
 	}
 
 	@Subscribe
