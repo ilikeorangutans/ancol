@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.map;
 
+import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ecs.Component;
 import io.ilikeorangutans.ecs.ComponentType;
 
@@ -36,5 +37,9 @@ public class PositionComponent implements Component {
 
 	public int getY() {
 		return y;
+	}
+
+	public Point getPoint() {
+		return new Point(x, y); // Cache this?
 	}
 }

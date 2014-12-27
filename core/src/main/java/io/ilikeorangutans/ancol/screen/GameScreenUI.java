@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
+import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.OpenColonyEvent;
 import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
@@ -23,7 +24,6 @@ import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entity;
-import io.ilikeorangutans.ecs.NameComponent;
 import io.ilikeorangutans.ecs.event.EntityUpdatedEvent;
 
 /**
@@ -151,6 +151,7 @@ public class GameScreenUI {
 				bus.fire(new EntitySelectedEvent(list.getSelected().entity));
 
 				d.hide();
+				d.remove();
 			}
 		});
 
@@ -195,19 +196,21 @@ public class GameScreenUI {
 
 		private void updateLabel() {
 			if (selected == null) {
-				tb2.setText("none (0) (nothing)");
+				tb2.setText("(nothing)");
 			} else {
-				NameComponent nc = selected.getComponent(NameComponent.class);
-				StringBuilder sb = new StringBuilder(nc.getName());
+				StringBuilder sb = new StringBuilder();
 
-				if (selected.hasComponent(ComponentType.fromClasses(ActivityComponent.class, ControllableComponent.class))) {
+				if (selected.hasComponent(ComponentType.fromClasses(ColonistComponent.class, ActivityComponent.class, ControllableComponent.class))) {
 					ActivityComponent ac = selected.getComponent(ActivityComponent.class);
 					ControllableComponent cc = selected.getComponent(ControllableComponent.class);
+					ColonistComponent colonist = selected.getComponent(ColonistComponent.class);
+					sb.append(colonist.getProfession().getName());
 					sb.append(" (" + ac.getPointsLeft() + ") (" + (ac.hasActivity() ? ac.getActivity().getName() : "idle") + ") (" + (cc.hasCommands() ? cc.getQueueLength() + " queued" : "-") + ")");
 				}
 
 				if (selected.hasComponent(ComponentType.fromClass(ColonyComponent.class))) {
 					ColonyComponent cc = selected.getComponent(ColonyComponent.class);
+					sb.append(cc.getName());
 					sb.append(" (Colony)");
 				}
 
@@ -226,9 +229,9 @@ public class GameScreenUI {
 		@Override
 		public String toString() {
 			if (entity.hasComponent(ComponentType.fromClass(ColonyComponent.class))) {
-				return "Colony: " + entity.getComponent(ColonyComponent.class).getName();
+				return entity.getComponent(ColonyComponent.class).getName();
 			} else {
-				return entity.getComponent(NameComponent.class).getName();
+				return entity.getComponent(ColonistComponent.class).getProfession().getName();
 			}
 		}
 	}

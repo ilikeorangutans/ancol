@@ -10,7 +10,6 @@ public class VisionComponent implements Component {
 
 	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(VisionComponent.class);
 
-
 	private final int radius;
 
 	public VisionComponent(int radius) {

@@ -14,6 +14,8 @@ import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.ActivitySystem;
 import io.ilikeorangutans.ancol.game.cmd.CommandEventHandler;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
+import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
+import io.ilikeorangutans.ancol.game.colonist.Profession;
 import io.ilikeorangutans.ancol.game.colony.ColonyHandler;
 import io.ilikeorangutans.ancol.game.turn.PlayerTurnSystem;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
@@ -89,7 +91,7 @@ public class GameScreen implements Screen {
 		ActivitySystem actionPointSystem = new ActivitySystem(bus, facade.getEntities());
 		bus.subscribe(actionPointSystem);
 
-		ColonyHandler colonyHandler = new ColonyHandler(bus, facade.getEntities());
+		ColonyHandler colonyHandler = new ColonyHandler(bus, facade.getEntities(), facade.getEntities(), playerMap);
 		bus.subscribe(colonyHandler);
 
 		renderer = new AnColRenderer(batch, viewport, playerMap, facade.getEntities());
@@ -100,6 +102,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void setupSampleEntities(Player p1, Map map) {
+		Profession profession = new Profession("Free Colonist");
 		facade.getEntities().create(
 				new PositionComponent(11, 10),
 				new RenderableComponent(1),
@@ -109,7 +112,8 @@ public class GameScreen implements Screen {
 				new PlayerOwnedComponent(p1),
 				new ControllableComponent(),
 				new ActivityComponent(2),
-				new VisionComponent(1));
+				new VisionComponent(1),
+				new ColonistComponent(profession));
 		facade.getEntities().create(
 				new PositionComponent(6, 5),
 				new RenderableComponent(1),
@@ -119,7 +123,8 @@ public class GameScreen implements Screen {
 				new PlayerOwnedComponent(p1),
 				new ControllableComponent(),
 				new ActivityComponent(2),
-				new VisionComponent(1));
+				new VisionComponent(1),
+				new ColonistComponent(profession));
 		facade.getEntities().create(
 				new PositionComponent(5, 3),
 				new RenderableComponent(1),
@@ -129,7 +134,8 @@ public class GameScreen implements Screen {
 				new PlayerOwnedComponent(p1),
 				new ControllableComponent(),
 				new ActivityComponent(2),
-				new VisionComponent(1));
+				new VisionComponent(2),
+				new ColonistComponent(new Profession("Seasoned Scout")));
 	}
 
 	private void setupRendering() {

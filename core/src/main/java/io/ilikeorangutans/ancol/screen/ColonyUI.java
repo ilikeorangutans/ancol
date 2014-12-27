@@ -1,15 +1,19 @@
 package io.ilikeorangutans.ancol.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
+import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ecs.Entity;
 
 /**
- * Created by jakob on 26/12/14.
+ *
  */
 public class ColonyUI {
 	private final Stage stage;
@@ -27,14 +31,102 @@ public class ColonyUI {
 
 		final Window window = new Window(colony.getName(), skin);
 		window.setResizable(true);
+		window.setModal(true);
 		window.pad(22, 7, 7, 7);
-		window.setSize(768, Gdx.graphics.getHeight());
+		window.addListener(new InputListener() {
+			@Override
+			public boolean keyUp(InputEvent event, int keycode) {
+				if (keycode == Input.Keys.ESCAPE) {
+					closeWindow(window);
+					return true;
+				}
+				return super.keyUp(event, keycode);
+			}
+		});
 		window.setPosition((Gdx.graphics.getWidth() / 2) - 384, Gdx.graphics.getHeight());
-//		window.setDebug(true);
+		window.setDebug(true);
+
+		window.add(new Label("Buildings", skin)).width(500);
+		window.add(new Label("Surroundings", skin)).width(268);
+
+		window.row().height(268);
+
+		window.add(new Label("(List of buildings goes here)", skin)).expand();
+		addColonyMap(colony, window);
+
+		window.row();
+
+		addColonistTable(colony, window);
+		window.add(new Label("(Production window goes here)", skin));
+
+		window.row();
+
+		window.add(new Label("(Wares go here)", skin));
+		addButtons(colony, window);
+
+		window.pack();
+		stage.addActor(window);
+	}
+
+	private void addColonyMap(ColonyComponent colony, Window window) {
+		Table surroundingTable = new Table(skin);
+		surroundingTable.columnDefaults(0).width(80);
+		surroundingTable.columnDefaults(1).width(80);
+		surroundingTable.columnDefaults(2).width(80);
+
+		int counter = 0;
+		for (Surroundings.Selector selector : Surroundings.Selector.values()) {
+
+			if (counter % 3 == 0)
+				surroundingTable.row().height(80);
+
+			surroundingTable.add(new Label(colony.getSurroundings().getTile(selector).getType().getName(), skin));
+			counter++;
+		}
+
+		window.add(surroundingTable).expand();
+	}
+
+	private void addColonistTable(ColonyComponent colony, Window window) {
+		Table colonists = new Table(skin);
+
+		colonists.add(new Label("Colonists in colony", skin));
+		colonists.add(new Label("Colonists outside of colony", skin));
+		colonists.row();
+
+		List<ColonistInColony> colonistInColonyList = new List<ColonistInColony>(skin);
+		ColonistInColony[] toAdd = new ColonistInColony[colony.getColonists().size()];
+		int i = 0;
+		for (Entity colonist : colony.getColonists()) {
+			toAdd[i] = new ColonistInColony(colonist);
+			i++;
+		}
+		colonistInColonyList.setItems(toAdd);
+		colonistInColonyList.setSelectedIndex(-1);
+		colonistInColonyList.setSize(200, 100);
+		ScrollPane workersScrollPane = new ScrollPane(colonistInColonyList);
+		colonists.add(workersScrollPane).expandX();
 
 
+		java.util.List<Entity> outsideColonists = colony.getOutsideColonists();
+		List<String> outside = new List<String>(skin);
+		String[] waitingOutside = new String[outsideColonists.size()];
+		i = 0;
+		for (Entity outsideColonist : outsideColonists) {
+			waitingOutside[i] = outsideColonist.getComponent(ColonistComponent.class).getProfession().getName();
+			i++;
+		}
+		outside.setItems(waitingOutside);
+		outside.setSelectedIndex(-1);
+		colonists.add(new ScrollPane(outside, skin));
+
+		window.add(colonists);
+	}
+
+	private void addButtons(final ColonyComponent colony, final Window window) {
 		Table buttons = new Table(skin);
-//		buttons.debug();
+		// buttons.debug();
+
 		window.add(buttons).expandX().expandY().bottom().right();
 		TextButton renameButton = new TextButton("Rename", skin);
 		renameButton.addListener(new ClickListener() {
@@ -61,13 +153,31 @@ public class ColonyUI {
 		closeButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				window.setVisible(false);
+				closeWindow(window);
 			}
 		});
 		buttons.add(closeButton).fillX();
+	}
 
-		// We need a... uhm... window manager here. Right now we can open the same window multiple times...
-		stage.addActor(window);
+	private void closeWindow(Window window) {
+		window.setVisible(false);
+		window.remove();
+	}
 
+	private class ColonistInColony {
+		private final Entity entity;
+
+		public ColonistInColony(Entity entity) {
+			this.entity = entity;
+		}
+
+
+		@Override
+		public String toString() {
+
+			ColonistComponent colonist = entity.getComponent(ColonistComponent.class);
+
+			return colonist.getProfession().getName() + " (current job)";
+		}
 	}
 }

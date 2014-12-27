@@ -4,15 +4,15 @@ import io.ilikeorangutans.ancol.game.Player;
 import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
+import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PositionComponent;
+import io.ilikeorangutans.ancol.map.surrounding.PointSurroundings;
+import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
-import io.ilikeorangutans.ecs.ComponentType;
-import io.ilikeorangutans.ecs.Entity;
-import io.ilikeorangutans.ecs.EntityFactory;
-import io.ilikeorangutans.ecs.NameComponent;
+import io.ilikeorangutans.ecs.*;
 
 /**
  *
@@ -21,12 +21,16 @@ public class ColonyHandler {
 
 	private final Emitter emitter;
 	private final EntityFactory factory;
+	private final Entities entities;
+	private final Map map;
 
 	private int counter = 1;
 
-	public ColonyHandler(Emitter emitter, EntityFactory factory) {
+	public ColonyHandler(Emitter emitter, EntityFactory factory, Entities entities, Map map) {
 		this.emitter = emitter;
 		this.factory = factory;
+		this.entities = entities;
+		this.map = map;
 	}
 
 	@Subscribe
@@ -47,6 +51,8 @@ public class ColonyHandler {
 		PositionComponent position = builder.getComponent(PositionComponent.class);
 
 		String name = "colony " + counter;
+		Surroundings surroundings = new PointSurroundings(position.getPoint(), map, entities);
+
 		Entity colony = factory.create(
 				new PlayerOwnedComponent(owner),
 				new RenderableComponent(0),
@@ -54,7 +60,7 @@ public class ColonyHandler {
 				new PositionComponent(position),
 				new VisionComponent(1),
 				new NameComponent(name),
-				new ColonyComponent(name)
+				new ColonyComponent(name, surroundings)
 		);
 
 		colony.getComponent(ColonyComponent.class).addColonist(builder);
