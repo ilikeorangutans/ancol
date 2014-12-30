@@ -18,7 +18,7 @@ public class ActivityComponent implements EntityAwareComponent {
 
 	private Activity activity;
 	/**
-	 * TODO: Entity could be passed into #step() from ActivitySystem...
+	 * TODO: Entity could be passed into #beginTurn() from ActivitySystem...
 	 */
 	private Entity entity;
 
@@ -33,7 +33,7 @@ public class ActivityComponent implements EntityAwareComponent {
 	}
 
 	/**
-	 * Performs a step with the current activity.
+	 * Performs a beginTurn with the current activity.
 	 *
 	 * @param emitter
 	 */

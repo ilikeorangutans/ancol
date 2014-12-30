@@ -9,6 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
+import io.ilikeorangutans.ancol.game.colony.ColonyOutput;
+import io.ilikeorangutans.ancol.game.ware.RecordingWares;
+import io.ilikeorangutans.ancol.game.ware.Stored;
+import io.ilikeorangutans.ancol.game.ware.WareType;
+import io.ilikeorangutans.ancol.game.ware.Warehouse;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ecs.Entity;
 
@@ -61,11 +66,64 @@ public class ColonyUI {
 
 		window.row();
 
-		window.add(new Label("(Wares go here)", skin));
+		addWares(colony, window);
 		addButtons(colony, window);
 
 		window.pack();
 		stage.addActor(window);
+	}
+
+	private void addWares(ColonyComponent colony, Window window) {
+		Warehouse warehouse = colony.getWarehouse();
+		Table table = new Table(skin);
+
+		for (Stored stored : warehouse.getWares()) {
+			Label label = new Label(stored.getWare().name(), skin);
+			label.setFontScale(.7F);
+			table.add(label).pad(3);
+		}
+
+		table.row();
+		for (Stored stored : warehouse.getWares()) {
+			table.add(new Label(stored.getAmount() + "", skin));
+		}
+
+		table.row();
+		ColonyOutput output = colony.getOutput();
+
+		RecordingWares simulated = output.simulate(warehouse);
+
+		for (Stored stored : warehouse.getWares()) {
+			WareType type = stored.getWare();
+			StringBuilder sb = new StringBuilder();
+
+			boolean produced = simulated.getProduced(type) > 0;
+			boolean consumed = simulated.getConsumed(type) > 0;
+
+			if (produced) {
+				sb.append("+");
+				sb.append(simulated.getProduced(type));
+			}
+			if (consumed) {
+				sb.append("-");
+				sb.append(simulated.getConsumed(type));
+			}
+
+			if (produced && consumed) {
+				sb.append(" = ");
+				sb.append(simulated.getProduced(type) - simulated.getConsumed(type));
+			}
+
+			if (!consumed && !produced)
+				sb.append("-");
+
+
+			Label label = new Label(sb.toString(), skin);
+			label.setFontScale(.7F);
+			table.add(label).pad(3);
+		}
+
+		window.add(table).expandX();
 	}
 
 	private void addColonyMap(ColonyComponent colony, Window window) {

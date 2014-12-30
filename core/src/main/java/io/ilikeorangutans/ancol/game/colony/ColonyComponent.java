@@ -2,6 +2,10 @@ package io.ilikeorangutans.ancol.game.colony;
 
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
+import io.ilikeorangutans.ancol.game.production.ProductionBuilder;
+import io.ilikeorangutans.ancol.game.production.worker.FixedWorker;
+import io.ilikeorangutans.ancol.game.ware.WareType;
+import io.ilikeorangutans.ancol.game.ware.Warehouse;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ecs.Component;
@@ -18,11 +22,27 @@ public class ColonyComponent implements Component {
 	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(ColonyComponent.class);
 	private final List<Entity> colonists = new ArrayList<Entity>();
 	private final Surroundings surroundings;
+	private final Warehouse warehouse = new Warehouse();
+	private final ColonyOutput output;
 	private String name;
 
 	public ColonyComponent(String name, Surroundings surroundings) {
 		this.name = name;
 		this.surroundings = surroundings;
+
+		output = new ColonyOutput();
+
+		// Some sample productions for now:
+		output.addWorkedTile(WareType.Food, surroundings.getTile(Surroundings.Selector.Center), new FixedWorker(3));
+		output.addWorkedTile(WareType.Sugar, surroundings.getTile(Surroundings.Selector.Center), new FixedWorker(2));
+		output.addWorkedTile(WareType.Sugar, surroundings.getTile(Surroundings.Selector.N), new FixedWorker(3));
+		output.addProduction(new ProductionBuilder().consume(WareType.Sugar).produce(WareType.Rum).with(new FixedWorker(6)).create());
+
+
+		output.addProduction(new ProductionBuilder().consume(WareType.Tools).produce(WareType.Muskets).with(new FixedWorker(3)).create());
+		output.addProduction(new ProductionBuilder().consume(WareType.Ore).produce(WareType.Tools).with(new FixedWorker(4)).create());
+		output.addProduction(new ProductionBuilder().produce(WareType.Ore).with(new FixedWorker(5)).create());
+
 	}
 
 	public static ComponentType getComponentType() {
@@ -47,6 +67,10 @@ public class ColonyComponent implements Component {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Warehouse getWarehouse() {
+		return warehouse;
 	}
 
 	public int getSize() {
@@ -81,5 +105,13 @@ public class ColonyComponent implements Component {
 
 	public boolean isColonistEmployed(Entity entity) {
 		return colonists.contains(entity);
+	}
+
+	public void beginTurn() {
+		output.produce(getWarehouse());
+	}
+
+	public ColonyOutput getOutput() {
+		return output;
 	}
 }

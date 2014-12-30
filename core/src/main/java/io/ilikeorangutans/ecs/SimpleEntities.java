@@ -29,6 +29,9 @@ public class SimpleEntities implements Entities, EntityFactory {
 		for (Component c : components) {
 			final ComponentType type = ComponentType.fromComponent(c);
 
+			if (type == null)
+				throw new NullPointerException("Component has null type");
+
 			if (!componentsByType.containsKey(type)) {
 				componentsByType.put(type, new ArrayList<Component>());
 				entitiesByType.put(type, new ArrayList<Entity>());
@@ -69,7 +72,11 @@ public class SimpleEntities implements Entities, EntityFactory {
 
 		Arrays.sort(types, sortByNumberOfComponents);
 
+		if (!entitiesByType.containsKey(types[0]))
+			return Collections.emptyList();
+
 		final List<Entity> result = entitiesByType.get(types[0]);
+		// Filter out all the entities that don't have the remaining requested types:
 		for (ListIterator<Entity> li = result.listIterator(); li.hasNext(); ) {
 			Entity cur = li.next();
 

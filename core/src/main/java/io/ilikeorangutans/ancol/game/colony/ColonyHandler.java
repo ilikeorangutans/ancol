@@ -2,6 +2,7 @@ package io.ilikeorangutans.ancol.game.colony;
 
 import io.ilikeorangutans.ancol.game.Player;
 import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
+import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;
@@ -13,6 +14,8 @@ import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.*;
+
+import java.util.List;
 
 /**
  *
@@ -44,6 +47,21 @@ public class ColonyHandler {
 			// TODO: might be better to queue that
 			emitter.fire(new OpenColonyEvent(event.entity));
 		}
+	}
+
+	@Subscribe
+	public void onBeginTurn(BeginTurnEvent event) {
+		List<Entity> colonies = entities.getEntityByType(ComponentType.fromClasses(ColonyComponent.class, PlayerOwnedComponent.class));
+
+		for (Entity entity : colonies) {
+			if (!entity.getComponent(PlayerOwnedComponent.class).getPlayer().equals(event.player))
+				continue;
+
+			ColonyComponent colony = entity.getComponent(ColonyComponent.class);
+
+			colony.beginTurn();
+		}
+
 	}
 
 	private void buildColony(Entity builder) {
