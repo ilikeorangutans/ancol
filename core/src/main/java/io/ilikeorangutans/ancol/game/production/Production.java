@@ -13,7 +13,10 @@ import java.util.List;
 public class Production {
 
 	private final List<Worker> workers = new ArrayList<Worker>();
-
+	/**
+	 * Holds a list of modifiers that will be applied on a per worker basis.
+	 */
+	private final List<Modifier> modifiers = new ArrayList<Modifier>();
 	private final WareType output;
 	private final WareType input;
 
@@ -25,6 +28,10 @@ public class Production {
 
 	public void addWorker(Worker worker) {
 		workers.add(worker);
+	}
+
+	public void addModifier(Modifier modifier) {
+		modifiers.add(modifier);
 	}
 
 	public WareType getOutput() {

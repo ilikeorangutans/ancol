@@ -2,6 +2,10 @@ package io.ilikeorangutans.ancol.game.colony;
 
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
+import io.ilikeorangutans.ancol.game.colony.building.Blueprint;
+import io.ilikeorangutans.ancol.game.colony.building.Building;
+import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
+import io.ilikeorangutans.ancol.game.colony.building.SimpleColonyBuildings;
 import io.ilikeorangutans.ancol.game.production.ProductionBuilder;
 import io.ilikeorangutans.ancol.game.production.worker.FixedWorker;
 import io.ilikeorangutans.ancol.game.ware.WareType;
@@ -24,6 +28,7 @@ public class ColonyComponent implements Component {
 	private final Surroundings surroundings;
 	private final Warehouse warehouse = new Warehouse();
 	private final ColonyOutput output;
+	private ColonyBuildings buildings;
 	private String name;
 
 	public ColonyComponent(String name, Surroundings surroundings) {
@@ -31,6 +36,12 @@ public class ColonyComponent implements Component {
 		this.surroundings = surroundings;
 
 		output = new ColonyOutput();
+
+		buildings = new SimpleColonyBuildings();
+		Building townhall = buildings.construct(Blueprint.TownHall);
+		output.addProduction(new ProductionBuilder().in(townhall).produce(WareType.LibertyBells).with(new FixedWorker(1)).create());
+		buildings.construct(Blueprint.CarpentersShop);
+
 
 		// Some sample productions for now:
 		output.addWorkedTile(WareType.Food, surroundings.getTile(Surroundings.Selector.Center), new FixedWorker(3));
@@ -113,5 +124,9 @@ public class ColonyComponent implements Component {
 
 	public ColonyOutput getOutput() {
 		return output;
+	}
+
+	public ColonyBuildings getBuildings() {
+		return buildings;
 	}
 }

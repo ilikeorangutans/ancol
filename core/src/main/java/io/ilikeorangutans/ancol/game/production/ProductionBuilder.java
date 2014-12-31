@@ -1,5 +1,7 @@
 package io.ilikeorangutans.ancol.game.production;
 
+import io.ilikeorangutans.ancol.game.colony.building.Building;
+import io.ilikeorangutans.ancol.game.production.requirement.BuildingRequirement;
 import io.ilikeorangutans.ancol.game.production.requirement.Requirement;
 import io.ilikeorangutans.ancol.game.production.requirement.TileAccessRequirement;
 import io.ilikeorangutans.ancol.game.production.worker.Worker;
@@ -13,11 +15,10 @@ import java.util.List;
  * Builder for productions.
  */
 public class ProductionBuilder {
+	private final List<Requirement> requirements = new ArrayList<Requirement>();
+	private final List<Modifier> modifiers = new ArrayList<Modifier>();
+	private final List<Worker> workers = new ArrayList<Worker>();
 	private WareType output;
-
-	private List<Requirement> requirements = new ArrayList<Requirement>();
-
-	private List<Worker> workers = new ArrayList<Worker>();
 	private WareType input;
 
 	public ProductionBuilder consume(WareType input) {
@@ -27,6 +28,12 @@ public class ProductionBuilder {
 
 	public ProductionBuilder produce(WareType output) {
 		this.output = output;
+		return this;
+	}
+
+	public ProductionBuilder in(Building building) {
+		modifiers.add(building);
+		requirements.add(new BuildingRequirement(building));
 		return this;
 	}
 
@@ -47,6 +54,12 @@ public class ProductionBuilder {
 		if (output == null)
 			throw new IllegalStateException("Cannot create production without output");
 
-		return new Production(input, output, workers);
+		Production production = new Production(input, output, workers);
+
+		for (Modifier modifier : modifiers) {
+			production.addModifier(modifier);
+		}
+
+		return production;
 	}
 }

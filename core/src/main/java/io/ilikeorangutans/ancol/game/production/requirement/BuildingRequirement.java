@@ -1,9 +1,15 @@
 package io.ilikeorangutans.ancol.game.production.requirement;
 
+import io.ilikeorangutans.ancol.game.colony.building.Building;
+
 /**
  *
  */
 public class BuildingRequirement implements Requirement {
+
+	public BuildingRequirement(Building building) {
+
+	}
 
 	@Override
 	public boolean isFulfilled() {

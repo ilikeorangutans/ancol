@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyOutput;
+import io.ilikeorangutans.ancol.game.colony.building.Building;
+import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
 import io.ilikeorangutans.ancol.game.ware.RecordingWares;
 import io.ilikeorangutans.ancol.game.ware.Stored;
 import io.ilikeorangutans.ancol.game.ware.WareType;
@@ -51,12 +53,13 @@ public class ColonyUI {
 		window.setPosition((Gdx.graphics.getWidth() / 2) - 384, Gdx.graphics.getHeight());
 		window.setDebug(true);
 
-		window.add(new Label("Buildings", skin)).width(500);
+
+		window.add(new Label("Buildings", skin)).expand();
 		window.add(new Label("Surroundings", skin)).width(268);
 
 		window.row().height(268);
 
-		window.add(new Label("(List of buildings goes here)", skin)).expand();
+		addBuildings(colony, window);
 		addColonyMap(colony, window);
 
 		window.row();
@@ -71,6 +74,21 @@ public class ColonyUI {
 
 		window.pack();
 		stage.addActor(window);
+	}
+
+	private void addBuildings(ColonyComponent colony, Window window) {
+		Table table = new Table(skin);
+		table.pad(3);
+
+		ColonyBuildings buildings = colony.getBuildings();
+
+		for (Building b : buildings.getBuildings()) {
+
+			table.add(new Label(b.getName(), skin));
+			table.row();
+		}
+
+		window.add(table);
 	}
 
 	private void addWares(ColonyComponent colony, Window window) {
