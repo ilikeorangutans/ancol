@@ -1,8 +1,8 @@
 package io.ilikeorangutans.ancol.map;
 
 import io.ilikeorangutans.ancol.Point;
-import io.ilikeorangutans.ancol.game.Player;
-import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
+import io.ilikeorangutans.ancol.game.player.Player;
+import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.map.tile.Tile;
 import io.ilikeorangutans.ancol.map.tile.TileType;

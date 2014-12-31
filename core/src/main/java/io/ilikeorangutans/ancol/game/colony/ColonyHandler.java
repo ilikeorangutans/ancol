@@ -1,8 +1,8 @@
 package io.ilikeorangutans.ancol.game.colony;
 
-import io.ilikeorangutans.ancol.game.Player;
-import io.ilikeorangutans.ancol.game.PlayerOwnedComponent;
-import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
+import io.ilikeorangutans.ancol.game.player.Player;
+import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
+import io.ilikeorangutans.ancol.game.player.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;

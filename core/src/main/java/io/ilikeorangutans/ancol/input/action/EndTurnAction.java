@@ -1,6 +1,6 @@
 package io.ilikeorangutans.ancol.input.action;
 
-import io.ilikeorangutans.ancol.game.turn.TurnConcludedEvent;
+import io.ilikeorangutans.ancol.game.player.TurnConcludedEvent;
 import io.ilikeorangutans.bus.Emitter;
 
 /**

@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.game;
+package io.ilikeorangutans.ancol.game.player;
 
 /**
  *

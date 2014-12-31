@@ -9,13 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.OpenColonyEvent;
-import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
+import io.ilikeorangutans.ancol.game.player.BeginTurnEvent;
 import io.ilikeorangutans.ancol.input.InputProcessorFactory;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
@@ -48,7 +49,7 @@ public class GameScreenUI {
 		this.skin = skin;
 		stage = new Stage(new ScreenViewport());
 		Table table = new Table(skin);
-		table.left().bottom();
+
 		stage.addActor(table);
 
 		TextButton tb;
@@ -57,12 +58,12 @@ public class GameScreenUI {
 		tb2.setDisabled(true);
 
 		bus.subscribe(new CurrentPlayerListener(tb2));
-		table.add(tb2).pad(17);
+		table.add(tb2);//.pad(17);
 
 		TextButton tb3 = new TextButton("Selected Unit (Points) (activity) (queue)", skin, "default");
 		tb3.setDisabled(true);
 		bus.subscribe(new SelectedUnitListener(tb3));
-		table.add(tb3).pad(17);
+		table.add(tb3);//.pad(17);
 
 		tb = new TextButton("Fortify", skin, "default");
 		table.add(tb);
@@ -101,7 +102,10 @@ public class GameScreenUI {
 				actions.getEndTurnAction().perform();
 			}
 		});
-		table.add(tb).pad(34);
+
+		table.add(tb);
+
+		table.bottom().center().pad(17).pack();
 	}
 
 	public void setupInputProcessing(InputProcessorFactory inputProcessorFactory, ScreenToTile screenToTile) {
@@ -162,6 +166,27 @@ public class GameScreenUI {
 		d.getContentTable().add(scrollPane);
 		d.getContentTable().pad(11);
 		d.show(stage);
+	}
+
+	@Subscribe
+	public void onBeginTurn(BeginTurnEvent event) {
+
+		final Label label = new Label("Begin turn: " + event.player.getName(), skin);
+		label.setFontScale(2.0F);
+		label.setPosition(20, Gdx.graphics.getHeight() - 20 - label.getHeight());
+
+		Timer timer = new Timer();
+		timer.scheduleTask(new Timer.Task() {
+			@Override
+			public void run() {
+				label.setVisible(false);
+				label.remove();
+			}
+		}, 2);
+		timer.start();
+
+
+		stage.addActor(label);
 	}
 
 	public static class CurrentPlayerListener {
