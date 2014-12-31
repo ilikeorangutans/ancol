@@ -1,15 +1,27 @@
 package io.ilikeorangutans.ancol.desktop;
 
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import io.ilikeorangutans.ancol.AnCol;
+import io.ilikeorangutans.ancol.input.AnColInputProcessor;
+import io.ilikeorangutans.ancol.input.InputProcessorFactory;
+import io.ilikeorangutans.ancol.input.action.AnColActions;
+import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
+import io.ilikeorangutans.bus.Emitter;
 
 public class DesktopLauncher {
-    public static void main(String[] arg) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 1024;
-        config.height = 768;
-        new LwjglApplication(new AnCol(), config);
-    }
+	public static void main(String[] arg) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 1024;
+		config.height = 768;
+		new LwjglApplication(new AnCol(new InputProcessorFactory() {
+
+			@Override
+			public InputProcessor create(Emitter emitter, ScreenToTile screenToTile, AnColActions actions) {
+				return new AnColInputProcessor(emitter, screenToTile, actions);
+			}
+		}), config);
+	}
 
 }

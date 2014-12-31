@@ -21,6 +21,7 @@ import io.ilikeorangutans.ancol.game.turn.PlayerTurnSystem;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
+import io.ilikeorangutans.ancol.input.InputProcessorFactory;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PlayerVisibilityMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
@@ -48,7 +49,7 @@ public class GameScreen implements Screen {
 	private MapViewport viewport;
 	private AnColRenderer renderer;
 
-	public GameScreen(Game game, Skin skin) {
+	public GameScreen(Game game, Skin skin, InputProcessorFactory inputProcessorFactory) {
 		this.game = game;
 		bus = new SimpleEventBus();
 
@@ -73,7 +74,7 @@ public class GameScreen implements Screen {
 		Map playerMap = new PlayerVisibilityMap(startup.getMap(), p1, tileTypes.getTypeForId(0));
 		bus.subscribe(playerMap);
 		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, playerMap);
-		ui.setupInputProcessing(viewport);
+		ui.setupInputProcessing(inputProcessorFactory, viewport);
 
 		setupRendering();
 

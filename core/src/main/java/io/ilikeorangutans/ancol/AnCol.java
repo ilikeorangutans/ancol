@@ -4,31 +4,38 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import io.ilikeorangutans.ancol.input.InputProcessorFactory;
 import io.ilikeorangutans.ancol.screen.MainScreen;
 
 public class AnCol extends Game {
 
-    private Stage stage;
+	private final InputProcessorFactory inputProcessorFactory;
+	private Stage stage;
 
-    private Skin skin;
+	private Skin skin;
 
-    @Override
-    public void create() {
-        stage = new Stage();
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+	public AnCol(InputProcessorFactory inputProcessorFactory) {
 
-        setScreen(new MainScreen(this, skin));
-    }
+		this.inputProcessorFactory = inputProcessorFactory;
+	}
 
-    @Override
-    public void resize(int width, int height) {
+	@Override
+	public void create() {
+		stage = new Stage();
+		skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
-    }
+		setScreen(new MainScreen(this, skin, inputProcessorFactory));
+	}
 
-    @Override
-    public void dispose() {
-        super.dispose();
+	@Override
+	public void resize(int width, int height) {
 
-        skin.dispose();
-    }
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+
+		skin.dispose();
+	}
 }

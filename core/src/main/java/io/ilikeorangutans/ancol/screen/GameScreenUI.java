@@ -2,6 +2,7 @@ package io.ilikeorangutans.ancol.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,7 +16,7 @@ import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.OpenColonyEvent;
 import io.ilikeorangutans.ancol.game.turn.BeginTurnEvent;
-import io.ilikeorangutans.ancol.input.AnColInputProcessor;
+import io.ilikeorangutans.ancol.input.InputProcessorFactory;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
@@ -103,12 +104,14 @@ public class GameScreenUI {
 		table.add(tb).pad(34);
 	}
 
-	public void setupInputProcessing(ScreenToTile screenToTile) {
+	public void setupInputProcessing(InputProcessorFactory inputProcessorFactory, ScreenToTile screenToTile) {
+
+		InputProcessor platformSpecific = inputProcessorFactory.create(bus, screenToTile, actions);
+		bus.subscribe(platformSpecific);
+
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		AnColInputProcessor anColInputProcessor = new AnColInputProcessor(bus, screenToTile, actions);
-		bus.subscribe(anColInputProcessor);
 		inputMultiplexer.addProcessor(stage);
-		inputMultiplexer.addProcessor(anColInputProcessor);
+		inputMultiplexer.addProcessor(platformSpecific);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 

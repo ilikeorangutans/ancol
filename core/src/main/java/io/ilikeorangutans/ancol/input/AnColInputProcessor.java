@@ -13,7 +13,7 @@ import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.map.viewport.ScrollEvent;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectEvent;
-import io.ilikeorangutans.bus.EventBus;
+import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.Entity;
 
@@ -22,15 +22,15 @@ import io.ilikeorangutans.ecs.Entity;
  */
 public class AnColInputProcessor implements InputProcessor {
 
-	private final EventBus bus;
+	private final Emitter emitter;
 	private final ScreenToTile screenToTile;
 	private final AnColActions actions;
 	private int lastX, lastY;
 	private Entity selectedEntity;
 	private boolean dragging = false;
 
-	public AnColInputProcessor(EventBus bus, ScreenToTile screenToTile, AnColActions actions) {
-		this.bus = bus;
+	public AnColInputProcessor(Emitter emitter, ScreenToTile screenToTile, AnColActions actions) {
+		this.emitter = emitter;
 		this.screenToTile = screenToTile;
 		this.actions = actions;
 	}
@@ -45,16 +45,16 @@ public class AnColInputProcessor implements InputProcessor {
 
 		switch (keycode) {
 			case Input.Keys.LEFT:
-				bus.fire(new ScrollEvent(-30, 0));
+				emitter.fire(new ScrollEvent(-30, 0));
 				break;
 			case Input.Keys.RIGHT:
-				bus.fire(new ScrollEvent(30, 0));
+				emitter.fire(new ScrollEvent(30, 0));
 				break;
 			case Input.Keys.UP:
-				bus.fire(new ScrollEvent(0, -30));
+				emitter.fire(new ScrollEvent(0, -30));
 				break;
 			case Input.Keys.DOWN:
-				bus.fire(new ScrollEvent(0, 30));
+				emitter.fire(new ScrollEvent(0, 30));
 				break;
 			case Input.Keys.B:
 				actions.getBuildColonyAction().perform();
@@ -63,10 +63,10 @@ public class AnColInputProcessor implements InputProcessor {
 				actions.getImproveTileAction().perform();
 				break;
 			case Input.Keys.SPACE:
-				bus.fire(new CommandEvent(new IdleCommand()));
+				emitter.fire(new CommandEvent(new IdleCommand()));
 				break;
 			case Input.Keys.ENTER:
-				bus.fire(new SimulateEntityEvent(selectedEntity));
+				emitter.fire(new SimulateEntityEvent(selectedEntity));
 				break;
 
 		}
@@ -107,7 +107,7 @@ public class AnColInputProcessor implements InputProcessor {
 			moveAction.setDestination(destination);
 			moveAction.perform();
 		} else if (button == Input.Buttons.LEFT) {
-			bus.fire(new SelectEvent(destination.x, destination.y));
+			emitter.fire(new SelectEvent(destination.x, destination.y));
 			return true;
 		}
 
@@ -120,7 +120,7 @@ public class AnColInputProcessor implements InputProcessor {
 		dragging = true;
 
 		if (Gdx.input.isButtonPressed(1) || Gdx.input.isTouched(1)) {
-			bus.fire(new ScrollEvent(lastX - screenX, lastY - screenY));
+			emitter.fire(new ScrollEvent(lastX - screenX, lastY - screenY));
 
 			lastX = screenX;
 			lastY = screenY;

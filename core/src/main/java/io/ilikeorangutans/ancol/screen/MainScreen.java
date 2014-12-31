@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.ilikeorangutans.ancol.input.InputProcessorFactory;
 
 /**
  *
@@ -17,8 +18,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MainScreen implements Screen {
 
 	private final Stage stage;
+	private final InputProcessorFactory inputProcessorFactory;
 
-	public MainScreen(final Game game, final Skin skin) {
+	public MainScreen(final Game game, final Skin skin, final InputProcessorFactory inputProcessorFactory) {
+		this.inputProcessorFactory = inputProcessorFactory;
 
 		stage = new Stage(new ScreenViewport());
 
@@ -39,7 +42,7 @@ public class MainScreen implements Screen {
 		startGame.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new GameScreen(game, skin));
+				game.setScreen(new GameScreen(game, skin, inputProcessorFactory));
 			}
 		});
 		stage.addActor(startGame);
