@@ -158,9 +158,22 @@ public class MapViewport implements MapToScreen, ScreenToMap, ScreenToTile {
 	}
 
 	@Subscribe
-	public void onScrollEvent(ScrollEvent e) {
+	public void onScroll(ScrollEvent e) {
 		moveBy(e.deltaX, e.deltaY);
 	}
+
+	@Subscribe
+	public void onCenterView(CenterViewEvent event) {
+		centerOn(event.point);
+	}
+
+	private void centerOn(Point point) {
+		int x = point.x * tileWidth - viewWidthInPixels / 2;
+		int y = point.y * tileHeight - viewHeightInPixels / 2;
+
+		moveTo(x, y);
+	}
+
 
 	/**
 	 * Returns the first currently visible tile in this viewport, that is the top left tile that is visible.
