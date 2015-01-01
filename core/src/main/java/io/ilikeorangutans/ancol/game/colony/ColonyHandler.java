@@ -9,7 +9,7 @@ import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.surrounding.PointSurroundings;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
-import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
+import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;

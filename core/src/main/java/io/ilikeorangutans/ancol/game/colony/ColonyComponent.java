@@ -67,7 +67,9 @@ public class ColonyComponent implements Component {
 
 	public void addColonist(Entity entity) {
 		entity.getComponent(RenderableComponent.class).setVisible(false);
-		entity.getComponent(ControllableComponent.class).clearCommands();
+		ControllableComponent controllableComponent = entity.getComponent(ControllableComponent.class);
+		controllableComponent.clearCommands();
+		controllableComponent.setActive(false);
 
 		colonists.add(entity);
 	}

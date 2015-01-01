@@ -3,6 +3,10 @@ package io.ilikeorangutans.ancol.select;
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.PositionComponent;
+import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
+import io.ilikeorangutans.ancol.select.event.MultipleSelectOptionsEvent;
+import io.ilikeorangutans.ancol.select.event.SelectAtPositionEvent;
+import io.ilikeorangutans.ancol.select.event.SelectEntityEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
@@ -35,8 +39,7 @@ public class SelectionHandler {
 	@Subscribe
 	public void onSelectAtPositionEvent(SelectAtPositionEvent selectEvent) {
 
-		Point p = new Point(selectEvent.x, selectEvent.y);
-		List<Entity> selectable = getSelectablesAtPoint(p);
+		List<Entity> selectable = getSelectablesAtPoint(selectEvent.point);
 
 		if (selectable.isEmpty())
 			return;

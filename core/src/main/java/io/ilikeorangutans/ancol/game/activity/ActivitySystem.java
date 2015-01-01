@@ -70,6 +70,11 @@ public class ActivitySystem {
 		while (activityComponent.hasActivity() && activityComponent.canPerform()) {
 			activityComponent.step(emitter);
 			entity.updated();
+
+			if (activityComponent.getActivity().isComplete()) {
+				activityComponent.setActivity(null);
+				emitter.fire(new ActivityCompleteEvent(entity, activityComponent.getActivity()));
+			}
 		}
 
 		emitter.fire(new ActionPointsConsumedEvent(entity));

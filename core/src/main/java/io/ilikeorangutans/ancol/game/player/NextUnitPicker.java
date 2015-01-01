@@ -3,15 +3,17 @@ package io.ilikeorangutans.ancol.game.player;
 import io.ilikeorangutans.ancol.game.actionpoint.ActionPointsConsumedEvent;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.event.ActivityCompleteEvent;
+import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.event.SimulateEntityEvent;
 import io.ilikeorangutans.ancol.map.viewport.CenterViewEvent;
-import io.ilikeorangutans.ancol.select.SelectEntityEvent;
+import io.ilikeorangutans.ancol.select.event.SelectEntityEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entities;
 import io.ilikeorangutans.ecs.Entity;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -96,11 +98,19 @@ public class NextUnitPicker {
 
 	private List<Entity> getNextUnits() {
 
-		List<Entity> controllable = entities.getEntityByType(ComponentType.fromClasses(PlayerOwnedComponent.class, ActivityComponent.class));
+		List<Entity> controllable = entities.getEntityByType(ComponentType.fromClasses(PlayerOwnedComponent.class, ActivityComponent.class, ControllableComponent.class));
 		if (controllable.size() == 0)
 			return Collections.emptyList();
 
-		Collections.sort(controllable, new Comparator<Entity>() {
+		List<Entity> result = new ArrayList<Entity>();
+		for (Entity entity : controllable) {
+			if (!entity.getComponent(ControllableComponent.class).isActive())
+				continue;
+
+			result.add(entity);
+		}
+
+		Collections.sort(result, new Comparator<Entity>() {
 			@Override
 			public int compare(Entity o1, Entity o2) {
 
@@ -121,7 +131,7 @@ public class NextUnitPicker {
 			}
 		});
 
-		return controllable;
+		return result;
 	}
 
 }

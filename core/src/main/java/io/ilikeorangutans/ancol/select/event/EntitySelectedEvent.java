@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.select;
+package io.ilikeorangutans.ancol.select.event;
 
 import io.ilikeorangutans.bus.Event;
 import io.ilikeorangutans.ecs.Entity;

@@ -2,7 +2,7 @@ package io.ilikeorangutans.ancol.input.action;
 
 import io.ilikeorangutans.ancol.game.cmd.BuildColonyCommand;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandEvent;
-import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
+import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.Entity;

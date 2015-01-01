@@ -14,6 +14,18 @@ public class ControllableComponent implements Component {
 	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(ControllableComponent.class);
 
 	private final Queue<Command> commands = new LinkedList<Command>();
+	/**
+	 * Indicates whether this entity can currently receive commands.
+	 */
+	private boolean active = true;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	public void add(Command cmd) {
 		commands.add(cmd);

@@ -1,11 +1,9 @@
 package io.ilikeorangutans.ancol.game.activity;
 
 import io.ilikeorangutans.ancol.game.actionpoint.ActionPoints;
-import io.ilikeorangutans.ancol.game.activity.event.ActivityCompleteEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.ecs.Component;
 import io.ilikeorangutans.ecs.ComponentType;
-import io.ilikeorangutans.ecs.Entity;
 
 /**
  * Performs action point calculations for entities.
@@ -18,13 +16,7 @@ public class ActivityComponent implements Component {
 
 	private Activity activity;
 
-	/**
-	 * TODO: Entity could be passed into #beginTurn() from ActivitySystem...
-	 */
-	private Entity entity;
-
 	public ActivityComponent(int maxPointsPerTurn) {
-
 		actionPoints = new ActionPoints(maxPointsPerTurn);
 	}
 
@@ -40,11 +32,6 @@ public class ActivityComponent implements Component {
 	 */
 	public void step(Emitter emitter) {
 		activity.perform(emitter, actionPoints);
-
-		if (activity.isComplete()) {
-			emitter.fire(new ActivityCompleteEvent(entity, activity));
-			activity = null;
-		}
 	}
 
 	public boolean hasActivity() {
