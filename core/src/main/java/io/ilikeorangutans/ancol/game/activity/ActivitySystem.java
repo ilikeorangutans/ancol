@@ -1,7 +1,5 @@
 package io.ilikeorangutans.ancol.game.activity;
 
-import io.ilikeorangutans.ancol.game.player.Player;
-import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.actionpoint.ActionPointsConsumedEvent;
 import io.ilikeorangutans.ancol.game.activity.event.ActivityCompleteEvent;
 import io.ilikeorangutans.ancol.game.cmd.Command;
@@ -9,6 +7,8 @@ import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandQueuedEvent;
 import io.ilikeorangutans.ancol.game.event.SimulateEntityEvent;
 import io.ilikeorangutans.ancol.game.player.BeginTurnEvent;
+import io.ilikeorangutans.ancol.game.player.Player;
+import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
@@ -72,9 +72,7 @@ public class ActivitySystem {
 			entity.updated();
 		}
 
-		if (activityComponent.getPointsLeft() == 0) {
-			emitter.fire(new ActionPointsConsumedEvent(entity));
-		}
+		emitter.fire(new ActionPointsConsumedEvent(entity));
 	}
 
 	/**
@@ -103,6 +101,7 @@ public class ActivitySystem {
 
 			ActivityComponent activityComponent = entity.getComponent(ActivityComponent.class);
 			activityComponent.replenish();
+			entity.updated();
 		}
 	}
 
