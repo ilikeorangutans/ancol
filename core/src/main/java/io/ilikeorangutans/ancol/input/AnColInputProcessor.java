@@ -12,7 +12,7 @@ import io.ilikeorangutans.ancol.input.action.MoveAction;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.map.viewport.ScrollEvent;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
-import io.ilikeorangutans.ancol.select.SelectEvent;
+import io.ilikeorangutans.ancol.select.SelectAtPositionEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.Entity;
@@ -107,7 +107,7 @@ public class AnColInputProcessor implements InputProcessor {
 			moveAction.setDestination(destination);
 			moveAction.perform();
 		} else if (button == Input.Buttons.LEFT) {
-			emitter.fire(new SelectEvent(destination.x, destination.y));
+			emitter.fire(new SelectAtPositionEvent(destination.x, destination.y));
 			return true;
 		}
 

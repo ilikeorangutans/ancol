@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import io.ilikeorangutans.ancol.game.player.Player;
-import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.Startup;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.ActivitySystem;
@@ -17,6 +15,9 @@ import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Profession;
 import io.ilikeorangutans.ancol.game.colony.ColonyHandler;
+import io.ilikeorangutans.ancol.game.player.NextUnitPicker;
+import io.ilikeorangutans.ancol.game.player.Player;
+import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.player.PlayerTurnSystem;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
@@ -94,6 +95,9 @@ public class GameScreen implements Screen {
 
 		ColonyHandler colonyHandler = new ColonyHandler(bus, facade.getEntities(), facade.getEntities(), playerMap);
 		bus.subscribe(colonyHandler);
+
+		NextUnitPicker nextUnitPicker = new NextUnitPicker(bus, p1, facade.getEntities());
+		bus.subscribe(nextUnitPicker);
 
 		renderer = new AnColRenderer(batch, viewport, playerMap, facade.getEntities());
 

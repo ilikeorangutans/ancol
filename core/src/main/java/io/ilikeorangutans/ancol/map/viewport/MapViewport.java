@@ -178,7 +178,7 @@ public class MapViewport implements MapToScreen, ScreenToMap, ScreenToTile {
 	/**
 	 * Returns the first currently visible tile in this viewport, that is the top left tile that is visible.
 	 *
-	 * @return //
+	 * @return
 	 */
 	public Point getFirstVisibleTile() {
 

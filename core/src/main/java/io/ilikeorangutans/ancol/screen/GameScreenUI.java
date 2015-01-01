@@ -17,6 +17,7 @@ import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.OpenColonyEvent;
 import io.ilikeorangutans.ancol.game.player.BeginTurnEvent;
+import io.ilikeorangutans.ancol.game.player.PickNextEntityEvent;
 import io.ilikeorangutans.ancol.input.InputProcessorFactory;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
@@ -58,13 +59,27 @@ public class GameScreenUI {
 		tb2.setDisabled(true);
 
 		bus.subscribe(new CurrentPlayerListener(tb2));
-		table.add(tb2);//.pad(17);
+		table.add(tb2);
 
 		TextButton tb3 = new TextButton("Selected Unit (Points) (activity) (queue)", skin, "default");
-		tb3.setDisabled(true);
-		bus.subscribe(new SelectedUnitListener(tb3));
-		table.add(tb3);//.pad(17);
+		tb3.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				actions.getCenterViewAction().perform();
+			}
+		});
+		table.add(tb3);
 
+		TextButton findNext = new TextButton("Next", skin);
+		findNext.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				bus.fire(new PickNextEntityEvent());
+			}
+		});
+		table.add(findNext);
+
+		bus.subscribe(new SelectedUnitListener(tb3));
 		tb = new TextButton("Fortify", skin, "default");
 		table.add(tb);
 

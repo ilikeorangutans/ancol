@@ -14,6 +14,7 @@ public class AnColActions {
 	private Action buildRoadAction;
 	private Action buildColonyAction;
 	private MoveAction moveAction;
+	private CenterViewAction centerViewAction;
 
 	public AnColActions(EventBus bus, PathFinder pathFinder) {
 		this.bus = bus;
@@ -32,6 +33,9 @@ public class AnColActions {
 
 		moveAction = new MoveAction(bus, pathFinder);
 		bus.subscribe(moveAction);
+
+		centerViewAction = new CenterViewAction(bus);
+		bus.subscribe(centerViewAction);
 	}
 
 	public Action getImproveTileAction() {
@@ -48,6 +52,10 @@ public class AnColActions {
 
 	public Action getBuildColonyAction() {
 		return buildColonyAction;
+	}
+
+	public CenterViewAction getCenterViewAction() {
+		return centerViewAction;
 	}
 
 	public MoveAction getMoveAction() {
