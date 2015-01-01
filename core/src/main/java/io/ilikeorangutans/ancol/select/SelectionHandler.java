@@ -28,7 +28,12 @@ public class SelectionHandler {
 	}
 
 	@Subscribe
-	public void onSelectEvent(SelectEvent selectEvent) {
+	public void onSelectEntityEvent(SelectEntityEvent event) {
+		selectEntity(event.entity);
+	}
+
+	@Subscribe
+	public void onSelectAtPositionEvent(SelectAtPositionEvent selectEvent) {
 
 		Point p = new Point(selectEvent.x, selectEvent.y);
 		List<Entity> selectable = getSelectablesAtPoint(p);

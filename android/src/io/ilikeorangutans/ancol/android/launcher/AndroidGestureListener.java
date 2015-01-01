@@ -9,7 +9,7 @@ import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.map.viewport.ScrollEvent;
 import io.ilikeorangutans.ancol.select.EntitySelectedEvent;
-import io.ilikeorangutans.ancol.select.SelectEvent;
+import io.ilikeorangutans.ancol.select.SelectAtPositionEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.Subscribe;
@@ -53,7 +53,7 @@ public class AndroidGestureListener implements GestureDetector.GestureListener {
 
 		final Point destination = screenToTile.screenToTile((int) x, (int) y);
 
-		emitter.fire(new SelectEvent(destination.x, destination.y));
+		emitter.fire(new SelectAtPositionEvent(destination.x, destination.y));
 
 		return true;
 	}
