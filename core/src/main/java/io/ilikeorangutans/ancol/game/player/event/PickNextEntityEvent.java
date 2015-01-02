@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.game.player;
+package io.ilikeorangutans.ancol.game.player.event;
 
 import io.ilikeorangutans.bus.Event;
 

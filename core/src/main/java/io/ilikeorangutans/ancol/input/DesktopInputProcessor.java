@@ -20,7 +20,7 @@ import io.ilikeorangutans.ecs.Entity;
 /**
  *
  */
-public class AnColInputProcessor implements InputProcessor {
+public class DesktopInputProcessor implements InputProcessor {
 
 	private final Emitter emitter;
 	private final ScreenToTile screenToTile;
@@ -29,7 +29,7 @@ public class AnColInputProcessor implements InputProcessor {
 	private Entity selectedEntity;
 	private boolean dragging = false;
 
-	public AnColInputProcessor(Emitter emitter, ScreenToTile screenToTile, AnColActions actions) {
+	public DesktopInputProcessor(Emitter emitter, ScreenToTile screenToTile, AnColActions actions) {
 		this.emitter = emitter;
 		this.screenToTile = screenToTile;
 		this.actions = actions;

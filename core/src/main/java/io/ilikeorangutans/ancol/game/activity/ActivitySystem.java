@@ -6,7 +6,7 @@ import io.ilikeorangutans.ancol.game.cmd.Command;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandQueuedEvent;
 import io.ilikeorangutans.ancol.game.event.SimulateEntityEvent;
-import io.ilikeorangutans.ancol.game.player.BeginTurnEvent;
+import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.bus.Emitter;

@@ -2,8 +2,8 @@ package io.ilikeorangutans.ancol.map;
 
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.player.Player;
-import io.ilikeorangutans.ancol.game.player.BeginTurnEvent;
-import io.ilikeorangutans.ancol.game.player.PlayerJoinedEvent;
+import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
+import io.ilikeorangutans.ancol.game.player.event.PlayerJoinedEvent;
 import io.ilikeorangutans.ancol.map.tile.Tile;
 import io.ilikeorangutans.ancol.map.tile.TileType;
 import io.ilikeorangutans.bus.EventBus;
