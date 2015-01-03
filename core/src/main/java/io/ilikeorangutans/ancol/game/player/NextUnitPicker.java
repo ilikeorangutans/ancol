@@ -3,7 +3,6 @@ package io.ilikeorangutans.ancol.game.player;
 import io.ilikeorangutans.ancol.game.actionpoint.ActionPointsConsumedEvent;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.event.ActivityCompleteEvent;
-import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.event.SimulateEntityEvent;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.player.event.PickNextEntityEvent;
@@ -12,13 +11,9 @@ import io.ilikeorangutans.ancol.map.viewport.CenterViewEvent;
 import io.ilikeorangutans.ancol.select.event.SelectEntityEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
-import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entities;
 import io.ilikeorangutans.ecs.Entity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -33,6 +28,8 @@ public class NextUnitPicker {
 
 	private final Entities entities;
 
+	private NextUnits nextUnits;
+
 	/**
 	 * Flag whether we are allowed to act or not; enabled when the current player switches to the player this instance
 	 * was initialized with.
@@ -43,17 +40,27 @@ public class NextUnitPicker {
 		this.player = player;
 		this.emitter = emitter;
 		this.entities = entities;
+
+		nextUnits = new NextUnits(entities, player);
 	}
 
 	@Subscribe
 	public void onActivityComplete(ActivityCompleteEvent event) {
-		if (!event.entity.getComponent(ActivityComponent.class).canPerform())
+		Entity entity = event.entity;
+		if (!hasActionPoints(entity)) {
 			selectNextEntity();
+		}
+	}
+
+	private boolean hasActionPoints(Entity entity) {
+		return entity.getComponent(ActivityComponent.class).canPerform();
 	}
 
 	@Subscribe
 	public void onActionPointsConsumed(ActionPointsConsumedEvent event) {
-		selectNextEntity();
+		if (!hasActionPoints(event.entity)) {
+			selectNextEntity();
+		}
 	}
 
 	@Subscribe
@@ -73,7 +80,7 @@ public class NextUnitPicker {
 		if (!enabled)
 			return;
 
-		List<Entity> allUnits = getNextUnits();
+		List<Entity> allUnits = nextUnits.getActiveUnits();
 
 		for (Entity entity : allUnits) {
 			ActivityComponent ac = entity.getComponent(ActivityComponent.class);
@@ -92,49 +99,10 @@ public class NextUnitPicker {
 				emitter.fire(new SimulateEntityEvent(entity));
 				emitter.fire(new CenterViewEvent(entity));
 			}
-
 		}
 
 		enabled = false;
 		emitter.fire(new TurnConcludedEvent());
-	}
-
-	private List<Entity> getNextUnits() {
-
-		List<Entity> controllable = entities.getEntityByType(ComponentType.fromClasses(PlayerOwnedComponent.class, ActivityComponent.class, ControllableComponent.class));
-		if (controllable.size() == 0)
-			return Collections.emptyList();
-
-		List<Entity> result = new ArrayList<Entity>();
-		for (Entity entity : controllable) {
-			if (!entity.getComponent(ControllableComponent.class).isActive())
-				continue;
-
-			result.add(entity);
-		}
-
-		Collections.sort(result, new Comparator<Entity>() {
-			@Override
-			public int compare(Entity o1, Entity o2) {
-
-				ActivityComponent ac1 = o1.getComponent(ActivityComponent.class);
-				ActivityComponent ac2 = o2.getComponent(ActivityComponent.class);
-
-				if (ac1.hasActivity() && ac2.hasActivity()) {
-					return 0;
-				}
-
-				if (ac1.hasActivity() && !ac2.hasActivity())
-					return 1;
-
-				if (ac2.hasActivity() && !ac1.hasActivity())
-					return -1;
-
-				return 0;
-			}
-		});
-
-		return result;
 	}
 
 }
