@@ -19,8 +19,6 @@ public class SimpleEventBus implements EventBus {
 		if (event == null)
 			return;
 
-//        System.out.println("SimpleEventBus.fire " + event);
-
 		final String key = event.getClass().getName();
 		if (!handlers.containsKey(key))
 			return;
@@ -31,7 +29,7 @@ public class SimpleEventBus implements EventBus {
 			} catch (IllegalAccessException e) {
 				throw new RuntimeException("Could not call event handler", e);
 			} catch (InvocationTargetException e) {
-				throw new RuntimeException("Could not call event handler", e);
+				throw new RuntimeException("Exception while calling event handler for event " + event, e);
 			}
 		}
 
