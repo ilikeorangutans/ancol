@@ -42,7 +42,7 @@ public class PlayerTurnSystem {
 		//currentPlayerIndex++;
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 
-		bus.fire(new BeginTurnEvent(getCurrentPlayer()));
+		bus.queue(new BeginTurnEvent(getCurrentPlayer()));
 	}
 
 	public Player getCurrentPlayer() {

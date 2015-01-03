@@ -2,8 +2,9 @@ package io.ilikeorangutans.ancol.game.player;
 
 import io.ilikeorangutans.ancol.game.actionpoint.ActionPointsConsumedEvent;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
-import io.ilikeorangutans.ancol.game.activity.event.ActivityCompleteEvent;
+import io.ilikeorangutans.ancol.game.event.AllEntitiesSimulatedEvent;
 import io.ilikeorangutans.ancol.game.event.SimulateEntityEvent;
+import io.ilikeorangutans.ancol.game.event.SimulateQueuedEntitiesEvent;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.player.event.PickNextEntityEvent;
 import io.ilikeorangutans.ancol.game.player.event.TurnConcludedEvent;
@@ -11,7 +12,6 @@ import io.ilikeorangutans.ancol.map.viewport.CenterViewEvent;
 import io.ilikeorangutans.ancol.select.event.SelectEntityEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
-import io.ilikeorangutans.ecs.Entities;
 import io.ilikeorangutans.ecs.Entity;
 
 import java.util.List;
@@ -26,30 +26,15 @@ public class NextUnitPicker {
 
 	private final Emitter emitter;
 
-	private final Entities entities;
+	private final PlayerEntities entities;
 
-	private NextUnits nextUnits;
 
-	/**
-	 * Flag whether we are allowed to act or not; enabled when the current player switches to the player this instance
-	 * was initialized with.
-	 */
 	private boolean enabled = false;
 
-	public NextUnitPicker(Emitter emitter, Player player, Entities entities) {
+	public NextUnitPicker(Emitter emitter, Player player, PlayerEntities entities) {
 		this.player = player;
 		this.emitter = emitter;
 		this.entities = entities;
-
-		nextUnits = new NextUnits(entities, player);
-	}
-
-	@Subscribe
-	public void onActivityComplete(ActivityCompleteEvent event) {
-		Entity entity = event.entity;
-		if (!hasActionPoints(entity)) {
-			selectNextEntity();
-		}
 	}
 
 	private boolean hasActionPoints(Entity entity) {
@@ -64,6 +49,17 @@ public class NextUnitPicker {
 	}
 
 	@Subscribe
+	public void onSimulateQueuedEntities(SimulateQueuedEntitiesEvent event) {
+		simulateQueuedEntities();
+	}
+
+	@Subscribe
+	public void onTurnConcluded(TurnConcludedEvent event) {
+		setEnabled(false);
+	}
+
+
+	@Subscribe
 	public void onPickNextEntity(PickNextEntityEvent event) {
 		selectNextEntity();
 	}
@@ -71,38 +67,58 @@ public class NextUnitPicker {
 	@Subscribe
 	public void onBeginTurn(BeginTurnEvent event) {
 		if (event.player.equals(player)) {
-			enabled = true;
+			setEnabled(true);
 			selectNextEntity();
 		}
 	}
 
+	/**
+	 * Finds the next entity that has action points and no activity and selects it for the player.
+	 */
 	private void selectNextEntity() {
-		if (!enabled)
+		if (!isEnabled()) {
 			return;
+		}
 
-		List<Entity> allUnits = nextUnits.getActiveUnits();
+		List<Entity> allUnits = entities.getActiveUnits();
 
-		for (Entity entity : allUnits) {
+		if (allUnits.size() > 0) {
+			Entity entity = allUnits.get(0);
+			emitter.fire(new SelectEntityEvent(entity));
+			emitter.fire(new CenterViewEvent(entity));
+			return;
+		}
+
+		setEnabled(false);
+
+		simulateQueuedEntities();
+	}
+
+	public void simulateQueuedEntities() {
+		List<Entity> unitsWithActivity = entities.getUnitsWithActivity();
+		for (Entity entity : unitsWithActivity) {
+			emitter.fire(new SimulateEntityEvent(entity));
+
 			ActivityComponent ac = entity.getComponent(ActivityComponent.class);
-
-			if (!ac.canPerform()) {
-				continue;
-			}
-
-			if (!ac.hasActivity()) {
-				emitter.fire(new SelectEntityEvent(entity));
-				emitter.fire(new CenterViewEvent(entity));
+			if (ac.canPerform()) {
+				setEnabled(true);
+				selectNextEntity();
 				return;
-			}
-
-			if (ac.hasActivity() && ac.canPerform()) {
-				emitter.fire(new SimulateEntityEvent(entity));
-				emitter.fire(new CenterViewEvent(entity));
 			}
 		}
 
-		enabled = false;
-		emitter.fire(new TurnConcludedEvent());
+		emitter.fire(new AllEntitiesSimulatedEvent());
 	}
 
+	/**
+	 * Flag whether we are allowed to act or not; enabled when the current player switches to the player this instance
+	 * was initialized with.
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 }

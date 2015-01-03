@@ -26,6 +26,7 @@ public class AnColActions {
 		improveTileAction = new ImproveTileAction(bus);
 		bus.subscribe(improveTileAction);
 		endTurnAction = new EndTurnAction(bus);
+		bus.subscribe(endTurnAction);
 		buildRoadAction = new BuildRoadAction(bus);
 		bus.subscribe(buildRoadAction);
 		buildColonyAction = new BuildColonyAction(bus);
