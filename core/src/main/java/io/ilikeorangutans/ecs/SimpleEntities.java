@@ -80,7 +80,7 @@ public class SimpleEntities implements Entities, EntityFactory {
 			}
 		}
 
-		return result;
+		return Collections.unmodifiableList(result);
 	}
 
 	private final class SortByNumberOfEntities implements Comparator<ComponentType> {
