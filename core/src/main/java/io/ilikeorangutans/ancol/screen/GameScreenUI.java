@@ -57,9 +57,8 @@ public class GameScreenUI {
 
 		final TextButton tb2 = new TextButton("Current Player", skin, "default");
 		tb2.setDisabled(true);
-
 		bus.subscribe(new CurrentPlayerListener(tb2));
-		table.add(tb2);
+		table.add(tb2).padRight(11);
 
 		TextButton tb3 = new TextButton("Selected Unit (Points) (activity) (queue)", skin, "default");
 		tb3.addListener(new ClickListener() {
@@ -77,7 +76,7 @@ public class GameScreenUI {
 				bus.fire(new PickNextEntityEvent());
 			}
 		});
-		table.add(findNext);
+		table.add(findNext).padRight(11);
 
 		bus.subscribe(new SelectedUnitListener(tb3));
 		tb = new TextButton("Fortify", skin, "default");
@@ -118,7 +117,7 @@ public class GameScreenUI {
 			}
 		});
 
-		table.add(tb);
+		table.add(tb).padLeft(22);
 
 		table.bottom().center().pad(17).pack();
 	}
