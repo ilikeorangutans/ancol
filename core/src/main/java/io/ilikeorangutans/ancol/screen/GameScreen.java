@@ -15,10 +15,7 @@ import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Profession;
 import io.ilikeorangutans.ancol.game.colony.ColonyHandler;
-import io.ilikeorangutans.ancol.game.player.NextUnitPicker;
-import io.ilikeorangutans.ancol.game.player.Player;
-import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
-import io.ilikeorangutans.ancol.game.player.PlayerTurnSystem;
+import io.ilikeorangutans.ancol.game.player.*;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
@@ -84,6 +81,8 @@ public class GameScreen implements Screen {
 		facade = new Facade(bus);
 		facade.init();
 
+		SimplePlayerEntities p1Entities = new SimplePlayerEntities(facade.getEntities(), p1);
+
 		SelectionHandler selectionHandler = new SelectionHandler(facade.getEntities(), bus);
 		bus.subscribe(selectionHandler);
 
@@ -96,7 +95,7 @@ public class GameScreen implements Screen {
 		ColonyHandler colonyHandler = new ColonyHandler(bus, facade.getEntities(), facade.getEntities(), playerMap);
 		bus.subscribe(colonyHandler);
 
-		NextUnitPicker nextUnitPicker = new NextUnitPicker(bus, p1, facade.getEntities());
+		NextUnitPicker nextUnitPicker = new NextUnitPicker(bus, p1, p1Entities);
 		bus.subscribe(nextUnitPicker);
 
 		renderer = new AnColRenderer(batch, viewport, playerMap, facade.getEntities());
@@ -151,6 +150,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+
+		bus.processQueue();
 
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

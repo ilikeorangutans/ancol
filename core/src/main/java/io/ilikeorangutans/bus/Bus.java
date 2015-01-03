@@ -5,8 +5,11 @@ package io.ilikeorangutans.bus;
  */
 public interface Bus {
 
-    void subscribe(Object handler);
+	void subscribe(Object handler);
 
-    void subscribe(Class<? extends Event> type, EventQueue queue);
+	/**
+	 * Causes the bus to deliver all the queued events.
+	 */
+	void processQueue();
 
 }

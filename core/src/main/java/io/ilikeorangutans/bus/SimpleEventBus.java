@@ -2,10 +2,7 @@ package io.ilikeorangutans.bus;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -13,6 +10,8 @@ import java.util.Map;
 public class SimpleEventBus implements EventBus {
 
 	private final Map<String, List<HandlerInfo>> handlers = new HashMap<String, List<HandlerInfo>>();
+
+	private final List<Event> queue = new ArrayList<Event>();
 
 	@Override
 	public void fire(Event event) {
@@ -37,7 +36,7 @@ public class SimpleEventBus implements EventBus {
 
 	@Override
 	public void queue(Event event) {
-
+		queue.add(event);
 	}
 
 	@Override
@@ -51,7 +50,6 @@ public class SimpleEventBus implements EventBus {
 			if (m.getParameterTypes().length != 1)
 				continue;
 
-
 			Subscribe subscribe = m.getAnnotation(Subscribe.class);
 			if (subscribe == null)
 				continue;
@@ -59,6 +57,15 @@ public class SimpleEventBus implements EventBus {
 			Class<?> subscribedType = m.getParameterTypes()[0];
 
 			subscribe(subscribedType, m, handler);
+		}
+	}
+
+	@Override
+	public void processQueue() {
+		for (ListIterator<Event> li = queue.listIterator(); li.hasNext(); ) {
+			Event event = li.next();
+			li.remove();
+			fire(event);
 		}
 	}
 
@@ -71,11 +78,6 @@ public class SimpleEventBus implements EventBus {
 		handlerInfo.method = m;
 		handlerInfo.handler = handler;
 		handlers.get(key).add(handlerInfo);
-	}
-
-	@Override
-	public void subscribe(Class<? extends Event> type, EventQueue queue) {
-
 	}
 
 	private final class HandlerInfo {
