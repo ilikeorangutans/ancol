@@ -58,14 +58,6 @@ public class SimpleEntities implements Entities, EntityFactory {
 	}
 
 	@Override
-	public List<Component> getComponentsByType(ComponentType componentType) {
-		if (countEntitiesByType(componentType) == 0)
-			return Collections.emptyList();
-
-		return componentsByType.get(componentType);
-	}
-
-	@Override
 	public List<Entity> getEntityByType(ComponentType... types) {
 		if (types == null || types.length == 0)
 			return Collections.emptyList();
