@@ -9,8 +9,9 @@ import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.surrounding.PointSurroundings;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
-import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
+import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
+import io.ilikeorangutans.ancol.select.event.SelectEntityEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.*;
@@ -51,6 +52,10 @@ public class ColonyHandler {
 
 	@Subscribe
 	public void onBeginTurn(BeginTurnEvent event) {
+		simulateColonies(event);
+	}
+
+	private void simulateColonies(BeginTurnEvent event) {
 		List<Entity> colonies = entities.getEntityByType(ComponentType.fromClasses(ColonyComponent.class, PlayerOwnedComponent.class));
 
 		for (Entity entity : colonies) {
@@ -61,7 +66,6 @@ public class ColonyHandler {
 
 			colony.beginTurn();
 		}
-
 	}
 
 	private void buildColony(Entity builder) {
@@ -69,6 +73,7 @@ public class ColonyHandler {
 		PositionComponent position = builder.getComponent(PositionComponent.class);
 
 		String name = "colony " + counter;
+		counter++;
 		Surroundings surroundings = new PointSurroundings(position.getPoint(), map, entities);
 
 		Entity colony = factory.create(
@@ -83,6 +88,6 @@ public class ColonyHandler {
 
 		colony.getComponent(ColonyComponent.class).addColonist(builder);
 
-		counter++;
+		emitter.fire(new SelectEntityEvent(colony));
 	}
 }

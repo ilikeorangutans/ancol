@@ -29,12 +29,6 @@ public class BuildColonyActivity implements Activity {
 		}
 
 		emitter.fire(new BuildColonyEvent(builder));
-
-		// TODO: Build colony.
-		// create new entity
-		// add all components including colony component
-		// "add" the creating entity as a colony member
-
 	}
 
 	@Override

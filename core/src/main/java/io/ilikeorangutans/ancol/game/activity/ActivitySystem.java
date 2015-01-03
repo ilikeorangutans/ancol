@@ -6,9 +6,9 @@ import io.ilikeorangutans.ancol.game.cmd.Command;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandQueuedEvent;
 import io.ilikeorangutans.ancol.game.event.SimulateEntityEvent;
-import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
+import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
@@ -63,8 +63,10 @@ public class ActivitySystem {
 
 	@Subscribe
 	public void onSimulateEntity(SimulateEntityEvent e) {
-		final Entity entity = e.entity;
+		simulateEntity(e.entity);
+	}
 
+	private void simulateEntity(Entity entity) {
 		ActivityComponent activityComponent = entity.getComponent(ActivityComponent.class);
 
 		while (activityComponent.hasActivity() && activityComponent.canPerform()) {
