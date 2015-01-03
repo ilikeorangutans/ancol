@@ -67,20 +67,24 @@ public class SimpleEntities implements Entities, EntityFactory {
 		if (!entitiesByType.containsKey(types[0]))
 			return Collections.emptyList();
 
-		final List<Entity> result = entitiesByType.get(types[0]);
-		// Filter out all the entities that don't have the remaining requested types:
-		for (ListIterator<Entity> li = result.listIterator(); li.hasNext(); ) {
-			Entity cur = li.next();
+		List<Entity> entities = entitiesByType.get(types[0]);
+		final List<Entity> result = new ArrayList<Entity>();
 
-			for (int i = 1; i < types.length; i++) {
-
-				if (!cur.hasComponent(types[i])) {
-					li.remove();
-				}
-			}
+		for (Entity cur : entities) {
+			if (hasAllTypes(cur, types))
+				result.add(cur);
 		}
 
 		return Collections.unmodifiableList(result);
+	}
+
+	private boolean hasAllTypes(Entity entity, ComponentType[] types) {
+		for (int i = 1; i < types.length; i++) {
+			if (!entity.hasComponent(types[i])) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private final class SortByNumberOfEntities implements Comparator<ComponentType> {
