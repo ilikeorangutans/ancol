@@ -32,16 +32,14 @@ import java.util.HashMap;
 public class GameStateBuilder {
 
 	private final EventBus bus;
-	private final EntitiesEntityFactory entities;
 	private final java.util.Map<Integer, Player> players = new HashMap<Integer, Player>();
 	private final GameState gameState;
-
+	private EntitiesEntityFactory entities;
 	private TileTypes tileTypes;
 	private Map map;
 
-	public GameStateBuilder(EventBus bus, EntitiesEntityFactory entities) {
+	public GameStateBuilder(EventBus bus) {
 		this.bus = bus;
-		this.entities = entities;
 		gameState = new GameState();
 	}
 
@@ -123,5 +121,8 @@ public class GameStateBuilder {
 		return players.get(0);
 	}
 
+	public void withEntities(EntitiesEntityFactory entities) {
+		this.entities = entities;
+	}
 }
 

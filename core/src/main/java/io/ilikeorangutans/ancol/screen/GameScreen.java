@@ -54,7 +54,8 @@ public class GameScreen implements Screen {
 		EntitiesEntityFactory entities = new SimpleEntities(bus);
 
 		// Game data (map, players, nations, players' entities)
-		GameStateBuilder gameStateBuilder = new GameStateBuilder(bus, entities); // creates pathfinder etc, should go under infrastructure
+		GameStateBuilder gameStateBuilder = new GameStateBuilder(bus);
+		gameStateBuilder.withEntities(entities);
 		GameState gameState = gameStateBuilder.setupSampleGame();
 
 		// Game mechanics
