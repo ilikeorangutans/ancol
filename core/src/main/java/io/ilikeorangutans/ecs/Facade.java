@@ -22,7 +22,7 @@ public class Facade {
 		entities = new SimpleEntities(bus);
 	}
 
-	public SimpleEntities getEntities() {
+	public EntitiesEntityFactory getEntities() {
 		return entities;
 	}
 
