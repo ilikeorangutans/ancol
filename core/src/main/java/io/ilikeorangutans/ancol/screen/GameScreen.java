@@ -71,6 +71,7 @@ public class GameScreen implements Screen {
 	private void setupUIForPlayer(EventBus bus, EntitiesEntityFactory entities, Player player) {
 		AnColActions actions = new AnColActions(bus, pathFinder);
 		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, player.getMap());
+		bus.subscribe(viewport);
 
 		ui = new GameScreenUI(bus, actions, player);
 		bus.subscribe(ui);
