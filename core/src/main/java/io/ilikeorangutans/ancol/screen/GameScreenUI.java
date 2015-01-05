@@ -16,10 +16,12 @@ import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.OpenColonyEvent;
+import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.player.event.PickNextEntityEvent;
 import io.ilikeorangutans.ancol.input.InputProcessorFactory;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
+import io.ilikeorangutans.ancol.map.viewport.MapViewport;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.event.MultipleSelectOptionsEvent;
@@ -37,13 +39,15 @@ public class GameScreenUI {
 	private final EventBus bus;
 
 	private final AnColActions actions;
+	private final Player player;
 
 	private Stage stage;
 	private Skin skin;
 
-	public GameScreenUI(EventBus bus, AnColActions actions) {
+	public GameScreenUI(EventBus bus, AnColActions actions, Player player) {
 		this.bus = bus;
 		this.actions = actions;
+		this.player = player;
 	}
 
 	public void setupUI(Skin skin) {
@@ -122,15 +126,8 @@ public class GameScreenUI {
 		table.bottom().center().pad(17).pack();
 	}
 
-	public void setupInputProcessing(InputProcessorFactory inputProcessorFactory, ScreenToTile screenToTile) {
-
-		InputProcessor platformSpecific = inputProcessorFactory.create(bus, screenToTile, actions);
-		bus.subscribe(platformSpecific);
-
-		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(stage);
-		inputMultiplexer.addProcessor(platformSpecific);
-		Gdx.input.setInputProcessor(inputMultiplexer);
+	public InputProcessor getInputProcessor() {
+		return stage;
 	}
 
 	public void render() {

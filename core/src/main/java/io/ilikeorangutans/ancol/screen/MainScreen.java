@@ -42,7 +42,7 @@ public class MainScreen implements Screen {
 		startGame.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new GameScreen(game, skin, inputProcessorFactory));
+				game.setScreen(new GameScreen(skin, inputProcessorFactory));
 			}
 		});
 		stage.addActor(startGame);

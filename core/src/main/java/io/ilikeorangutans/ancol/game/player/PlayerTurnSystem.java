@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.game.player;
 
+import io.ilikeorangutans.ancol.game.event.GameStartedEvent;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.player.event.PlayerJoinedEvent;
 import io.ilikeorangutans.ancol.game.player.event.TurnConcludedEvent;
@@ -29,6 +30,11 @@ public class PlayerTurnSystem {
 		nextPlayer();
 	}
 
+	@Subscribe
+	public void onGameStarted(GameStartedEvent event) {
+		start();
+	}
+
 	public void start() {
 		bus.fire(new BeginTurnEvent(getCurrentPlayer()));
 	}
@@ -42,6 +48,9 @@ public class PlayerTurnSystem {
 		//currentPlayerIndex++;
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 
+		// Important that this event is queued; otherwise the order of the events will be messed up as all event
+		// handlers for BeginTurnEvent would be executed synchronously right here and then be followed up by the
+		// handlers for the TurnConcludedEvent.
 		bus.queue(new BeginTurnEvent(getCurrentPlayer()));
 	}
 

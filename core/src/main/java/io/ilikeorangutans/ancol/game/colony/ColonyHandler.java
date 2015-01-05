@@ -19,22 +19,23 @@ import io.ilikeorangutans.ecs.*;
 import java.util.List;
 
 /**
- *
+ * Event handler that deals with all Colony related events. Reacts to {@link io.ilikeorangutans.ancol.game.colony.BuildColonyEvent}
+ * for which it creates the new colony (might move that somewhere else), {@link io.ilikeorangutans.ancol.select.event.EntitySelectedEvent}
+ * on colonies which opens the colony screen, and simulates the player's colonies on {@link io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent}.
  */
 public class ColonyHandler {
 
 	private final Emitter emitter;
 	private final EntityFactory factory;
 	private final Entities entities;
-	private final Map map;
+	private Map map;
 
 	private int counter = 1;
 
-	public ColonyHandler(Emitter emitter, EntityFactory factory, Entities entities, Map map) {
+	public ColonyHandler(Emitter emitter, EntityFactory factory, Entities entities) {
 		this.emitter = emitter;
 		this.factory = factory;
 		this.entities = entities;
-		this.map = map;
 	}
 
 	@Subscribe
@@ -52,14 +53,16 @@ public class ColonyHandler {
 
 	@Subscribe
 	public void onBeginTurn(BeginTurnEvent event) {
-		simulateColonies(event);
+		Player player = event.player;
+		map = player.getMap();
+		simulateColonies(player);
 	}
 
-	private void simulateColonies(BeginTurnEvent event) {
+	private void simulateColonies(Player player) {
 		List<Entity> colonies = entities.getEntityByType(ComponentType.fromClasses(ColonyComponent.class, PlayerOwnedComponent.class));
 
 		for (Entity entity : colonies) {
-			if (!entity.getComponent(PlayerOwnedComponent.class).getPlayer().equals(event.player))
+			if (!entity.getComponent(PlayerOwnedComponent.class).getPlayer().equals(player))
 				continue;
 
 			ColonyComponent colony = entity.getComponent(ColonyComponent.class);

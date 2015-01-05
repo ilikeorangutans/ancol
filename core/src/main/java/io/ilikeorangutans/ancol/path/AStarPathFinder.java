@@ -1,7 +1,6 @@
 package io.ilikeorangutans.ancol.path;
 
 import io.ilikeorangutans.ancol.Point;
-import io.ilikeorangutans.ancol.map.Map;
 
 import java.util.*;
 
@@ -11,10 +10,12 @@ import java.util.*;
 public class AStarPathFinder implements PathFinder {
 
 
-	private final Map map;
+	private final int mapHeight;
+	private final int mapWidth;
 
-	public AStarPathFinder(Map map) {
-		this.map = map;
+	public AStarPathFinder(int mapHeight, int mapWidth) {
+		this.mapHeight = mapHeight;
+		this.mapWidth = mapWidth;
 	}
 
 	@Override
@@ -39,10 +40,11 @@ public class AStarPathFinder implements PathFinder {
 			if (current.equals(to))
 				break;
 
+			// TODO: can we replace this with something smart using Surroundings?
 			final int yFrom = Math.max(0, current.y - 1);
-			final int yTo = Math.min(map.getHeight() - 1, current.y + 1);
+			final int yTo = Math.min(mapHeight - 1, current.y + 1);
 			final int xFrom = Math.max(0, current.x - 1);
-			final int xTo = Math.min(map.getWidth() - 1, current.x + 1);
+			final int xTo = Math.min(mapWidth - 1, current.x + 1);
 
 			for (int y = yFrom; y < yTo + 1; y++) {
 				for (int x = xFrom; x < xTo + 1; x++) {

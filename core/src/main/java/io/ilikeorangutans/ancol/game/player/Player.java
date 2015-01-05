@@ -1,5 +1,7 @@
 package io.ilikeorangutans.ancol.game.player;
 
+import io.ilikeorangutans.ancol.map.Map;
+
 /**
  *
  */
@@ -8,10 +10,19 @@ public class Player {
 	private final String name;
 
 	private final int id;
+	private Map map;
 
 	public Player(int id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	public Map getMap() {
+		return map;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
 	}
 
 	public String getName() {
@@ -21,6 +32,7 @@ public class Player {
 	public int getId() {
 		return id;
 	}
+
 
 	@Override
 	public boolean equals(Object o) {

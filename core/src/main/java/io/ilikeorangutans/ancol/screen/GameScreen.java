@@ -1,145 +1,130 @@
 package io.ilikeorangutans.ancol.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.ilikeorangutans.ancol.game.Startup;
-import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.activity.ActivitySystem;
 import io.ilikeorangutans.ancol.game.cmd.CommandEventHandler;
-import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
-import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
-import io.ilikeorangutans.ancol.game.colonist.Profession;
 import io.ilikeorangutans.ancol.game.colony.ColonyHandler;
-import io.ilikeorangutans.ancol.game.player.*;
-import io.ilikeorangutans.ancol.game.vision.VisionComponent;
+import io.ilikeorangutans.ancol.game.event.GameStartedEvent;
+import io.ilikeorangutans.ancol.game.player.NextUnitPicker;
+import io.ilikeorangutans.ancol.game.player.Player;
+import io.ilikeorangutans.ancol.game.player.PlayerTurnSystem;
+import io.ilikeorangutans.ancol.game.player.SimplePlayerEntities;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
-import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.input.InputProcessorFactory;
-import io.ilikeorangutans.ancol.map.Map;
-import io.ilikeorangutans.ancol.map.PlayerVisibilityMap;
-import io.ilikeorangutans.ancol.map.PositionComponent;
-import io.ilikeorangutans.ancol.map.tile.TileTypes;
+import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.viewport.MapViewport;
-import io.ilikeorangutans.ancol.move.MovableComponent;
-import io.ilikeorangutans.ancol.select.SelectableComponent;
+import io.ilikeorangutans.ancol.path.AStarPathFinder;
+import io.ilikeorangutans.ancol.path.PathFinder;
 import io.ilikeorangutans.ancol.select.SelectionHandler;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.SimpleEventBus;
+import io.ilikeorangutans.ecs.EntitiesEntityFactory;
 import io.ilikeorangutans.ecs.Facade;
-import io.ilikeorangutans.ecs.NameComponent;
 
 /**
  *
  */
 public class GameScreen implements Screen {
 
-	private final Game game;
-	private final GameScreenUI ui;
 	private final EventBus bus;
+	private final Skin skin;
+	private final InputProcessorFactory inputProcessorFactory;
+	private GameScreenUI ui;
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
-	private Facade facade;
-	private MapViewport viewport;
+	//private Facade facade;
 	private AnColRenderer renderer;
+	private PathFinder pathFinder;
+	private MapViewport viewport;
 
-	public GameScreen(Game game, Skin skin, InputProcessorFactory inputProcessorFactory) {
-		this.game = game;
+	public GameScreen(Skin skin, InputProcessorFactory inputProcessorFactory) {
+		this.skin = skin;
+		this.inputProcessorFactory = inputProcessorFactory;
+
 		bus = new SimpleEventBus();
 
-		Startup startup = new Startup(bus);
+		// Game mechanics
+		EntitiesEntityFactory entities = setupGameInfrastructure(bus);
+
+		// Game data (map, players, nations, players' entities)
+		Startup startup = new Startup(bus, entities); // creates pathfinder etc, should go under infrastructure
 		startup.startSampleGame();
 
-		TileTypes tileTypes = startup.getTileTypes();
-
-		ui = new GameScreenUI(bus, startup.getActions());
-		bus.subscribe(ui);
-		ui.setupUI(skin);
-
-		Player p1 = new Player(1, "player 1");
-		Player p2 = new Player(2, "player 2");
+		pathFinder = new AStarPathFinder(startup.getMap().getHeight(), startup.getMap().getWidth());
 
 		PlayerTurnSystem playerTurnSystem = new PlayerTurnSystem(bus);
 		bus.subscribe(playerTurnSystem);
+		for (Player p : startup.getPlayers()) {
+			playerTurnSystem.addPlayer(p);
+		}
 
-		playerTurnSystem.addPlayer(p1);
-		playerTurnSystem.addPlayer(p2);
+		// Setup Game UI for player:
+		Player player = startup.getLocalPlayer();
+		setupUIForPlayer(bus, entities, player);
 
-		Map playerMap = new PlayerVisibilityMap(startup.getMap(), p1, tileTypes.getTypeForId(0));
-		bus.subscribe(playerMap);
-		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, playerMap);
-		ui.setupInputProcessing(inputProcessorFactory, viewport);
+		// Start the game:
+		bus.fire(new GameStartedEvent());
+	}
+
+	private void setupUIForPlayer(EventBus bus, EntitiesEntityFactory entities, Player player) {
+		AnColActions actions = new AnColActions(bus, pathFinder);
+		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, player.getMap());
+
+		ui = new GameScreenUI(bus, actions, player);
+		bus.subscribe(ui);
+		ui.setupUI(skin);
+
+		InputProcessor platformSpecific = inputProcessorFactory.create(bus, viewport, actions);
+		bus.subscribe(platformSpecific);
+
+		setupInputProcessing(ui.getInputProcessor(), platformSpecific);
 
 		setupRendering();
 
-		bus.subscribe(viewport);
+		SimplePlayerEntities p1Entities = new SimplePlayerEntities(entities, player);
 
-		facade = new Facade(bus);
+		NextUnitPicker nextUnitPicker = new NextUnitPicker(bus, player, p1Entities);
+		bus.subscribe(nextUnitPicker);
+
+		renderer = new AnColRenderer(batch, viewport, player.getMap(), entities);
+	}
+
+	private EntitiesEntityFactory setupGameInfrastructure(EventBus bus) {
+		Facade facade = new Facade(bus);
 		facade.init();
-
-		SimplePlayerEntities p1Entities = new SimplePlayerEntities(facade.getEntities(), p1);
-
 		SelectionHandler selectionHandler = new SelectionHandler(facade.getEntities(), bus);
 		bus.subscribe(selectionHandler);
 
-		CommandEventHandler commandManager = new CommandEventHandler(bus);
-		bus.subscribe(commandManager);
+		ColonyHandler colonyHandler = new ColonyHandler(bus, facade.getEntities(), facade.getEntities());
+		bus.subscribe(colonyHandler);
 
 		ActivitySystem actionPointSystem = new ActivitySystem(bus, facade.getEntities());
 		bus.subscribe(actionPointSystem);
 
-		ColonyHandler colonyHandler = new ColonyHandler(bus, facade.getEntities(), facade.getEntities(), playerMap);
-		bus.subscribe(colonyHandler);
+		CommandEventHandler commandManager = new CommandEventHandler(bus);
+		bus.subscribe(commandManager);
 
-		NextUnitPicker nextUnitPicker = new NextUnitPicker(bus, p1, p1Entities);
-		bus.subscribe(nextUnitPicker);
-
-		renderer = new AnColRenderer(batch, viewport, playerMap, facade.getEntities());
-
-		setupSampleEntities(p1, playerMap);
-
-		playerTurnSystem.start();
+		return facade.getEntities();
 	}
 
-	private void setupSampleEntities(Player p1, Map map) {
-		Profession profession = new Profession("Free Colonist");
-		facade.getEntities().create(
-				new PositionComponent(11, 10),
-				new RenderableComponent(1),
-				new NameComponent("test entity 1"),
-				new SelectableComponent(),
-				new MovableComponent(map),
-				new PlayerOwnedComponent(p1),
-				new ControllableComponent(),
-				new ActivityComponent(2),
-				new VisionComponent(1),
-				new ColonistComponent(profession));
-		facade.getEntities().create(
-				new PositionComponent(6, 5),
-				new RenderableComponent(1),
-				new NameComponent("test entity 2"),
-				new SelectableComponent(),
-				new MovableComponent(map),
-				new PlayerOwnedComponent(p1),
-				new ControllableComponent(),
-				new ActivityComponent(2),
-				new VisionComponent(1),
-				new ColonistComponent(profession));
-		facade.getEntities().create(
-				new PositionComponent(5, 3),
-				new RenderableComponent(1),
-				new NameComponent("test entity 3"),
-				new SelectableComponent(),
-				new MovableComponent(map),
-				new PlayerOwnedComponent(p1),
-				new ControllableComponent(),
-				new ActivityComponent(2),
-				new VisionComponent(2),
-				new ColonistComponent(new Profession("Seasoned Scout")));
+	public void setupInputProcessing(InputProcessor... inputProcessors) {
+
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+
+		for (InputProcessor inputProcessor : inputProcessors) {
+			inputMultiplexer.addProcessor(inputProcessor);
+		}
+
+		Gdx.input.setInputProcessor(inputMultiplexer);
+
 	}
 
 	private void setupRendering() {
