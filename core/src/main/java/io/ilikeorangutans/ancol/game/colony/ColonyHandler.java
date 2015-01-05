@@ -14,7 +14,10 @@ import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.event.SelectEntityEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
-import io.ilikeorangutans.ecs.*;
+import io.ilikeorangutans.ecs.ComponentType;
+import io.ilikeorangutans.ecs.EntitiesEntityFactory;
+import io.ilikeorangutans.ecs.Entity;
+import io.ilikeorangutans.ecs.NameComponent;
 
 import java.util.List;
 
@@ -26,15 +29,13 @@ import java.util.List;
 public class ColonyHandler {
 
 	private final Emitter emitter;
-	private final EntityFactory factory;
-	private final Entities entities;
+	private final EntitiesEntityFactory entities;
 	private Map map;
 
 	private int counter = 1;
 
-	public ColonyHandler(Emitter emitter, EntityFactory factory, Entities entities) {
+	public ColonyHandler(Emitter emitter, EntitiesEntityFactory entities) {
 		this.emitter = emitter;
-		this.factory = factory;
 		this.entities = entities;
 	}
 
@@ -79,7 +80,7 @@ public class ColonyHandler {
 		counter++;
 		Surroundings surroundings = new PointSurroundings(position.getPoint(), map, entities);
 
-		Entity colony = factory.create(
+		Entity colony = entities.create(
 				new PlayerOwnedComponent(owner),
 				new RenderableComponent(0),
 				new SelectableComponent(),

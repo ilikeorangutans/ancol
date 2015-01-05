@@ -29,38 +29,42 @@ import java.util.HashMap;
 /**
  *
  */
-public class Startup {
+public class GameStateBuilder {
 
 	private final EventBus bus;
 	private final EntitiesEntityFactory entities;
 	private final java.util.Map<Integer, Player> players = new HashMap<Integer, Player>();
+	private final GameState gameState;
+
 	private TileTypes tileTypes;
 	private Map map;
 
-	public Startup(EventBus bus, EntitiesEntityFactory entities) {
+	public GameStateBuilder(EventBus bus, EntitiesEntityFactory entities) {
 		this.bus = bus;
 		this.entities = entities;
+		gameState = new GameState();
 	}
 
-	public Map getMap() {
-		return map;
+	public GameStateBuilder addPlayer(Player player) {
+		players.put(player.getId(), player);
+		PlayerVisibilityMap playerMap = new PlayerVisibilityMap(map, player, getTileTypes().getTypeForId(0));
+		bus.subscribe(playerMap);
+		player.setMap(playerMap);
+		gameState.addPlayer(player);
+
+		return this;
 	}
 
-	public void startSampleGame() {
+	public GameState setupSampleGame() {
+
 		loadFromJSON();
 		map = new RandomMap(tileTypes);
 
-		Player p1 = new Player(0, "player 1");
-		players.put(0, p1);
-		PlayerVisibilityMap player1Map = new PlayerVisibilityMap(map, p1, getTileTypes().getTypeForId(0));
-		bus.subscribe(player1Map);
-		p1.setMap(player1Map);
+		addPlayer(new Player(0, "player 1"));
+		addPlayer(new Player(1, "player 2"));
 
-		Player p2 = new Player(1, "player 2");
-		players.put(1, p2);
-		PlayerVisibilityMap player2Map = new PlayerVisibilityMap(map, p2, getTileTypes().getTypeForId(0));
-		bus.subscribe(player2Map);
-		p2.setMap(player2Map);
+		gameState.setMap(map);
+
 
 		Profession profession = new Profession("Free Colonist");
 		entities.create(
@@ -69,7 +73,7 @@ public class Startup {
 				new NameComponent("test entity 1"),
 				new SelectableComponent(),
 				new MovableComponent(map),
-				new PlayerOwnedComponent(p1),
+				new PlayerOwnedComponent(getLocalPlayer()),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(1),
@@ -80,7 +84,7 @@ public class Startup {
 				new NameComponent("test entity 2"),
 				new SelectableComponent(),
 				new MovableComponent(map),
-				new PlayerOwnedComponent(p1),
+				new PlayerOwnedComponent(getLocalPlayer()),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(1),
@@ -91,11 +95,14 @@ public class Startup {
 				new NameComponent("test entity 3"),
 				new SelectableComponent(),
 				new MovableComponent(map),
-				new PlayerOwnedComponent(p1),
+				new PlayerOwnedComponent(getLocalPlayer()),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(2),
 				new ColonistComponent(new Profession("Seasoned Scout")));
+
+
+		return gameState;
 	}
 
 	public void loadFromJSON() {
