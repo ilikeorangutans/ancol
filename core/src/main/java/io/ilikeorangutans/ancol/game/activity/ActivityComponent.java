@@ -52,6 +52,10 @@ public class ActivityComponent implements Component {
 		return actionPoints.getAvailablePoints();
 	}
 
+	public int getPoints() {
+		return actionPoints.getMaxPoints();
+	}
+
 	/**
 	 * @return true if an activity can be performed.
 	 */

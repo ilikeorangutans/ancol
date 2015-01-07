@@ -13,6 +13,10 @@ public class ActionPoints {
 		this.maxPoints = maxPoints;
 	}
 
+	public int getMaxPoints() {
+		return maxPoints;
+	}
+
 	public int getAvailablePoints() {
 		return availablePoints;
 	}
@@ -28,7 +32,6 @@ public class ActionPoints {
 	 * Checks whether there are enough points for the given action.
 	 *
 	 * @param forAction number of action points requested.
-	 *
 	 * @return true if enough action points are available.
 	 */
 	public boolean hasEnough(int forAction) {

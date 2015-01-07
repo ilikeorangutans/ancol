@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PositionComponent;
@@ -154,6 +155,12 @@ public class AnColRenderer {
 
 			draw.setPosition(point.x, point.y - viewport.getTileHeight());
 			draw.draw(batch);
+
+			if (e.hasComponent(ComponentType.fromClass(ActivityComponent.class))) {
+				ActivityComponent ac = e.getComponent(ActivityComponent.class);
+				String aps = ac.getPointsLeft() + "/" + ac.getPoints();
+				font.draw(batch, aps, point.x, point.y);
+			}
 
 			if (e.hasComponent(ComponentType.fromClass(ColonyComponent.class))) {
 				ColonyComponent colony = e.getComponent(ColonyComponent.class);
