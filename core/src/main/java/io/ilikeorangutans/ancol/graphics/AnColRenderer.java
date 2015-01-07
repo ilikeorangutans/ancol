@@ -38,6 +38,7 @@ public class AnColRenderer {
 	private Sprite colony;
 	private Sprite select;
 	private Sprite flag;
+	private Sprite ship;
 
 	public AnColRenderer(SpriteBatch batch, MapViewport viewport, Map map, Entities entities) {
 		this.batch = batch;
@@ -53,6 +54,7 @@ public class AnColRenderer {
 
 		unitTexture = new Texture(Gdx.files.internal("units.png"));
 		explorer = new Sprite(unitTexture, 13 * 60, 60, 60, 60);
+		ship = new Sprite(unitTexture, 13 * 60, 0, 60, 60);
 		colony = new Sprite(terrainTexture, 12 * 60, 12 * 60, 60, 60);
 
 		select = new Sprite(new Texture(Gdx.files.internal("select.png")), 0, 0, 60, 60);
@@ -140,8 +142,13 @@ public class AnColRenderer {
 					break;
 
 				case 1:
-				default:
 					draw = explorer;
+					break;
+
+				case 2:
+				default:
+					draw = ship;
+					break;
 			}
 
 
