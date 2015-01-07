@@ -15,10 +15,12 @@ public class MovableComponent implements Component, Movable {
 
 	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(MovableComponent.class);
 	private final Map map;
+	private final MovableType type;
 	private Path path;
 
-	public MovableComponent(Map map) {
+	public MovableComponent(Map map, MovableType type) {
 		this.map = map;
+		this.type = type;
 	}
 
 	public static ComponentType getComponentType() {
@@ -49,11 +51,24 @@ public class MovableComponent implements Component, Movable {
 	@Override
 	public boolean canAccess(Point p) {
 		Tile tile = map.getTileAt(p);
-		return tile.getType().getId() != 1;
+
+		int id = tile.getType().getId();
+		if (type == MovableType.Land) {
+			return id != 1;
+		} else {
+			return id == 0 || id == 1;
+		}
+
+		// TODO: need to check if the target tile has a ship that we can board or a colony we can enter.
 	}
 
 	@Override
 	public float getCost(Point p) {
 		return 1;
+	}
+
+	public enum MovableType {
+		Land,
+		Sea
 	}
 }
