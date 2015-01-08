@@ -4,12 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
+import io.ilikeorangutans.ancol.game.cargo.CargoHoldComponent;
+import io.ilikeorangutans.ancol.game.cargo.EntityTransportable;
+import io.ilikeorangutans.ancol.game.cargo.ShipComponent;
+import io.ilikeorangutans.ancol.game.cargo.TransportableComponent;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Profession;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
+import io.ilikeorangutans.ancol.game.ware.WareType;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PlayerVisibilityMap;
@@ -21,6 +26,7 @@ import io.ilikeorangutans.ancol.move.MovableComponent;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.ecs.EntitiesEntityFactory;
+import io.ilikeorangutans.ecs.Entity;
 import io.ilikeorangutans.ecs.NameComponent;
 
 import java.util.Collection;
@@ -70,34 +76,65 @@ public class GameStateBuilder {
 				new RenderableComponent(1),
 				new NameComponent("test entity 1"),
 				new SelectableComponent(),
-				new MovableComponent(map),
+				new MovableComponent(map, MovableComponent.MovableType.Land),
 				new PlayerOwnedComponent(getLocalPlayer()),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(1),
-				new ColonistComponent(profession));
+				new ColonistComponent(profession),
+				new TransportableComponent(1));
 		entities.create(
 				new PositionComponent(6, 5),
 				new RenderableComponent(1),
 				new NameComponent("test entity 2"),
 				new SelectableComponent(),
-				new MovableComponent(map),
+				new MovableComponent(map, MovableComponent.MovableType.Land),
 				new PlayerOwnedComponent(getLocalPlayer()),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(1),
-				new ColonistComponent(profession));
+				new ColonistComponent(profession),
+				new TransportableComponent(1));
 		entities.create(
 				new PositionComponent(5, 3),
 				new RenderableComponent(1),
 				new NameComponent("test entity 3"),
 				new SelectableComponent(),
-				new MovableComponent(map),
+				new MovableComponent(map, MovableComponent.MovableType.Land),
 				new PlayerOwnedComponent(getLocalPlayer()),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(2),
-				new ColonistComponent(new Profession("Seasoned Scout")));
+				new ColonistComponent(new Profession("Seasoned Scout")),
+				new TransportableComponent(1));
+
+		Entity toLoad = entities.create(
+				new PositionComponent(1, 1),
+				new RenderableComponent(1),
+				new NameComponent("loaded test entity 4"),
+				new SelectableComponent(),
+				new MovableComponent(map, MovableComponent.MovableType.Land),
+				new PlayerOwnedComponent(getLocalPlayer()),
+				new ControllableComponent(),
+				new ActivityComponent(2),
+				new VisionComponent(1),
+				new ColonistComponent(profession),
+				new TransportableComponent(1));
+		CargoHoldComponent cargoHoldComponent = new CargoHoldComponent(2);
+		cargoHoldComponent.getCargohold().load(new EntityTransportable(toLoad), 1);
+		cargoHoldComponent.getCargohold().load(WareType.Muskets, 100);
+		entities.create(
+				new PositionComponent(0, 1),
+				new RenderableComponent(2),
+				new NameComponent("ship 1"),
+				new SelectableComponent(),
+				new MovableComponent(map, MovableComponent.MovableType.Sea),
+				new PlayerOwnedComponent(getLocalPlayer()),
+				new ControllableComponent(),
+				new ActivityComponent(4),
+				new VisionComponent(2),
+				new ShipComponent(),
+				cargoHoldComponent);
 
 
 		return gameState;

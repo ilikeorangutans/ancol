@@ -1,12 +1,14 @@
 package io.ilikeorangutans.ancol.game.ware;
 
+import io.ilikeorangutans.ancol.game.cargo.Transportable;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
 /**
  *
  */
-public enum WareType {
+public enum WareType implements Transportable {
 
 	Food(true, 0),
 	Sugar(true, 10),
@@ -50,6 +52,16 @@ public enum WareType {
 
 	public boolean isTransient() {
 		return !canBeStored;
+	}
+
+	@Override
+	public int getRequiredSpace() {
+		return 1;
+	}
+
+	@Override
+	public String getDescription() {
+		return this.name();
 	}
 
 }
