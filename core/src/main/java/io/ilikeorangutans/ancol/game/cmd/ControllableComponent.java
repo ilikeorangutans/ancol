@@ -19,6 +19,14 @@ public class ControllableComponent implements Component {
 	 */
 	private boolean active = true;
 
+	public ControllableComponent() {
+		this(true);
+	}
+
+	public ControllableComponent(boolean active) {
+		this.active = active;
+	}
+
 	public boolean isActive() {
 		return active;
 	}
