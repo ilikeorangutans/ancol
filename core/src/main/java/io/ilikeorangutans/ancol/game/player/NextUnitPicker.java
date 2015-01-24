@@ -107,7 +107,7 @@ public class NextUnitPicker {
 			}
 		}
 
-		emitter.fire(new AllEntitiesSimulatedEvent());
+		emitter.fire(new AllEntitiesSimulatedEvent(player));
 	}
 
 	/**

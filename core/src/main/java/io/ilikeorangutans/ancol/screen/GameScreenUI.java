@@ -11,17 +11,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.cargo.Cargo;
 import io.ilikeorangutans.ancol.game.cargo.CargoHoldComponent;
 import io.ilikeorangutans.ancol.game.cargo.ShipComponent;
-import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.OpenColonyEvent;
+import io.ilikeorangutans.ancol.game.event.AllEntitiesSimulatedEvent;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
-import io.ilikeorangutans.ancol.game.player.event.PickNextEntityEvent;
+import io.ilikeorangutans.ancol.game.player.event.TurnConcludedEvent;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.event.MultipleSelectOptionsEvent;
@@ -29,7 +28,6 @@ import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entity;
-import io.ilikeorangutans.ecs.event.EntityUpdatedEvent;
 
 /**
  *
@@ -43,9 +41,7 @@ public class GameScreenUI {
 
 	private Stage stage;
 	private Skin skin;
-	private Table sidebar;
 	private TextButton currentUnitButton;
-	private Entity currentEntity;
 	private Table cargoTable;
 
 	public GameScreenUI(EventBus bus, AnColActions actions, Player player) {
@@ -63,63 +59,55 @@ public class GameScreenUI {
 
 		TextButton tb;
 
-		TextButton findNext = new TextButton("Next", skin);
-		findNext.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				bus.fire(new PickNextEntityEvent());
-			}
-		});
-		table.add(findNext).padRight(11);
-
-		tb = new TextButton("Fortify", skin, "default");
-		table.add(tb);
-
-		tb = new TextButton("Colony", skin, "default");
+		tb = new TextButton("END TURN", skin, "default");
 		tb.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				actions.getBuildColonyAction().perform();
-			}
-		});
-		table.add(tb);
-
-		tb = new TextButton("Road", skin, "default");
-		tb.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				actions.getBuildRoadAction().perform();
-			}
-		});
-		table.add(tb);
-
-		tb = new TextButton("Improve", skin, "default");
-		tb.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				actions.getImproveTileAction().perform();
-			}
-		});
-		table.add(tb);
-
-		tb = new TextButton("End Turn", skin, "default");
-		tb.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				actions.getEndTurnAction().perform();
+				bus.fire(new TurnConcludedEvent());
 			}
 		});
 
 		table.add(tb).padLeft(22);
-
 		table.bottom().center().pad(17).pack();
 
 
 		setupSidebar(skin);
 	}
 
-	private void setupSidebar(Skin skin) {
-		sidebar = new Table(skin);
+	private void setupSidebar(final Skin skin) {
+		Table sidebar = new Table(skin);
+
+		TextButton menuButton = new TextButton("Menu", skin);
+		// TODO: this needs to be moved into it's own class listening to back keys as well
+		menuButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				final Dialog dialog = new Dialog("Menu", skin);
+
+				Table ct = dialog.getButtonTable();
+				ct.add(new TextButton("Save", skin)).fillX();
+				ct.row();
+				ct.add(new TextButton("Load", skin)).fillX();
+				ct.row();
+				ct.add(new TextButton("Exit", skin)).fillX();
+
+				ct.row().padTop(21);
+
+				TextButton backButton = new TextButton("Back to Game", skin);
+				backButton.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						dialog.hide();
+						dialog.remove();
+					}
+				});
+				ct.add(backButton).fillX();
+
+				dialog.show(stage);
+			}
+		});
+		sidebar.add(menuButton).fillX().expandX();
+		sidebar.row();
 
 		sidebar.add(new Label("Map goes here", skin)).expandX().height(250).padBottom(11).colspan(2);
 		sidebar.row();
@@ -147,6 +135,12 @@ public class GameScreenUI {
 		cargoTable.pad(11);
 		sidebar.add(cargoTable);
 		sidebar.row();
+
+		TextButton nextOrEndTurnButton = new TextButton("Unit Needs Orders", skin);
+		sidebar.add(nextOrEndTurnButton).bottom().fillX();
+		NextUnitOrTurnButtonState nextUnitOrTurnButtonState = new NextUnitOrTurnButtonState(bus, player, nextOrEndTurnButton);
+		bus.subscribe(nextUnitOrTurnButtonState);
+
 
 		int width = 250;
 		sidebar.align(Align.top);
@@ -179,6 +173,13 @@ public class GameScreenUI {
 	public void onOpenColony(final OpenColonyEvent event) {
 		ColonyUI ui = new ColonyUI(stage, skin, event.colony);
 		ui.setupAndShowUI();
+	}
+
+	@Subscribe
+	public void onAllEntitiesSimulated(AllEntitiesSimulatedEvent event) {
+		if (!event.player.equals(player))
+			return;
+
 	}
 
 	@Subscribe
@@ -228,13 +229,12 @@ public class GameScreenUI {
 		}, 2);
 		timer.start();
 
-
 		stage.addActor(label);
 	}
 
 	@Subscribe
 	public void onEntitySelected(EntitySelectedEvent event) {
-		currentEntity = event.entity;
+		Entity currentEntity = event.entity;
 
 		// TODO: wouldn't it be better if we subscribed a listener to the current entity's cargo bay here? That way we
 		// could react to changed cargo.
@@ -294,75 +294,6 @@ public class GameScreenUI {
 		@Subscribe
 		public void onBeginTurn(BeginTurnEvent bte) {
 			tb2.setText(bte.player.getName());
-		}
-	}
-
-	public static class SelectedUnitListener {
-		private final TextButton tb2;
-		private Entity selected;
-
-		public SelectedUnitListener(TextButton tb2) {
-			this.tb2 = tb2;
-		}
-
-		@Subscribe
-		public void onUpdated(EntityUpdatedEvent e) {
-			if (selected == e.entity)
-				updateLabel();
-		}
-
-		@Subscribe
-		public void onSelected(EntitySelectedEvent e) {
-			selected = e.entity;
-			updateLabel();
-		}
-
-		private void updateLabel() {
-			if (selected == null) {
-				tb2.setText("(nothing)");
-			} else {
-				StringBuilder sb = new StringBuilder();
-
-				if (selected.hasComponent(ComponentType.fromClasses(ColonistComponent.class))) {
-					ColonistComponent colonist = selected.getComponent(ColonistComponent.class);
-					sb.append(colonist.getProfession().getName());
-
-				}
-
-
-				if (selected.hasComponent(ComponentType.fromClass(ColonyComponent.class))) {
-					ColonyComponent cc = selected.getComponent(ColonyComponent.class);
-					sb.append(cc.getName());
-					sb.append(" (Colony)");
-				}
-
-				if (selected.hasComponent(ComponentType.fromClass(ShipComponent.class))) {
-					ShipComponent sc = selected.getComponent(ShipComponent.class);
-					sb.append(sc.getName());
-				}
-
-				if (selected.hasComponent(ComponentType.fromClass(CargoHoldComponent.class))) {
-					CargoHoldComponent cc = selected.getComponent(CargoHoldComponent.class);
-
-					for (Cargo c : cc.getCargohold().getCargo()) {
-						sb.append("[");
-						sb.append(c.getQuantity());
-						sb.append(" ");
-						sb.append(c.getTransportable().getDescription());
-						sb.append("] ");
-					}
-				}
-
-
-				if (selected.hasComponent(ComponentType.fromClasses(ActivityComponent.class, ControllableComponent.class))) {
-					ActivityComponent ac = selected.getComponent(ActivityComponent.class);
-					ControllableComponent cc = selected.getComponent(ControllableComponent.class);
-
-					sb.append(" (" + ac.getPointsLeft() + ") (" + (ac.hasActivity() ? ac.getActivity().getName() : "idle") + ") (" + (cc.hasCommands() ? cc.getQueueLength() + " queued" : "-") + ")");
-				}
-
-				tb2.setText(sb.toString());
-			}
 		}
 	}
 
