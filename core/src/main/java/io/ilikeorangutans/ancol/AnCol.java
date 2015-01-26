@@ -21,6 +21,9 @@ public class AnCol extends Game {
 
 	@Override
 	public void create() {
+
+		Gdx.input.setCatchBackKey(true);
+
 		stage = new Stage();
 		skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
