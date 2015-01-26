@@ -168,8 +168,8 @@ public class MapViewport implements MapToScreen, ScreenToMap, ScreenToTile {
 	}
 
 	private void centerOn(Point point) {
-		int x = point.x * tileWidth - viewWidthInPixels / 2;
-		int y = point.y * tileHeight - viewHeightInPixels / 2;
+		int x = (point.x * tileWidth) - (viewWidthInPixels / 2);
+		int y = (point.y * tileHeight) - (viewHeightInPixels / 2);
 
 		moveTo(x, y);
 	}

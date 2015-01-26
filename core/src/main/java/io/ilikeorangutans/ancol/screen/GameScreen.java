@@ -67,11 +67,12 @@ public class GameScreen implements Screen {
 
 		// Start the game:
 		bus.fire(new GameStartedEvent());
+
 	}
 
 	private void setupUIForPlayer(EventBus bus, EntitiesEntityFactory entities, Player player) {
 		AnColActions actions = new AnColActions(bus, pathFinder);
-		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 60, 60, player.getMap());
+		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth() - 250, Gdx.graphics.getHeight(), 60, 60, player.getMap());
 		bus.subscribe(viewport);
 
 		ui = new GameScreenUI(bus, actions, player);
@@ -149,7 +150,8 @@ public class GameScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		ui.resize(width, height);
-		viewport.resize(width, height);
+		// TODO: need to find a better way to deal with the sidebar width here
+		viewport.resize(width - 250, height);
 	}
 
 	@Override
