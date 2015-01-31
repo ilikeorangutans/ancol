@@ -1,0 +1,29 @@
+{
+  "jobs": [
+    {
+      "name": "Statesman",
+      "produces": "Liberty Bells",
+      "inColony": true
+    },
+    {
+      "name": "Farmer",
+      "produces": "Corn",
+      "inColony": true
+    },
+    {
+      "name": "Carpenter",
+      "produces": "Hammers",
+      "inColony": true
+    },
+    {
+      "name": "Sugar Planter",
+      "produces": "Sugar",
+      "inColony": true
+    },
+    {
+      "name": "Tobacco Planter",
+      "produces": "Tobacco",
+      "inColony": true
+    }
+  ]
+}

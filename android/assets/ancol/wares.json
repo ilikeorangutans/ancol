@@ -1,0 +1,99 @@
+{
+  "all": [
+    {
+      "name": "Corn",
+      "type": "Food",
+      "harvested": true
+    },
+    {
+      "name": "Fish",
+      "type": "Food",
+      "harvested": true
+    },
+    {
+      "name": "Sugar",
+      "type": "Resource",
+      "harvested": true
+    },
+    {
+      "name": "Tobacco",
+      "type": "Resource",
+      "harvested": true
+    },
+    {
+      "name": "Cotton",
+      "type": "Resource",
+      "harvested": true
+    },
+    {
+      "name": "Furs",
+      "type": "Resource",
+      "harvested": true
+    },
+    {
+      "name": "Lumber",
+      "type": "Construction",
+      "harvested": true
+    },
+    {
+      "name": "Ore",
+      "type": "Resource",
+      "harvested": true
+    },
+    {
+      "name": "Silver",
+      "type": "Resource",
+      "manufactured": true
+    },
+    {
+      "name": "Horses"
+    },
+    {
+      "name": "Rum",
+      "type": "Refined",
+      "manufactured": true
+    },
+    {
+      "name": "Cigars",
+      "type": "Refined",
+      "manufactured": true
+    },
+    {
+      "name": "Cloth",
+      "type": "Refined",
+      "manufactured": true
+    },
+    {
+      "name": "Coats",
+      "type": "Refined",
+      "manufactured": true
+    },
+    {
+      "name": "Trade Goods",
+      "type": "Refined",
+      "manufactured": true
+    },
+    {
+      "name": "Tools",
+      "type": "Construction",
+      "manufactured": true
+    },
+    {
+      "name": "Muskets",
+      "type": "Weapon",
+      "manufactured": true
+    },
+    {
+      "name": "Hammers",
+      "notStorable": true
+    },
+    {
+      "name": "Liberty Bells",
+      "notStorable": true
+    },
+    {
+      "name": "Crosses",
+      "notStorable": true
+    }
+  ]
+}

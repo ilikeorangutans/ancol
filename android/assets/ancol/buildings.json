@@ -1,0 +1,58 @@
+{
+  "buildings": [
+    {
+      "name": "Townhall",
+      "output": "Liberty Bells",
+      "initial": true
+    },
+    {
+      "name": "Cathedral",
+      "output": "Crosses",
+      "minPopulation": 8,
+      "costTools": 176,
+      "costHammers": 100
+    },
+    {
+      "name": "Church",
+      "upgrade": "Cathedral",
+      "output": "Crosses",
+      "minPopulation": 3,
+      "costHammers": 64
+    },
+    {
+      "name": "Chapel",
+      "upgrade": "Church",
+      "output": "Crosses",
+      "initial": true
+    },
+    {
+      "name": "Lumber Mill",
+      "input": "Lumber",
+      "output": "Hammers",
+      "costHammers": 52,
+      "minPopulation": 3,
+      "multiplicativeBonus": 2
+    },
+    {
+      "name": "Carpenter's Shop",
+      "upgrade": "Lumber Mill",
+      "input": "Lumber",
+      "output": "Hammers",
+      "initial": true
+    },
+    {
+      "name": "Fortress"
+    },
+    {
+      "name": "Fort",
+      "upgrade": "Fortress"
+    },
+    {
+      "name": "Stockade",
+      "upgrade": "Fort"
+    },
+    {
+      "name": "Docks"
+    }
+  ]
+}
