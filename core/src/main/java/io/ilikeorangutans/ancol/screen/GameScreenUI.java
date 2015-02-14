@@ -16,11 +16,12 @@ import io.ilikeorangutans.ancol.game.cargo.CargoHoldComponent;
 import io.ilikeorangutans.ancol.game.cargo.ShipComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
-import io.ilikeorangutans.ancol.game.colony.OpenColonyEvent;
+import io.ilikeorangutans.ancol.game.colony.event.OpenColonyEvent;
 import io.ilikeorangutans.ancol.game.event.AllEntitiesSimulatedEvent;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.player.event.TurnConcludedEvent;
+import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.event.MultipleSelectOptionsEvent;
@@ -36,6 +37,7 @@ public class GameScreenUI {
 
 	private final EventBus bus;
 
+	private final Rules rules;
 	private final AnColActions actions;
 	private final Player player;
 
@@ -44,8 +46,9 @@ public class GameScreenUI {
 	private TextButton currentUnitButton;
 	private Table cargoTable;
 
-	public GameScreenUI(EventBus bus, AnColActions actions, Player player) {
+	public GameScreenUI(EventBus bus, Rules rules, AnColActions actions, Player player) {
 		this.bus = bus;
+		this.rules = rules;
 		this.actions = actions;
 		this.player = player;
 	}
@@ -171,7 +174,7 @@ public class GameScreenUI {
 
 	@Subscribe
 	public void onOpenColony(final OpenColonyEvent event) {
-		ColonyUI ui = new ColonyUI(stage, skin, event.colony);
+		ColonyUI ui = new ColonyUI(stage, skin, rules, event.colony);
 		ui.setupAndShowUI();
 	}
 

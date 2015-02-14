@@ -1,12 +1,8 @@
 package io.ilikeorangutans.ancol.game.colony;
 
 import io.ilikeorangutans.ancol.game.production.Production;
-import io.ilikeorangutans.ancol.game.production.ProductionBuilder;
-import io.ilikeorangutans.ancol.game.production.worker.Worker;
 import io.ilikeorangutans.ancol.game.ware.RecordingWares;
-import io.ilikeorangutans.ancol.game.ware.WareType;
 import io.ilikeorangutans.ancol.game.ware.Wares;
-import io.ilikeorangutans.ancol.map.tile.Tile;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,14 +12,9 @@ import java.util.List;
 /**
  * The productive output of the colony. Calculates how much of what good gets produced and consumed.
  */
-public class ColonyOutput {
+public class ColonyProduction {
 
 	private final List<Production> productions = new ArrayList<Production>();
-
-	public void addWorkedTile(WareType type, Tile tile, Worker worker) {
-		Production production = new ProductionBuilder().produce(type).on(tile).with(worker).create();
-		addProduction(production);
-	}
 
 	/**
 	 * Performs a simulated production run and returns a record of what was produced.
@@ -60,6 +51,7 @@ public class ColonyOutput {
 	 * @param production to be added
 	 */
 	public void addProduction(Production production) {
+
 		productions.add(production);
 
 		// Sort by whether a given production requires inputs or not.

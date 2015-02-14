@@ -1,8 +1,10 @@
 package io.ilikeorangutans.ancol.game.colony;
 
+import io.ilikeorangutans.ancol.game.colony.event.OpenColonyEvent;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
+import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;
@@ -30,18 +32,22 @@ public class ColonyHandler {
 
 	private final Emitter emitter;
 	private final EntitiesEntityFactory entities;
+	private final Rules rules;
+
 	private Map map;
 
 	private int counter = 1;
 
-	public ColonyHandler(Emitter emitter, EntitiesEntityFactory entities) {
+	public ColonyHandler(Emitter emitter, EntitiesEntityFactory entities, Rules rules) {
 		this.emitter = emitter;
 		this.entities = entities;
+		this.rules = rules;
+
 	}
 
 	@Subscribe
 	public void onBuildColony(BuildColonyEvent event) {
-		buildColony(event.builder);
+		foundColony(event.builder);
 	}
 
 	@Subscribe
@@ -72,7 +78,7 @@ public class ColonyHandler {
 		}
 	}
 
-	private void buildColony(Entity builder) {
+	private void foundColony(Entity builder) {
 		Player owner = builder.getComponent(PlayerOwnedComponent.class).getPlayer();
 		PositionComponent position = builder.getComponent(PositionComponent.class);
 
@@ -80,6 +86,7 @@ public class ColonyHandler {
 		counter++;
 		Surroundings surroundings = new PointSurroundings(position.getPoint(), map, entities);
 
+		ColonyComponent colonyComponent = new ColonyComponent(name, surroundings, rules, entities);
 		Entity colony = entities.create(
 				new PlayerOwnedComponent(owner),
 				new RenderableComponent(0),
@@ -87,8 +94,10 @@ public class ColonyHandler {
 				new PositionComponent(position),
 				new VisionComponent(1),
 				new NameComponent(name),
-				new ColonyComponent(name, surroundings)
+				colonyComponent
 		);
+
+		colonyComponent.found(builder.getComponent(PlayerOwnedComponent.class).getPlayer());
 
 		colony.getComponent(ColonyComponent.class).addColonist(builder);
 

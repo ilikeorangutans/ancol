@@ -2,39 +2,50 @@ package io.ilikeorangutans.ancol.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
-import io.ilikeorangutans.ancol.game.colony.ColonyOutput;
+import io.ilikeorangutans.ancol.game.colony.ColonyProduction;
+import io.ilikeorangutans.ancol.game.colony.TileWorkplace;
 import io.ilikeorangutans.ancol.game.colony.building.Building;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
+import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.game.ware.RecordingWares;
 import io.ilikeorangutans.ancol.game.ware.Stored;
-import io.ilikeorangutans.ancol.game.ware.WareType;
+import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Warehouse;
+import io.ilikeorangutans.ancol.map.surrounding.SurroundingTile;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ecs.Entity;
+
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
  */
-public class ColonyUI {
+public class ColonyUI implements Observer {
 	private final Stage stage;
 	private final Skin skin;
+	private final Rules rules;
 	private final Entity entity;
 
-	public ColonyUI(Stage stage, Skin skin, Entity colony) {
+	public ColonyUI(Stage stage, Skin skin, Rules rules, Entity colony) {
 		this.stage = stage;
 		this.skin = skin;
+		this.rules = rules;
 		this.entity = colony;
 	}
 
 	public void setupAndShowUI() {
 		final ColonyComponent colony = entity.getComponent(ColonyComponent.class);
+		colony.addObserver(this);
 
 		final Window window = new Window(colony.getName(), skin);
 		window.setResizable(true);
@@ -96,7 +107,7 @@ public class ColonyUI {
 		Table table = new Table(skin);
 
 		for (Stored stored : warehouse.getWares()) {
-			Label label = new Label(stored.getWare().name(), skin);
+			Label label = new Label(stored.getWare().getName(), skin);
 			label.setFontScale(.7F);
 			table.add(label).pad(3);
 		}
@@ -107,12 +118,12 @@ public class ColonyUI {
 		}
 
 		table.row();
-		ColonyOutput output = colony.getOutput();
+		ColonyProduction output = colony.getOutput();
 
 		RecordingWares simulated = output.simulate(warehouse);
 
 		for (Stored stored : warehouse.getWares()) {
-			WareType type = stored.getWare();
+			Ware type = stored.getWare();
 			StringBuilder sb = new StringBuilder();
 
 			boolean produced = simulated.getProduced(type) > 0;
@@ -153,10 +164,24 @@ public class ColonyUI {
 		int counter = 0;
 		for (Surroundings.Selector selector : Surroundings.Selector.values()) {
 
-			if (counter % 3 == 0)
+			if (counter % 3 == 0) {
 				surroundingTable.row().height(80);
+			}
 
-			surroundingTable.add(new Label(colony.getSurroundings().getTile(selector).getType().getName(), skin));
+			SurroundingTile tile = colony.getSurroundings().getTile(selector);
+
+
+			String worker = "";
+			if (colony.isTileWorked(selector)) {
+				TileWorkplace tw = colony.getTileWorkplace(selector);
+				worker = tw.getColonist().getComponent(ColonistComponent.class).getProfession().toString();
+			}
+
+
+			// TODO: Wheeeeeee trainwreck!
+			{
+				surroundingTable.add(new Label(tile.getTile().getType().getName() + " " + worker, skin));
+			}
 			counter++;
 		}
 
@@ -170,7 +195,7 @@ public class ColonyUI {
 		colonists.add(new Label("Colonists outside of colony", skin));
 		colonists.row();
 
-		List<ColonistInColony> colonistInColonyList = new List<ColonistInColony>(skin);
+		final List<ColonistInColony> colonistInColonyList = new List<ColonistInColony>(skin);
 		ColonistInColony[] toAdd = new ColonistInColony[colony.getColonists().size()];
 		int i = 0;
 		for (Entity colonist : colony.getColonists()) {
@@ -180,8 +205,19 @@ public class ColonyUI {
 		colonistInColonyList.setItems(toAdd);
 		colonistInColonyList.setSelectedIndex(-1);
 		colonistInColonyList.setSize(200, 100);
-		ScrollPane workersScrollPane = new ScrollPane(colonistInColonyList);
-		colonists.add(workersScrollPane).expandX();
+		colonistInColonyList.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				System.out.println("ColonyUI.changed");
+				ColonistInColony selected = colonistInColonyList.getSelected();
+				System.out.println("selected = " + selected);
+
+				Dialog dialog = new Dialog("Change Profession", skin);
+
+
+			}
+		});
+		colonists.add(new ScrollPane(colonistInColonyList)).expandX();
 
 
 		java.util.List<Entity> outsideColonists = colony.getOutsideColonists();
@@ -238,6 +274,12 @@ public class ColonyUI {
 	private void closeWindow(Window window) {
 		window.setVisible(false);
 		window.remove();
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		System.out.println("ColonyUI.update");
+		System.out.println("o = [" + o + "], arg = [" + arg + "]");
 	}
 
 	private class ColonistInColony {
