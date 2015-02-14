@@ -5,20 +5,20 @@ package io.ilikeorangutans.ancol.game.ware;
  */
 public class Stored {
 
-	private final WareType ware;
+	private final Ware ware;
 
 	private int amount;
 
-	public Stored(WareType ware) {
+	public Stored(Ware ware) {
 		this(ware, 0);
 	}
 
-	public Stored(WareType ware, int amount) {
+	public Stored(Ware ware, int amount) {
 		this.ware = ware;
 		this.amount = amount;
 	}
 
-	public WareType getWare() {
+	public Ware getWare() {
 		return ware;
 	}
 

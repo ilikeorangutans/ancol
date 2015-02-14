@@ -18,6 +18,7 @@ import io.ilikeorangutans.ancol.game.player.NextUnitPicker;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerTurnHandler;
 import io.ilikeorangutans.ancol.game.player.SimplePlayerEntities;
+import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.graphics.AnColRenderer;
 import io.ilikeorangutans.ancol.input.InputProcessorFactory;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
@@ -53,29 +54,33 @@ public class GameScreen implements Screen {
 		bus = new SimpleEventBus();
 		EntitiesEntityFactory entities = new SimpleEntities(bus);
 
+		// Game rules (tile types, professions, etc)
+		Rules rules = new Rules();
+		rules.loadFromJSON();
+
 		// Game data (map, players, nations, players' entities)
-		GameStateBuilder gameStateBuilder = new GameStateBuilder(bus);
+		GameStateBuilder gameStateBuilder = new GameStateBuilder(bus, rules);
 		gameStateBuilder.withEntities(entities);
 		GameState gameState = gameStateBuilder.setupSampleGame();
 
 		// Game mechanics
-		setupGameMechanics(bus, entities, gameState);
+		setupGameMechanics(bus, entities, rules, gameState);
 
 		// Setup Game UI for player:
 		Player player = gameStateBuilder.getLocalPlayer();
-		setupUIForPlayer(bus, entities, player);
+		setupUIForPlayer(bus, rules, entities, player);
 
 		// Start the game:
 		bus.fire(new GameStartedEvent());
 
 	}
 
-	private void setupUIForPlayer(EventBus bus, EntitiesEntityFactory entities, Player player) {
+	private void setupUIForPlayer(EventBus bus, Rules rules, EntitiesEntityFactory entities, Player player) {
 		AnColActions actions = new AnColActions(bus, pathFinder);
 		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth() - 250, Gdx.graphics.getHeight(), 60, 60, player.getMap());
 		bus.subscribe(viewport);
 
-		ui = new GameScreenUI(bus, actions, player);
+		ui = new GameScreenUI(bus, rules, actions, player);
 		bus.subscribe(ui);
 		ui.setupUI(skin);
 
@@ -94,11 +99,11 @@ public class GameScreen implements Screen {
 		renderer = new AnColRenderer(batch, viewport, player.getMap(), entities);
 	}
 
-	private void setupGameMechanics(EventBus bus, EntitiesEntityFactory entities, GameState gameState) {
+	private void setupGameMechanics(EventBus bus, EntitiesEntityFactory entities, Rules rules, GameState gameState) {
 		SelectionHandler selectionHandler = new SelectionHandler(entities, bus);
 		bus.subscribe(selectionHandler);
 
-		ColonyHandler colonyHandler = new ColonyHandler(bus, entities);
+		ColonyHandler colonyHandler = new ColonyHandler(bus, entities, rules);
 		bus.subscribe(colonyHandler);
 
 		ActivitySystem actionPointSystem = new ActivitySystem(bus, entities);

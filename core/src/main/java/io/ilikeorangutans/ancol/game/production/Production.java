@@ -1,7 +1,7 @@
 package io.ilikeorangutans.ancol.game.production;
 
 import io.ilikeorangutans.ancol.game.production.worker.Worker;
-import io.ilikeorangutans.ancol.game.ware.WareType;
+import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Wares;
 
 import java.util.ArrayList;
@@ -17,12 +17,14 @@ public class Production {
 	 * Holds a list of modifiers that will be applied on a per worker basis.
 	 */
 	private final List<Modifier> modifiers = new ArrayList<Modifier>();
-	private final WareType output;
-	private final WareType input;
+	private final Ware output;
+	private final Ware input;
+	private final Workplace workplace;
 
-	Production(WareType input, WareType output, List<Worker> workers) {
+	Production(Ware input, Ware output, List<Worker> workers, Workplace workplace) {
 		this.output = output;
 		this.input = input;
+		this.workplace = workplace;
 		this.workers.addAll(workers);
 	}
 
@@ -34,7 +36,7 @@ public class Production {
 		modifiers.add(modifier);
 	}
 
-	public WareType getOutput() {
+	public Ware getOutput() {
 		return output;
 	}
 
@@ -45,7 +47,7 @@ public class Production {
 	/**
 	 * @return The wares required to fulfill this production.
 	 */
-	public WareType getInput() {
+	public Ware getInput() {
 		return input;
 	}
 
@@ -66,13 +68,13 @@ public class Production {
 
 		for (Worker worker : workers) {
 			// TODO: add per worker bonuses here (e.g. improved production facilities or based on founding fathers)
-			sum += worker.getOutput(output);
+			sum += worker.calculateOutput(output);
 		}
 
 		return sum;
 	}
 
-	public int calculateMaxOutput() {
+	int calculateMaxOutput() {
 		// TODO: apply bonuses
 		return calculateRawOutput();
 	}
@@ -97,7 +99,7 @@ public class Production {
 	}
 
 	/**
-	 * @param rawMaterialAvailable
+	 * @param rawMaterialAvailable how much of the required raw material is available.
 	 * @return the number of produced goods including all bonuses.
 	 */
 	private int calculateEffectiveOutput(int rawMaterialAvailable) {

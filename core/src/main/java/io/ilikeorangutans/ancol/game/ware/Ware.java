@@ -1,16 +1,61 @@
 package io.ilikeorangutans.ancol.game.ware;
 
+import io.ilikeorangutans.ancol.game.cargo.Transportable;
+
 /**
  *
  */
-public class Ware {
-	private final String name;
+public class Ware implements Transportable {
 
-	public Ware(String name) {
+	private final WareType wareType;
+	private final String name;
+	private boolean notStorable;
+	private boolean harvested;
+	private boolean manufactured;
+
+	Ware(WareType wareType, String name, boolean storable) {
+		this.wareType = wareType;
+		this.notStorable = !storable;
 		this.name = name;
 	}
 
+	public boolean isHarvested() {
+		return harvested;
+	}
+
+	public boolean isManufactured() {
+		return manufactured;
+	}
+
+	public WareType getWareType() {
+		return wareType;
+	}
+
+	public boolean isStorable() {
+		return !notStorable;
+	}
+
+	@Override
+	public String toString() {
+		return "Ware{" +
+				"wareType=" + wareType +
+				", name='" + name + '\'' +
+				", storable=" + !notStorable +
+				'}';
+	}
+
 	public String getName() {
+		return name;
+	}
+
+	@Override
+
+	public int getRequiredSpace() {
+		return 1;
+	}
+
+	@Override
+	public String getDescription() {
 		return name;
 	}
 

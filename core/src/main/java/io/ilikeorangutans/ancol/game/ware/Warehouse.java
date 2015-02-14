@@ -1,6 +1,8 @@
 package io.ilikeorangutans.ancol.game.ware;
 
 
+import java.util.List;
+
 /**
  *
  */
@@ -8,8 +10,8 @@ public class Warehouse extends SimpleWares {
 
 	private int maxPerWare = 100;
 
-	public Warehouse() {
-		for (WareType type : WareType.getStorableTypes()) {
+	public Warehouse(List<Ware> wares) {
+		for (Ware type : wares) {
 			store(type, 0);
 		}
 	}

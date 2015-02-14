@@ -13,7 +13,7 @@ public interface Wares {
 	 * @param ware
 	 * @param amount
 	 */
-	void store(WareType ware, int amount);
+	void store(Ware ware, int amount);
 
 	Collection<Stored> getWares();
 
@@ -24,7 +24,7 @@ public interface Wares {
 	 * @param amount The requested amount
 	 * @return the amount that was actually withdrawn. Depending on the store levels, this might return 0.
 	 */
-	int retrieve(WareType ware, int amount);
+	int retrieve(Ware ware, int amount);
 
 	/**
 	 * Returns how much of a given ware is available.
@@ -32,5 +32,5 @@ public interface Wares {
 	 * @param type
 	 * @return
 	 */
-	int getAmount(WareType type);
+	int getAmount(Ware type);
 }

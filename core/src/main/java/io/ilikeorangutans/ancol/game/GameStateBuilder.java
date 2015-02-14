@@ -1,8 +1,5 @@
 package io.ilikeorangutans.ancol.game;
 
-import com.badlogic.gdx.Gdx;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.cargo.CargoHoldComponent;
 import io.ilikeorangutans.ancol.game.cargo.EntityTransportable;
@@ -13,15 +10,14 @@ import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Profession;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
+import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
-import io.ilikeorangutans.ancol.game.ware.WareType;
+import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PlayerVisibilityMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.RandomMap;
-import io.ilikeorangutans.ancol.map.tile.SimpleTileTypes;
-import io.ilikeorangutans.ancol.map.tile.TileTypes;
 import io.ilikeorangutans.ancol.move.MovableComponent;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.bus.EventBus;
@@ -38,20 +34,22 @@ import java.util.HashMap;
 public class GameStateBuilder {
 
 	private final EventBus bus;
+	private final Rules rules;
 	private final java.util.Map<Integer, Player> players = new HashMap<Integer, Player>();
 	private final GameState gameState;
 	private EntitiesEntityFactory entities;
-	private TileTypes tileTypes;
+
 	private Map map;
 
-	public GameStateBuilder(EventBus bus) {
+	public GameStateBuilder(EventBus bus, Rules rules) {
 		this.bus = bus;
+		this.rules = rules;
 		gameState = new GameState();
 	}
 
 	public GameStateBuilder addPlayer(Player player) {
 		players.put(player.getId(), player);
-		PlayerVisibilityMap playerMap = new PlayerVisibilityMap(map, player, getTileTypes().getTypeForId(0));
+		PlayerVisibilityMap playerMap = new PlayerVisibilityMap(map, player, rules.getTileTypes().getTypeForId(0));
 		bus.subscribe(playerMap);
 		player.setMap(playerMap);
 		gameState.addPlayer(player);
@@ -61,8 +59,7 @@ public class GameStateBuilder {
 
 	public GameState setupSampleGame() {
 
-		loadFromJSON();
-		map = new RandomMap(tileTypes);
+		map = new RandomMap(rules.getTileTypes());
 
 		addPlayer(new Player(0, "player 1"));
 		addPlayer(new Player(1, "player 2"));
@@ -70,7 +67,7 @@ public class GameStateBuilder {
 		gameState.setMap(map);
 
 
-		Profession profession = new Profession("Free Colonist");
+		Profession profession = new Profession("Free Colonist", 2);
 		entities.create(
 				new PositionComponent(11, 10),
 				new RenderableComponent(1),
@@ -105,7 +102,7 @@ public class GameStateBuilder {
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(2),
-				new ColonistComponent(new Profession("Seasoned Scout")),
+				new ColonistComponent(new Profession("Seasoned Scout", 2)),
 				new TransportableComponent(1));
 
 		Entity toLoad = entities.create(
@@ -122,7 +119,7 @@ public class GameStateBuilder {
 				new TransportableComponent(1));
 		CargoHoldComponent cargoHoldComponent = new CargoHoldComponent(2);
 		cargoHoldComponent.getCargohold().load(new EntityTransportable(toLoad), 1);
-		cargoHoldComponent.getCargohold().load(WareType.Muskets, 100);
+//		cargoHoldComponent.getCargohold().load(Ware.Muskets, 100);
 		entities.create(
 				new PositionComponent(0, 1),
 				new RenderableComponent(2),
@@ -138,16 +135,6 @@ public class GameStateBuilder {
 
 
 		return gameState;
-	}
-
-	public void loadFromJSON() {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-		tileTypes = gson.fromJson(Gdx.files.internal("ancol/tiletypes.json").reader(), SimpleTileTypes.class);
-	}
-
-	public TileTypes getTileTypes() {
-		return tileTypes;
 	}
 
 	public Collection<Player> getPlayers() {

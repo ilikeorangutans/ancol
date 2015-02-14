@@ -1,6 +1,6 @@
 package io.ilikeorangutans.ancol.game.production.worker;
 
-import io.ilikeorangutans.ancol.game.ware.WareType;
+import io.ilikeorangutans.ancol.game.ware.Ware;
 
 /**
  * Simple worker that works at a fixed rate.
@@ -14,7 +14,14 @@ public class FixedWorker implements Worker {
 	}
 
 	@Override
-	public int getOutput(WareType type) {
+	public int calculateOutput(Ware type) {
 		return output;
+	}
+
+	@Override
+	public String toString() {
+		return "FixedWorker{" +
+				"output=" + output +
+				'}';
 	}
 }

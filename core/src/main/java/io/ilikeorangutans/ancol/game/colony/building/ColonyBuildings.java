@@ -1,5 +1,7 @@
 package io.ilikeorangutans.ancol.game.colony.building;
 
+import io.ilikeorangutans.ancol.game.ware.Ware;
+
 import java.util.List;
 
 /**
@@ -9,7 +11,7 @@ public interface ColonyBuildings {
 
 	List<Building> getBuildings();
 
-	boolean hasBuilding(Blueprint blueprint);
+	Building construct(BuildingType buildingType);
 
-	Building construct(Blueprint townHall);
+	Building findByOutput(Ware ware);
 }

@@ -1,9 +1,5 @@
 package io.ilikeorangutans.ancol.game.ware;
 
-import io.ilikeorangutans.ancol.game.ware.Stored;
-import io.ilikeorangutans.ancol.game.ware.WareType;
-import io.ilikeorangutans.ancol.game.ware.Wares;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,16 +9,16 @@ import java.util.Map;
  */
 public class RecordingWares implements Wares {
 
-	private Map<WareType, Line> lines = new LinkedHashMap<WareType, Line>();
+	private Map<Ware, Line> lines = new LinkedHashMap<Ware, Line>();
 
 	public RecordingWares(Wares start) {
-		for (WareType wareType : WareType.values()) {
-			lines.put(wareType, new Line(start.getAmount(wareType)));
+		for (Stored stored : start.getWares()) {
+			lines.put(stored.getWare(), new Line(stored.getAmount()));
 		}
 	}
 
 	@Override
-	public void store(WareType ware, int amount) {
+	public void store(Ware ware, int amount) {
 		lines.get(ware).effective += amount;
 		lines.get(ware).produced += amount;
 	}
@@ -33,7 +29,7 @@ public class RecordingWares implements Wares {
 	}
 
 	@Override
-	public int retrieve(WareType ware, int amount) {
+	public int retrieve(Ware ware, int amount) {
 		int effective = Math.min(amount, lines.get(ware).effective);
 		lines.get(ware).effective -= effective;
 		lines.get(ware).consumed += effective;
@@ -41,15 +37,15 @@ public class RecordingWares implements Wares {
 	}
 
 	@Override
-	public int getAmount(WareType type) {
+	public int getAmount(Ware type) {
 		return lines.get(type).effective;
 	}
 
-	public int getConsumed(WareType type) {
+	public int getConsumed(Ware type) {
 		return lines.get(type).consumed;
 	}
 
-	public int getProduced(WareType type) {
+	public int getProduced(Ware type) {
 		return lines.get(type).produced;
 	}
 

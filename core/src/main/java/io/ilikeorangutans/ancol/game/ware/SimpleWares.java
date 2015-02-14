@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class SimpleWares implements Wares {
 
-	private final Map<WareType, Stored> wares = new LinkedHashMap<WareType, Stored>();
+	private final Map<Ware, Stored> wares = new LinkedHashMap<Ware, Stored>();
 
 	/**
 	 * Copy constructor.
@@ -33,7 +33,7 @@ public class SimpleWares implements Wares {
 	}
 
 	@Override
-	public void store(WareType type, int amount) {
+	public void store(Ware type, int amount) {
 		if (type == null)
 			throw new NullPointerException("Type cannot be null");
 
@@ -50,7 +50,7 @@ public class SimpleWares implements Wares {
 	}
 
 	@Override
-	public int retrieve(WareType ware, int amount) {
+	public int retrieve(Ware ware, int amount) {
 		int result = Math.min(amount, getAmount(ware));
 		store(ware, -result);
 
@@ -58,7 +58,7 @@ public class SimpleWares implements Wares {
 	}
 
 	@Override
-	public int getAmount(WareType type) {
+	public int getAmount(Ware type) {
 		if (wares.containsKey(type))
 			return wares.get(type).getAmount();
 

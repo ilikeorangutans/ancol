@@ -29,7 +29,6 @@ public class GameState {
 
 	public void addPlayer(Player p) {
 		players.add(p);
-		// Not sure if this is the best place for this. // emitter.fire(new PlayerJoinedEvent(p));
 	}
 
 	public void nextPlayer() {

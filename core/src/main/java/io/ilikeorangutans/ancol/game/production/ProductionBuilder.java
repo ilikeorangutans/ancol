@@ -1,11 +1,9 @@
 package io.ilikeorangutans.ancol.game.production;
 
 import io.ilikeorangutans.ancol.game.colony.building.Building;
-import io.ilikeorangutans.ancol.game.production.requirement.BuildingRequirement;
-import io.ilikeorangutans.ancol.game.production.requirement.Requirement;
-import io.ilikeorangutans.ancol.game.production.requirement.TileAccessRequirement;
+import io.ilikeorangutans.ancol.game.production.worker.FixedWorker;
 import io.ilikeorangutans.ancol.game.production.worker.Worker;
-import io.ilikeorangutans.ancol.game.ware.WareType;
+import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.map.tile.Tile;
 
 import java.util.ArrayList;
@@ -15,30 +13,36 @@ import java.util.List;
  * Builder for productions.
  */
 public class ProductionBuilder {
-	private final List<Requirement> requirements = new ArrayList<Requirement>();
+
 	private final List<Modifier> modifiers = new ArrayList<Modifier>();
 	private final List<Worker> workers = new ArrayList<Worker>();
-	private WareType output;
-	private WareType input;
+	private Ware output;
+	private Ware input;
+	private Workplace workplace;
 
-	public ProductionBuilder consume(WareType input) {
+	public ProductionBuilder consume(Ware input) {
 		this.input = input;
 		return this;
 	}
 
-	public ProductionBuilder produce(WareType output) {
+	public ProductionBuilder produce(Ware output) {
 		this.output = output;
+		return this;
+	}
+
+	public ProductionBuilder withFixedOutput(int output) {
+		with(new FixedWorker(output));
 		return this;
 	}
 
 	public ProductionBuilder in(Building building) {
 		modifiers.add(building);
-		requirements.add(new BuildingRequirement(building));
+
+		produce(building.getOutput());
 		return this;
 	}
 
 	public ProductionBuilder on(Tile tile) {
-		requirements.add(new TileAccessRequirement(tile));
 		return this;
 	}
 
@@ -51,15 +55,17 @@ public class ProductionBuilder {
 		if (workers.isEmpty())
 			throw new IllegalStateException("Cannot create production without workers");
 
-		if (output == null)
-			throw new IllegalStateException("Cannot create production without output");
-
-		Production production = new Production(input, output, workers);
+		Production production = new Production(input, output, workers, workplace);
 
 		for (Modifier modifier : modifiers) {
 			production.addModifier(modifier);
 		}
 
 		return production;
+	}
+
+	public ProductionBuilder at(Workplace workplace) {
+		this.workplace = workplace;
+		return this;
 	}
 }

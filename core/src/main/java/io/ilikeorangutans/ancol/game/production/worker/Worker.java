@@ -1,6 +1,6 @@
 package io.ilikeorangutans.ancol.game.production.worker;
 
-import io.ilikeorangutans.ancol.game.ware.WareType;
+import io.ilikeorangutans.ancol.game.ware.Ware;
 
 /**
  *
@@ -13,5 +13,6 @@ public interface Worker {
 	 * @param type ware that is to be produced.
 	 * @return how much this worker can produce of the given ware type.
 	 */
-	int getOutput(WareType type);
+	int calculateOutput(Ware type);
+
 }
