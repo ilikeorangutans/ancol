@@ -75,9 +75,8 @@ public class PlayerVisibilityMap implements Map {
 		if (!ownedByPlayer)
 			return;
 
-
 		if (!entity.hasComponent(ComponentType.fromClasses(VisionComponent.class)))
-			throw new IllegalArgumentException("Cannot update visibility for " + entity + ", it does not have a VisionComponent.");
+			return;
 
 		VisionComponent vc = entity.getComponent(VisionComponent.class);
 		int radius = vc.getRadius();

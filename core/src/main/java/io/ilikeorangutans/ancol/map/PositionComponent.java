@@ -13,6 +13,10 @@ public class PositionComponent implements Component {
 
 	private int x, y;
 
+	public PositionComponent(Point p) {
+		this(p.x, p.y);
+	}
+
 	public PositionComponent(PositionComponent comp) {
 		this(comp.x, comp.y);
 	}
