@@ -18,7 +18,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class Rules {
 
-	private TileTypes tileTypes;
+	private SimpleTileTypes tileTypes;
 	private AvailableProfessions professions;
 
 	private AvailableBuildings buildings;
@@ -35,6 +35,7 @@ public class Rules {
 		wares = gson.fromJson(Gdx.files.internal("ancol/wares.json").reader(), AvailableWares.class);
 		tileTypes = gson.fromJson(Gdx.files.internal("ancol/tiletypes.json").reader(), SimpleTileTypes.class);
 
+		tileTypes.postProcess(wares);
 
 		buildings = gson.fromJson(Gdx.files.internal("ancol/buildings.json").reader(), AvailableBuildings.class);
 

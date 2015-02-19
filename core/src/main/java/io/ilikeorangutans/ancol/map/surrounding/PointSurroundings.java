@@ -1,7 +1,7 @@
 package io.ilikeorangutans.ancol.map.surrounding;
 
 import io.ilikeorangutans.ancol.Point;
-import io.ilikeorangutans.ancol.map.Map;
+import io.ilikeorangutans.ancol.map.GameMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entities;
@@ -16,11 +16,11 @@ import java.util.List;
  */
 public class PointSurroundings implements Surroundings {
 
-	private final Map map;
+	private final GameMap map;
 	private final Point point;
 	private final Entities entities;
 
-	public PointSurroundings(Point location, Map map, Entities entities) {
+	public PointSurroundings(Point location, GameMap map, Entities entities) {
 		this.map = map;
 		this.point = location;
 		this.entities = entities;
@@ -28,8 +28,7 @@ public class PointSurroundings implements Surroundings {
 
 	@Override
 	public SurroundingTile getTile(Selector where) {
-
-		return new SurroundingTile(where.apply(point), map.getTileAt(where.apply(point)), entities);
+		return new SurroundingTile(where.apply(point), map.getTileAt(where.apply(point)), map);
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class PointSurroundings implements Surroundings {
 				continue;
 
 			Point p = selector.apply(point);
-			result.add(new SurroundingTile(p, map.getTileAt(p), entities));
+			result.add(new SurroundingTile(p, map.getTileAt(p), map));
 		}
 
 		return result;
@@ -70,7 +69,7 @@ public class PointSurroundings implements Surroundings {
 
 		for (Selector selector : Selector.values()) {
 			Point p = selector.apply(point);
-			result.add(new SurroundingTile(p, map.getTileAt(p), entities));
+			result.add(new SurroundingTile(p, map.getTileAt(p), map));
 		}
 
 		return result.iterator();

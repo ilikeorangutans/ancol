@@ -8,10 +8,10 @@ import io.ilikeorangutans.bus.Event;
  */
 public class BeginTurnEvent implements Event {
 
-    public final Player player;
+	public final Player player;
 
-    public BeginTurnEvent(Player player) {
-        this.player = player;
-    }
+	public BeginTurnEvent(Player player) {
+		this.player = player;
+	}
 
 }

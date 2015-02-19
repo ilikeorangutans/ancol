@@ -4,30 +4,38 @@ import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
+import io.ilikeorangutans.ancol.map.surrounding.SurroundingTile;
 import io.ilikeorangutans.ancol.map.tile.Tile;
+import io.ilikeorangutans.ancol.map.tile.TileImpl;
 import io.ilikeorangutans.ancol.map.tile.TileType;
 import io.ilikeorangutans.ancol.move.MovedEvent;
 import io.ilikeorangutans.bus.Subscribe;
 import io.ilikeorangutans.ecs.ComponentType;
+import io.ilikeorangutans.ecs.Entities;
 import io.ilikeorangutans.ecs.Entity;
 import io.ilikeorangutans.ecs.event.EntityCreatedEvent;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Wrapper around a map that will check visibility of tiles.
  */
-public class PlayerVisibilityMap implements Map {
+public class PlayerVisibilityMap implements GameMap {
 
 	private final Map delegate;
 	private final Player player;
 	private final TileType unexplored;
 	private final BitSet visibility;
+	private final Entities entities;
 
-	public PlayerVisibilityMap(Map delegate, Player player, TileType unexplored) {
+	public PlayerVisibilityMap(Map delegate, Player player, TileType unexplored, Entities entities) {
 		this.delegate = delegate;
 		this.player = player;
 		this.unexplored = unexplored;
+		this.entities = entities;
 		visibility = new BitSet(getWidth() * getHeight());
 		visibility.clear();
 	}
@@ -47,16 +55,35 @@ public class PlayerVisibilityMap implements Map {
 		boolean visible = visibility.get(y * getWidth() + x);
 
 		if (!visible) {
-			return new Tile(unexplored);
+			return new TileImpl(unexplored);
 		}
 
 		return delegate.getTileAt(x, y);
 	}
 
 	@Override
-	public Tile getTileAt(Point p) {
-		return getTileAt(p.x, p.y);
+	public SurroundingTile getTileAt(Point p) {
+		return new SurroundingTile(p, delegate.getTileAt(p), this);
 	}
+
+	@Override
+	public List<Entity> getEntitiesAt(Point p) {
+		final boolean isUnexplored = getTileAt(p).getType().equals(unexplored);
+		if (isUnexplored)
+			return Collections.emptyList();
+
+		// TODO: iterating over ALL entities with a position. Inefficient. :(
+
+		List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(PositionComponent.class));
+		List<Entity> result = new ArrayList<Entity>();
+		for (Entity e : ents) {
+			boolean onPoint = e.getComponent(PositionComponent.class).getPoint().equals(p);
+			if (onPoint)
+				result.add(e);
+		}
+		return result;
+	}
+
 
 	@Subscribe
 	public void onMoved(MovedEvent event) {

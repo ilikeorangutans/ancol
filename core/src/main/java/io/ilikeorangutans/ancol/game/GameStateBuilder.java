@@ -12,7 +12,6 @@ import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
-import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PlayerVisibilityMap;
@@ -49,7 +48,7 @@ public class GameStateBuilder {
 
 	public GameStateBuilder addPlayer(Player player) {
 		players.put(player.getId(), player);
-		PlayerVisibilityMap playerMap = new PlayerVisibilityMap(map, player, rules.getTileTypes().getTypeForId(0));
+		PlayerVisibilityMap playerMap = new PlayerVisibilityMap(map, player, rules.getTileTypes().getTypeForId(0), entities);
 		bus.subscribe(playerMap);
 		player.setMap(playerMap);
 		gameState.addPlayer(player);

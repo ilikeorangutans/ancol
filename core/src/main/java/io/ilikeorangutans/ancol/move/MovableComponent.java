@@ -3,6 +3,7 @@ package io.ilikeorangutans.ancol.move;
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.tile.Tile;
+import io.ilikeorangutans.ancol.map.tile.TileType;
 import io.ilikeorangutans.ancol.path.Movable;
 import io.ilikeorangutans.ancol.path.Path;
 import io.ilikeorangutans.ecs.Component;
@@ -52,11 +53,15 @@ public class MovableComponent implements Component, Movable {
 	public boolean canAccess(Point p) {
 		Tile tile = map.getTileAt(p);
 
-		int id = tile.getType().getId();
+		// TODO: we'll need to use GameMap instead of Map so we can access what entities are on this tile. Entities can
+		// influence pathfinding and accessibility, for example a ship (with empty cargo holds) will allow a land unit
+		// to "enter" a sea tile, and vice versa, a colony will allow a ship to enter a land tile.
+		TileType.Role role = tile.getType().getRole();
 		if (type == MovableType.Land) {
-			return id != 1;
+			// TODO: might want to consider unexplored accessible.
+			return role == TileType.Role.Land;
 		} else {
-			return id == 0 || id == 1;
+			return role == TileType.Role.Ocean || role == TileType.Role.Lake || role == TileType.Role.TradeRoute;
 		}
 
 		// TODO: need to check if the target tile has a ship that we can board or a colony we can enter.

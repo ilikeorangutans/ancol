@@ -1,16 +1,127 @@
 {
-  "types": {
-    "0": {
+  "types": [
+    {
       "name": "unexplored",
-      "id": 0
+      "id": 0,
+      "settlements": false,
+      "role": "Unexplored"
     },
-    "1": {
-      "name": "ocean",
-      "id": 1
+    {
+      "name": "arctic",
+      "id": 1,
+      "role": "Land",
+      "settlements": "false"
     },
-    "2": {
+    {
+      "name": "boreal forest",
+      "id": 2,
+      "role": "Land",
+      "produces": [
+        {
+          "ware": "Corn",
+          "amount": 2
+        },
+        {
+          "ware": "Furs",
+          "amount": 3
+        },
+        {
+          "ware": "Lumber",
+          "amount": 4
+        },
+        {
+          "ware": "Ore",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "name": "broadleaf forest",
+      "id": 3,
+      "settlements": true,
+      "role": "Land",
+      "produces": [
+        {
+          "ware": "Corn",
+          "amount": 2
+        },
+        {
+          "ware": "Cotton",
+          "amount": 1
+        },
+        {
+          "ware": "Lumber",
+          "amount": 4
+        }
+      ]
+    },
+    {
+      "name": "conifer forest",
+      "id": 4,
+      "settlements": true,
+      "role": "Land",
+      "produces": [
+        {
+          "ware": "Corn",
+          "amount": 2
+        },
+        {
+          "ware": "Tobacco",
+          "amount": 1
+        },
+        {
+          "ware": "Lumber",
+          "amount": 6
+        }
+      ]
+    },
+    {
+      "name": "desert",
+      "id": 5,
+      "settlements": true,
+      "role": "Land"
+    },
+    {
       "name": "grassland",
-      "id": 2
+      "id": 6,
+      "settlements": false,
+      "role": "Land"
+    },
+    {
+      "name": "hills",
+      "id": 7,
+      "settlements": false,
+      "role": "Land"
+    },
+    {
+      "name": "marsh",
+      "id": 8,
+      "settlements": false,
+      "role": "Land"
+    },
+    {
+      "name": "mixed forest",
+      "id": 9,
+      "settlements": false,
+      "role": "Land"
+    },
+    {
+      "name": "mountains",
+      "id": 10,
+      "settlements": false,
+      "role": "Land"
+    },
+    {
+      "name": "ocean",
+      "id": 11,
+      "settlements": false,
+      "role": "Ocean"
+    },
+    {
+      "name": "plains",
+      "id": 12,
+      "settlements": false,
+      "role": "Land"
     }
-  }
+  ]
 }

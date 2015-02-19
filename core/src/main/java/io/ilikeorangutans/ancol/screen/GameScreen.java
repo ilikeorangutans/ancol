@@ -96,7 +96,7 @@ public class GameScreen implements Screen {
 		NextUnitPicker nextUnitPicker = new NextUnitPicker(bus, player, p1Entities);
 		bus.subscribe(nextUnitPicker);
 
-		renderer = new AnColRenderer(batch, viewport, player.getMap(), entities);
+		renderer = new AnColRenderer(batch, viewport, player.getMap(), entities, rules);
 	}
 
 	private void setupGameMechanics(EventBus bus, EntitiesEntityFactory entities, Rules rules, GameState gameState) {

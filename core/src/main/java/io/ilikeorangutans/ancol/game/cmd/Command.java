@@ -8,6 +8,6 @@ import io.ilikeorangutans.ecs.Entity;
  */
 public interface Command {
 
-    void apply(Emitter bus, Entity entity);
+	void apply(Emitter bus, Entity entity);
 
 }

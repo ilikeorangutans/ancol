@@ -1,6 +1,6 @@
 package io.ilikeorangutans.ancol.game.player;
 
-import io.ilikeorangutans.ancol.map.Map;
+import io.ilikeorangutans.ancol.map.GameMap;
 
 /**
  *
@@ -10,18 +10,18 @@ public class Player {
 	private final String name;
 
 	private final int id;
-	private Map map;
+	private GameMap map;
 
 	public Player(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public Map getMap() {
+	public GameMap getMap() {
 		return map;
 	}
 
-	public void setMap(Map map) {
+	public void setMap(GameMap map) {
 		this.map = map;
 	}
 

@@ -2,6 +2,7 @@ package io.ilikeorangutans.ancol.map;
 
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.map.tile.Tile;
+import io.ilikeorangutans.ancol.map.tile.TileImpl;
 import io.ilikeorangutans.ancol.map.tile.TileType;
 import io.ilikeorangutans.ancol.map.tile.TileTypes;
 
@@ -21,25 +22,26 @@ public class RandomMap implements Map {
 		this.width = width;
 		tiles = new Tile[width * height];
 
-		TileType water = tileTypes.getTypeForId(1);
-		TileType grass = tileTypes.getTypeForId(2);
+		TileType water = tileTypes.getTypeForId(11);
 
 		Random r = new Random();
 
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 
-				TileType tt = water;
+				boolean ocean;
 
-				if (y == 0 || x == 0 || y == height - 1 || x == width - 1) {
-					tt = water;
-				} else if (r.nextInt(10) > 6) {
-					tt = water;
-				} else {
-					tt = grass;
+				if (r.nextInt(10) > 7 || y == 0 || x == 0 || y == height - 1 || x == width - 1)
+					ocean = true;
+				else
+					ocean = false;
+
+				TileType tt = water;
+				if (!ocean) {
+					tt = tileTypes.getTypeForId(r.nextInt(10) + 1);
 				}
 
-				tiles[index(x, y)] = new Tile(tt);
+				tiles[index(x, y)] = new TileImpl(tt);
 			}
 		}
 	}

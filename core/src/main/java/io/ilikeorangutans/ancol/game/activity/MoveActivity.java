@@ -36,7 +36,7 @@ public class MoveActivity implements Activity {
 	public void perform(Emitter emitter, ActionPoints actionPoints) {
 		if (path.isEmpty() || path.isLastStep())
 			return;
-
+		
 		Point p = path.nextStep();
 		if (!movableComponent.canAccess(p)) {
 			movableComponent.setPath(null);

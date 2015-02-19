@@ -8,9 +8,9 @@ import io.ilikeorangutans.ecs.Entity;
  */
 public class SimulateEntityEvent implements Event {
 
-    public final Entity entity;
+	public final Entity entity;
 
-    public SimulateEntityEvent(Entity entity) {
-        this.entity = entity;
-    }
+	public SimulateEntityEvent(Entity entity) {
+		this.entity = entity;
+	}
 }

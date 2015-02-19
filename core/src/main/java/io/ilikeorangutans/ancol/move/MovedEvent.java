@@ -9,11 +9,11 @@ import io.ilikeorangutans.ecs.Entity;
  */
 public class MovedEvent implements Event {
 
-    public final Entity entity;
-    public final Point position;
+	public final Entity entity;
+	public final Point position;
 
-    public MovedEvent(Entity entity, Point position) {
-        this.entity = entity;
-        this.position = position;
-    }
+	public MovedEvent(Entity entity, Point position) {
+		this.entity = entity;
+		this.position = position;
+	}
 }

@@ -7,7 +7,7 @@ import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
-import io.ilikeorangutans.ancol.map.Map;
+import io.ilikeorangutans.ancol.map.GameMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.surrounding.PointSurroundings;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
@@ -34,7 +34,7 @@ public class ColonyHandler {
 	private final EntitiesEntityFactory entities;
 	private final Rules rules;
 
-	private Map map;
+	private GameMap map;
 
 	private int counter = 1;
 
