@@ -1,6 +1,7 @@
 package io.ilikeorangutans.ancol.map.surrounding;
 
 import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ecs.Entity;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  *
  */
-public interface Surroundings extends Iterable<SurroundingTile> {
+public interface Surroundings extends Iterable<GameTile> {
 
 	/**
 	 * Returns the tile at the given point.
@@ -16,7 +17,7 @@ public interface Surroundings extends Iterable<SurroundingTile> {
 	 * @param where
 	 * @return
 	 */
-	SurroundingTile getTile(Selector where);
+	GameTileImpl getTile(Selector where);
 
 	/**
 	 * Returns the entities at the given point.
@@ -26,7 +27,7 @@ public interface Surroundings extends Iterable<SurroundingTile> {
 	 */
 	List<Entity> getEntities(Selector where);
 
-	List<SurroundingTile> getAllWithoutCenter();
+	List<GameTile> getAllWithoutCenter();
 
 	public enum Selector {
 		NW(-1, -1),

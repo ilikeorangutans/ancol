@@ -4,7 +4,8 @@ import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
-import io.ilikeorangutans.ancol.map.surrounding.SurroundingTile;
+import io.ilikeorangutans.ancol.map.surrounding.GameTileImpl;
+import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ancol.map.tile.Tile;
 import io.ilikeorangutans.ancol.map.tile.TileImpl;
 import io.ilikeorangutans.ancol.map.tile.TileType;
@@ -30,6 +31,7 @@ public class PlayerVisibilityMap implements GameMap {
 	private final TileType unexplored;
 	private final BitSet visibility;
 	private final Entities entities;
+	private TileImpl unexploredTile;
 
 	public PlayerVisibilityMap(Map delegate, Player player, TileType unexplored, Entities entities) {
 		this.delegate = delegate;
@@ -38,6 +40,8 @@ public class PlayerVisibilityMap implements GameMap {
 		this.entities = entities;
 		visibility = new BitSet(getWidth() * getHeight());
 		visibility.clear();
+
+		unexploredTile = new TileImpl(unexplored);
 	}
 
 	@Override
@@ -52,18 +56,20 @@ public class PlayerVisibilityMap implements GameMap {
 
 	@Override
 	public Tile getTileAt(int x, int y) {
-		boolean visible = visibility.get(y * getWidth() + x);
-
-		if (!visible) {
-			return new TileImpl(unexplored);
+		if (!isVisible(x, y)) {
+			return unexploredTile;
 		}
 
 		return delegate.getTileAt(x, y);
 	}
 
+	private boolean isVisible(int x, int y) {
+		return visibility.get(y * getWidth() + x);
+	}
+
 	@Override
-	public SurroundingTile getTileAt(Point p) {
-		return new SurroundingTile(p, delegate.getTileAt(p), this);
+	public GameTile getTileAt(Point p) {
+		return new GameTileImpl(p, getTileAt(p.x, p.y), this);
 	}
 
 	@Override

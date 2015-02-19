@@ -79,19 +79,61 @@
       "name": "desert",
       "id": 5,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "produces": [
+        {
+          "ware": "Corn",
+          "amount": 2
+        },
+        {
+          "ware": "Tobacco",
+          "amount": 1
+        },
+        {
+          "ware": "Cotton",
+          "amount": 4
+        },
+        {
+          "ware": "Ore",
+          "amount": 2
+        }
+      ]
     },
     {
       "name": "grassland",
       "id": 6,
       "settlements": false,
-      "role": "Land"
+      "role": "Land",
+      "produces": [
+        {
+          "ware": "Corn",
+          "amount": 4
+        },
+        {
+          "ware": "Tobacco",
+          "amount": 3
+        },
+        {
+          "ware": "Cotton",
+          "amount": 2
+        }
+      ]
     },
     {
       "name": "hills",
       "id": 7,
       "settlements": false,
-      "role": "Land"
+      "role": "Land",
+      "produces": [
+        {
+          "ware": "Corn",
+          "amount": 2
+        },
+        {
+          "ware": "Ore",
+          "amount": 4
+        }
+      ]
     },
     {
       "name": "marsh",

@@ -3,6 +3,7 @@ package io.ilikeorangutans.ancol.map.surrounding;
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.map.GameMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
+import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entities;
 import io.ilikeorangutans.ecs.Entity;
@@ -27,8 +28,8 @@ public class PointSurroundings implements Surroundings {
 	}
 
 	@Override
-	public SurroundingTile getTile(Selector where) {
-		return new SurroundingTile(where.apply(point), map.getTileAt(where.apply(point)), map);
+	public GameTileImpl getTile(Selector where) {
+		return new GameTileImpl(where.apply(point), map.getTileAt(where.apply(point)), map);
 	}
 
 	@Override
@@ -48,28 +49,28 @@ public class PointSurroundings implements Surroundings {
 	}
 
 	@Override
-	public List<SurroundingTile> getAllWithoutCenter() {
-		List<SurroundingTile> result = new ArrayList<SurroundingTile>();
+	public List<GameTile> getAllWithoutCenter() {
+		List<GameTile> result = new ArrayList<GameTile>();
 
 		for (Selector selector : Selector.values()) {
 			if (selector == Selector.Center)
 				continue;
 
 			Point p = selector.apply(point);
-			result.add(new SurroundingTile(p, map.getTileAt(p), map));
+			result.add(new GameTileImpl(p, map.getTileAt(p), map));
 		}
 
 		return result;
 	}
 
 	@Override
-	public Iterator<SurroundingTile> iterator() {
+	public Iterator<GameTile> iterator() {
 
-		List<SurroundingTile> result = new ArrayList<SurroundingTile>();
+		List<GameTile> result = new ArrayList<GameTile>();
 
 		for (Selector selector : Selector.values()) {
 			Point p = selector.apply(point);
-			result.add(new SurroundingTile(p, map.getTileAt(p), map));
+			result.add(new GameTileImpl(p, map.getTileAt(p), map));
 		}
 
 		return result.iterator();

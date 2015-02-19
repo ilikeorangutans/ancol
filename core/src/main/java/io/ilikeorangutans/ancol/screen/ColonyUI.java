@@ -20,8 +20,8 @@ import io.ilikeorangutans.ancol.game.ware.RecordingWares;
 import io.ilikeorangutans.ancol.game.ware.Stored;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Warehouse;
-import io.ilikeorangutans.ancol.map.surrounding.SurroundingTile;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
+import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ecs.Entity;
 
 import java.util.Observable;
@@ -168,7 +168,7 @@ public class ColonyUI implements Observer {
 				surroundingTable.row().height(80);
 			}
 
-			SurroundingTile tile = colony.getSurroundings().getTile(selector);
+			GameTile tile = colony.getSurroundings().getTile(selector);
 
 
 			String worker = "";
@@ -180,7 +180,7 @@ public class ColonyUI implements Observer {
 
 			// TODO: Wheeeeeee trainwreck!
 			{
-				surroundingTable.add(new Label(tile.getTile().getType().getName() + " " + worker, skin));
+				surroundingTable.add(new Label(tile.getType().getName() + " " + worker, skin));
 			}
 			counter++;
 		}

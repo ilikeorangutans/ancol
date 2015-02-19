@@ -1,7 +1,7 @@
 package io.ilikeorangutans.ancol.map;
 
 import io.ilikeorangutans.ancol.Point;
-import io.ilikeorangutans.ancol.map.surrounding.SurroundingTile;
+import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ecs.Entity;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface GameMap extends Map {
 
-	SurroundingTile getTileAt(Point p);
+	GameTile getTileAt(Point p);
 
 	/**
 	 * Returns the entities at the given location. Obviously this will only return entities that contain at least the

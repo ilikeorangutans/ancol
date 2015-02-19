@@ -16,7 +16,7 @@ import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Warehouse;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.PositionComponent;
-import io.ilikeorangutans.ancol.map.surrounding.SurroundingTile;
+import io.ilikeorangutans.ancol.map.surrounding.GameTileImpl;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ancol.map.tile.Tile;
 import io.ilikeorangutans.bus.EventBus;
@@ -122,12 +122,12 @@ public class ColonyComponent extends Observable implements Component {
 	private Workplace createWorkplaceFor(Entity colonist, Ware ware) {
 		if (ware.isHarvested()) {
 
-			SurroundingTile tile = null;
-			for (SurroundingTile surroundingTile : surroundings.getAllWithoutCenter()) {
+			GameTileImpl tile = null;
+			for (GameTileImpl gameTile : surroundings.getAllWithoutCenter()) {
 
 				// TOOD: this needs to actually look at the tiles.
 				if (new Random().nextBoolean()) {
-					tile = surroundingTile;
+					tile = gameTile;
 					break;
 				}
 			}
@@ -214,13 +214,13 @@ public class ColonyComponent extends Observable implements Component {
 
 
 	public boolean isTileWorked(Surroundings.Selector selector) {
-		SurroundingTile surroundingTile = surroundings.getTile(selector);
-		return workedTiles.containsKey(surroundingTile.getPoint());
+		GameTileImpl gameTile = surroundings.getTile(selector);
+		return workedTiles.containsKey(gameTile.getPoint());
 	}
 
 	public TileWorkplace getTileWorkplace(Surroundings.Selector selector) {
-		SurroundingTile surroundingTile = surroundings.getTile(selector);
+		GameTileImpl gameTile = surroundings.getTile(selector);
 
-		return workedTiles.get(surroundingTile.getPoint());
+		return workedTiles.get(gameTile.getPoint());
 	}
 }

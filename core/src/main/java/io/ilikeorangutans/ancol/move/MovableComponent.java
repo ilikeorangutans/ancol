@@ -1,7 +1,7 @@
 package io.ilikeorangutans.ancol.move;
 
 import io.ilikeorangutans.ancol.Point;
-import io.ilikeorangutans.ancol.map.Map;
+import io.ilikeorangutans.ancol.map.GameMap;
 import io.ilikeorangutans.ancol.map.tile.Tile;
 import io.ilikeorangutans.ancol.map.tile.TileType;
 import io.ilikeorangutans.ancol.path.Movable;
@@ -15,11 +15,11 @@ import io.ilikeorangutans.ecs.ComponentType;
 public class MovableComponent implements Component, Movable {
 
 	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(MovableComponent.class);
-	private final Map map;
+	private final GameMap map;
 	private final MovableType type;
 	private Path path;
 
-	public MovableComponent(Map map, MovableType type) {
+	public MovableComponent(GameMap map, MovableType type) {
 		this.map = map;
 		this.type = type;
 	}
@@ -59,9 +59,9 @@ public class MovableComponent implements Component, Movable {
 		TileType.Role role = tile.getType().getRole();
 		if (type == MovableType.Land) {
 			// TODO: might want to consider unexplored accessible.
-			return role == TileType.Role.Land;
+			return role == TileType.Role.Land || role == TileType.Role.Unexplored;
 		} else {
-			return role == TileType.Role.Ocean || role == TileType.Role.Lake || role == TileType.Role.TradeRoute;
+			return role == TileType.Role.Ocean || role == TileType.Role.Lake || role == TileType.Role.TradeRoute || role == TileType.Role.Unexplored;
 		}
 
 		// TODO: need to check if the target tile has a ship that we can board or a colony we can enter.

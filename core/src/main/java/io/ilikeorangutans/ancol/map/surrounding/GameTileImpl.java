@@ -17,13 +17,13 @@ import java.util.List;
  * TODO: This is a horrible name. Think of a better name for this class.
  * TODO: Rename this to
  */
-public class SurroundingTile implements GameTile {
+public class GameTileImpl implements GameTile {
 
 	private final Point point;
 	private final Tile tile;
 	private final GameMap gameMap;
 
-	public SurroundingTile(Point point, Tile tile, GameMap gameMap) {
+	public GameTileImpl(Point point, Tile tile, GameMap gameMap) {
 		this.point = point;
 		this.tile = tile;
 		this.gameMap = gameMap;

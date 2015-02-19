@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.cargo.Cargo;
 import io.ilikeorangutans.ancol.game.cargo.CargoHoldComponent;
 import io.ilikeorangutans.ancol.game.cargo.ShipComponent;
@@ -22,7 +23,11 @@ import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.player.event.TurnConcludedEvent;
 import io.ilikeorangutans.ancol.game.rule.Rules;
+import io.ilikeorangutans.ancol.input.MouseMoveEvent;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
+import io.ilikeorangutans.ancol.map.GameMap;
+import io.ilikeorangutans.ancol.map.tile.GameTile;
+import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.ancol.select.event.MultipleSelectOptionsEvent;
 import io.ilikeorangutans.bus.EventBus;
@@ -40,17 +45,20 @@ public class GameScreenUI {
 	private final Rules rules;
 	private final AnColActions actions;
 	private final Player player;
+	private ScreenToTile screenToTile;
 
 	private Stage stage;
 	private Skin skin;
 	private TextButton currentUnitButton;
 	private Table cargoTable;
+	private Label mousePosLabel;
 
-	public GameScreenUI(EventBus bus, Rules rules, AnColActions actions, Player player) {
+	public GameScreenUI(EventBus bus, Rules rules, AnColActions actions, Player player, ScreenToTile screenToTile) {
 		this.bus = bus;
 		this.rules = rules;
 		this.actions = actions;
 		this.player = player;
+		this.screenToTile = screenToTile;
 	}
 
 	public void setupUI(Skin skin) {
@@ -115,6 +123,10 @@ public class GameScreenUI {
 		sidebar.add(new Label("Map goes here", skin)).expandX().height(250).padBottom(11).colspan(2);
 		sidebar.row();
 
+		mousePosLabel = new Label("", skin);
+		sidebar.add(mousePosLabel).center().fillX();
+		sidebar.row();
+
 		Label currentPlayerLabel = new Label("Current Player", skin);
 		bus.subscribe(new CurrentPlayerListener(currentPlayerLabel));
 		sidebar.add(currentPlayerLabel).center().colspan(2);
@@ -170,6 +182,21 @@ public class GameScreenUI {
 
 	public void dispose() {
 		stage.dispose();
+	}
+
+	@Subscribe
+	public void onMouseMove(MouseMoveEvent event) {
+		Point point = screenToTile.screenToTile(event.screenX, event.screenY);
+		GameMap map = player.getMap();
+		GameTile tile = map.getTileAt(point);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(point.x);
+		sb.append('/');
+		sb.append(point.y);
+		sb.append(": ");
+		sb.append(tile.getType().getName());
+		mousePosLabel.setText(sb.toString());
 	}
 
 	@Subscribe
