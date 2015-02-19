@@ -137,6 +137,7 @@ public class DesktopInputProcessor implements InputProcessor {
 		lastX = screenX;
 		lastY = screenY;
 
+		emitter.fire(new MouseMoveEvent(screenX, screenY));
 		return false;
 	}
 
