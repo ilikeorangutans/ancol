@@ -1,6 +1,7 @@
 package io.ilikeorangutans.ancol.map.tile;
 
 import io.ilikeorangutans.ancol.game.ware.AvailableWares;
+import io.ilikeorangutans.ancol.game.ware.Ware;
 
 import java.util.Collections;
 import java.util.List;
@@ -66,6 +67,14 @@ public class TileType {
 		for (TileProduction production : produces) {
 			production.postProcess(wares);
 		}
+	}
+
+	public boolean produces(Ware ware) {
+		for (TileProduction produce : produces) {
+			if (produce.getWare().equals(ware))
+				return true;
+		}
+		return false;
 	}
 
 	/**

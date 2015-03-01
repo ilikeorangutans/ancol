@@ -43,6 +43,7 @@ public class GameTileImpl implements GameTile {
 	 *
 	 * @return
 	 */
+	@Override
 	public Point getPoint() {
 		return point;
 	}
