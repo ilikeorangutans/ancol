@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.game.colony.building;
 
+import io.ilikeorangutans.ancol.game.production.Modifier;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 
 /**
@@ -19,22 +20,6 @@ public class ProductionBuilding implements Building {
 		this.multiplicativeBonus = multiplicativeBonus;
 	}
 
-
-	@Override
-	public int apply(int input) {
-
-		if (additiveBonus > 0) {
-			// TODO: implement. Don't know any building that does additive bonuses right now.
-		}
-
-		if (multiplicativeBonus != 1) {
-			// TODO: need to check the rounding behaviour
-			input = Math.round(multiplicativeBonus * input);
-		}
-
-		return input;
-	}
-
 	@Override
 	public String getName() {
 		return buildingType.getName();
@@ -48,5 +33,10 @@ public class ProductionBuilding implements Building {
 	@Override
 	public BuildingType getBuildingType() {
 		return buildingType;
+	}
+
+	@Override
+	public Modifier getModifier() {
+		return null;
 	}
 }

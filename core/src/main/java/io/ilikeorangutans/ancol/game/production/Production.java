@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.game.production;
 
+import io.ilikeorangutans.ancol.game.production.chain.Link;
 import io.ilikeorangutans.ancol.game.production.worker.Worker;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Wares;
@@ -10,9 +11,12 @@ import java.util.List;
 /**
  *
  */
-public class Production {
+public class Production implements Link {
 
-	private final List<Worker> workers = new ArrayList<Worker>();
+	/**
+	 * TODO: this will be a single field instead of a collection
+	 */
+	private final Worker worker;
 	/**
 	 * Holds a list of modifiers that will be applied on a per worker basis.
 	 */
@@ -21,21 +25,22 @@ public class Production {
 	private final Ware input;
 	private final Workplace workplace;
 
-	Production(Ware input, Ware output, List<Worker> workers, Workplace workplace) {
+	Production(Ware input, Ware output, Worker worker, Workplace workplace) {
 		this.output = output;
 		this.input = input;
 		this.workplace = workplace;
-		this.workers.addAll(workers);
+		this.worker = worker;
 	}
 
-	public void addWorker(Worker worker) {
-		workers.add(worker);
+	public Workplace getWorkplace() {
+		return workplace;
 	}
 
 	public void addModifier(Modifier modifier) {
 		modifiers.add(modifier);
 	}
 
+	@Override
 	public Ware getOutput() {
 		return output;
 	}
@@ -47,6 +52,7 @@ public class Production {
 	/**
 	 * @return The wares required to fulfill this production.
 	 */
+	@Override
 	public Ware getInput() {
 		return input;
 	}
@@ -66,10 +72,8 @@ public class Production {
 	private int calculateRawOutput() {
 		int sum = 0;
 
-		for (Worker worker : workers) {
-			// TODO: add per worker bonuses here (e.g. improved production facilities or based on founding fathers)
-			sum += worker.calculateOutput(output);
-		}
+		// TODO: add per worker bonuses here (e.g. improved production facilities or based on founding fathers)
+		sum += worker.calculateOutput(output);
 
 		return sum;
 	}
@@ -82,12 +86,13 @@ public class Production {
 	@Override
 	public String toString() {
 		return "Production{" +
-				"workers=" + workers +
+				"worker=" + worker +
 				", output=" + output +
 				", input=" + input +
 				'}';
 	}
 
+	@Override
 	public void produce(Wares wares) {
 		int rawMaterialAvailable = 0;
 		if (requiresInput())
@@ -95,7 +100,8 @@ public class Production {
 
 		int produced = calculateEffectiveOutput(rawMaterialAvailable);
 
-		wares.store(output, produced);
+		if (hasOutput())
+			wares.store(output, produced);
 	}
 
 	/**
@@ -111,10 +117,22 @@ public class Production {
 
 		// TODO: add output bonuses here (e.g. factories which add 50% output)
 		return rawOutput;
-
 	}
 
+	@Override
 	public boolean requiresInput() {
 		return input != null;
+	}
+
+	public boolean hasOutput() {
+		return output != null;
+	}
+
+	public boolean employsWorker(Worker w) {
+		return worker.equals(w);
+	}
+
+	public Worker getWorker() {
+		return worker;
 	}
 }

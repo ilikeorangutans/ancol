@@ -1,6 +1,5 @@
 package io.ilikeorangutans.ancol.game.production.chain;
 
-import io.ilikeorangutans.ancol.game.production.Production;
 import io.ilikeorangutans.ancol.game.ware.Wares;
 
 import java.util.*;
@@ -8,16 +7,16 @@ import java.util.*;
 /**
  *
  */
-public class ProductionChain implements Iterable<Production> {
+public class ProductionChain implements Iterable<Link> {
 
 	/**
-	 * Sorts productions based on their inputs and outputs. Productions with output and without input will be first,
-	 * productions with only input will be last. All productions in between will be sorted so that if one outputs what
+	 * Sorts links based on their inputs and outputs. Productions with output and without input will be first,
+	 * links with only input will be last. All links in between will be sorted so that if one outputs what
 	 * another inputs, they will be in this order.
 	 */
-	private static final Comparator<Production> COMPARATOR = new Comparator<Production>() {
+	private static final Comparator<Link> COMPARATOR = new Comparator<Link>() {
 		@Override
-		public int compare(Production o1, Production o2) {
+		public int compare(Link o1, Link o2) {
 			boolean o2IsInputToO1 = o1.requiresInput() && o2.getOutput().equals(o1.getInput());
 			if (o2IsInputToO1) {
 				return 1;
@@ -38,7 +37,7 @@ public class ProductionChain implements Iterable<Production> {
 		}
 	};
 
-	private final List<Production> productions = new ArrayList<Production>();
+	private final List<Link> links = new ArrayList<Link>();
 
 	/**
 	 * Performs the actual production using the given wares as a starting point.
@@ -46,27 +45,23 @@ public class ProductionChain implements Iterable<Production> {
 	 * @param wares wares to retrieve consumed goods from and store produced goods into.
 	 */
 	public void produce(Wares wares) {
-		for (Production production : productions) {
-			if (!production.requirementsFulfilled()) {
-				continue;
-			}
-
-			production.produce(wares);
+		for (Link link : links) {
+			link.produce(wares);
 		}
 	}
 
-	public void add(Production production) {
-		productions.add(production);
-		Collections.sort(productions, COMPARATOR);
+	public void add(Link link) {
+		links.add(link);
+		Collections.sort(links, COMPARATOR);
 	}
 
 	@Override
-	public Iterator<Production> iterator() {
-		return productions.iterator();
+	public Iterator<Link> iterator() {
+		return links.iterator();
 	}
 
-	public void remove(Production production) {
-		productions.remove(production);
-		Collections.sort(productions, COMPARATOR);
+	public void remove(Link link) {
+		links.remove(link);
+		Collections.sort(links, COMPARATOR);
 	}
 }

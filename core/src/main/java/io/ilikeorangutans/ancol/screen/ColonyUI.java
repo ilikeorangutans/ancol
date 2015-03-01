@@ -12,9 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyProduction;
-import io.ilikeorangutans.ancol.game.colony.TileWorkplace;
 import io.ilikeorangutans.ancol.game.colony.building.Building;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
+import io.ilikeorangutans.ancol.game.production.Production;
+import io.ilikeorangutans.ancol.game.production.Workplace;
 import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.game.ware.RecordingWares;
 import io.ilikeorangutans.ancol.game.ware.Stored;
@@ -63,7 +64,6 @@ public class ColonyUI implements Observer {
 		});
 		window.setPosition((Gdx.graphics.getWidth() / 2) - 384, Gdx.graphics.getHeight());
 		window.setDebug(true);
-
 
 		window.add(new Label("Buildings", skin)).expand();
 		window.add(new Label("Surroundings", skin)).width(268);
@@ -169,18 +169,23 @@ public class ColonyUI implements Observer {
 			}
 
 			GameTile tile = colony.getSurroundings().getTile(selector);
-
+			Workplace workplace = colony.getWorkplaces().getForTile(tile);
+			Production p = colony.getOutput().getProductionAt(workplace);
 
 			String worker = "";
-			if (colony.isTileWorked(selector)) {
-				TileWorkplace tw = colony.getTileWorkplace(selector);
-				worker = tw.getColonist().getComponent(ColonistComponent.class).getProfession().toString();
+
+			if (p != null) {
+				Ware output = p.getOutput();
+
 			}
 
+			// TODO: Check if tile is worked by another colony!
 
 			// TODO: Wheeeeeee trainwreck!
 			{
-				surroundingTable.add(new Label(tile.getType().getName() + " " + worker, skin));
+				Label label = new Label(tile.getType().getName() + "\n" + worker, skin);
+				label.setWrap(true);
+				surroundingTable.add(label);
 			}
 			counter++;
 		}
@@ -196,9 +201,9 @@ public class ColonyUI implements Observer {
 		colonists.row();
 
 		final List<ColonistInColony> colonistInColonyList = new List<ColonistInColony>(skin);
-		ColonistInColony[] toAdd = new ColonistInColony[colony.getColonists().size()];
+		ColonistInColony[] toAdd = new ColonistInColony[colony.getPopulation().size()];
 		int i = 0;
-		for (Entity colonist : colony.getColonists()) {
+		for (Entity colonist : colony.getPopulation()) {
 			toAdd[i] = new ColonistInColony(colonist);
 			i++;
 		}
@@ -237,7 +242,6 @@ public class ColonyUI implements Observer {
 
 	private void addButtons(final ColonyComponent colony, final Window window) {
 		Table buttons = new Table(skin);
-		// buttons.debug();
 
 		window.add(buttons).expandX().expandY().bottom().right();
 		TextButton renameButton = new TextButton("Rename", skin);

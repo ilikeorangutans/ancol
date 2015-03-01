@@ -1,12 +1,15 @@
 package io.ilikeorangutans.ancol.game.colony;
 
+import io.ilikeorangutans.ancol.game.colony.population.ColonistLeftEvent;
 import io.ilikeorangutans.ancol.game.production.Production;
+import io.ilikeorangutans.ancol.game.production.Workplace;
+import io.ilikeorangutans.ancol.game.production.chain.ProductionChain;
+import io.ilikeorangutans.ancol.game.production.worker.Worker;
 import io.ilikeorangutans.ancol.game.ware.RecordingWares;
 import io.ilikeorangutans.ancol.game.ware.Wares;
+import io.ilikeorangutans.bus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -14,7 +17,13 @@ import java.util.List;
  */
 public class ColonyProduction {
 
+	private final ProductionChain chain;
+
 	private final List<Production> productions = new ArrayList<Production>();
+
+	public ColonyProduction() {
+		chain = new ProductionChain();
+	}
 
 	/**
 	 * Performs a simulated production run and returns a record of what was produced.
@@ -36,13 +45,7 @@ public class ColonyProduction {
 	 * @param wares wares to retrieve consumed goods from and store produced goods into.
 	 */
 	public void produce(Wares wares) {
-		for (Production production : productions) {
-			if (!production.requirementsFulfilled()) {
-				continue;
-			}
-
-			production.produce(wares);
-		}
+		chain.produce(wares);
 	}
 
 	/**
@@ -51,31 +54,45 @@ public class ColonyProduction {
 	 * @param production to be added
 	 */
 	public void addProduction(Production production) {
-
 		productions.add(production);
+		chain.add(production);
+	}
 
-		// Sort by whether a given production requires inputs or not.
-		Collections.sort(productions, new Comparator<Production>() {
-			@Override
-			public int compare(Production o1, Production o2) {
-				boolean o2IsInputToO1 = o1.requiresInput() && o2.getOutput().equals(o1.getInput());
-				if (o2IsInputToO1) {
-					return 1;
-				}
+	@Subscribe
+	public void onColonistLeft(ColonistLeftEvent event) {
+		System.out.println("ColonyProduction.onColonistLeft TODO: IMPLEMENT ME!");
+	}
 
-				boolean o1IsInputToO2 = o2.requiresInput() && o1.getOutput().equals(o2.getInput());
-				if (o1IsInputToO2) {
-					return -1;
-				}
+	private Production getProductionForWorker(Worker colonist) {
+		for (Production p : productions) {
+			if (p.employsWorker(colonist))
+				return p;
+		}
+		return null;
+	}
 
-				if (!o1.requiresInput() && !o2.requiresInput())
-					return 0;
+	/**
+	 * Unemploys the given worker. If the worker is associated with a production, that production will be removed.
+	 *
+	 * @param worker
+	 */
+	public void unemploy(Worker worker) {
+		Production production = getProductionForWorker(worker);
+		if (production == null) {
+			return;
+		}
 
-				if (o1.requiresInput())
-					return 1;
+		productions.remove(production);
+		chain.remove(production);
 
-				return -1;
-			}
-		});
+		//TODO: Fire event!
+	}
+
+	public Production getProductionAt(Workplace workplace) {
+		for (Production production : productions) {
+			if (workplace.equals(production.getWorkplace()))
+				return production;
+		}
+		return null;
 	}
 }

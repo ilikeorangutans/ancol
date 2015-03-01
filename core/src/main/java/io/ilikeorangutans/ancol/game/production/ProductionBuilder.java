@@ -15,10 +15,15 @@ import java.util.List;
 public class ProductionBuilder {
 
 	private final List<Modifier> modifiers = new ArrayList<Modifier>();
-	private final List<Worker> workers = new ArrayList<Worker>();
+	private Worker worker;
 	private Ware output;
 	private Ware input;
 	private Workplace workplace;
+
+	public ProductionBuilder at(Workplace workplace) {
+		this.workplace = workplace;
+		return this;
+	}
 
 	public ProductionBuilder consume(Ware input) {
 		this.input = input;
@@ -36,26 +41,27 @@ public class ProductionBuilder {
 	}
 
 	public ProductionBuilder in(Building building) {
-		modifiers.add(building);
+		modifiers.add(building.getModifier());
 
 		produce(building.getOutput());
 		return this;
 	}
 
+	@Deprecated
 	public ProductionBuilder on(Tile tile) {
 		return this;
 	}
 
 	public ProductionBuilder with(Worker worker) {
-		workers.add(worker);
+		this.worker = worker;
 		return this;
 	}
 
 	public Production create() {
-		if (workers.isEmpty())
+		if (worker == null)
 			throw new IllegalStateException("Cannot create production without workers");
 
-		Production production = new Production(input, output, workers, workplace);
+		Production production = new Production(input, output, worker, workplace);
 
 		for (Modifier modifier : modifiers) {
 			production.addModifier(modifier);
@@ -64,8 +70,4 @@ public class ProductionBuilder {
 		return production;
 	}
 
-	public ProductionBuilder at(Workplace workplace) {
-		this.workplace = workplace;
-		return this;
-	}
 }

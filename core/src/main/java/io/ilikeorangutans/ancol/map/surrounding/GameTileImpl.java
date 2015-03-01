@@ -13,9 +13,6 @@ import java.util.List;
 
 /**
  * The view of a map tile as seen by Surroundings. Allows access to the actual map tile, entities, colonies, etc.
- * <p/>
- * TODO: This is a horrible name. Think of a better name for this class.
- * TODO: Rename this to
  */
 public class GameTileImpl implements GameTile {
 
@@ -50,7 +47,7 @@ public class GameTileImpl implements GameTile {
 
 	@Override
 	public String toString() {
-		return "SurroundingTile{" +
+		return "GameTileImpl{" +
 				"tile=" + tile +
 				", point=" + point +
 				'}';

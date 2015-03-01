@@ -1,7 +1,17 @@
 package io.ilikeorangutans.ancol.game.production.chain;
 
+import io.ilikeorangutans.ancol.game.ware.Ware;
+import io.ilikeorangutans.ancol.game.ware.Wares;
+
 /**
- * Created by jakob on 2015-03-01.
+ *
  */
 public interface Link {
+	void produce(Wares wares);
+
+	boolean requiresInput();
+
+	Ware getInput();
+
+	Ware getOutput();
 }

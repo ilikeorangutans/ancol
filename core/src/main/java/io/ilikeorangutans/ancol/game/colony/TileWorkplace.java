@@ -2,34 +2,38 @@ package io.ilikeorangutans.ancol.game.colony;
 
 import io.ilikeorangutans.ancol.game.production.Modifier;
 import io.ilikeorangutans.ancol.game.production.Workplace;
+import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ancol.map.tile.Tile;
-import io.ilikeorangutans.ecs.Entity;
 
 /**
  *
  */
 public class TileWorkplace implements Workplace {
-	private final Tile tile;
-	private final Entity entity;
-	private final Entity colonist;
+	private final GameTile tile;
 
-	public TileWorkplace(Tile tile, Entity entity, Entity colonist) {
+	public TileWorkplace(GameTile tile) {
 		this.tile = tile;
-		this.entity = entity;
-		this.colonist = colonist;
 	}
 
 	@Override
 	public Modifier getModifier() {
-		return null;
+		return new Modifier() {
+			@Override
+			public int apply(int input) {
+				System.out.println("TileWorkplace.apply TODO: properly calculate modifier");
+				return input;
+			}
+		};
 	}
 
-	public Entity getColonist() {
-		return colonist;
+	@Override
+	public String toString() {
+		return "TileWorkplace{" +
+				"tile=" + tile +
+				'}';
 	}
 
 	public Tile getTile() {
-
 		return tile;
 	}
 }

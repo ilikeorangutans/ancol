@@ -19,6 +19,8 @@ public class RecordingWares implements Wares {
 
 	@Override
 	public void store(Ware ware, int amount) {
+		if (!lines.containsKey(ware))
+			lines.put(ware, new Line(0));
 		lines.get(ware).effective += amount;
 		lines.get(ware).produced += amount;
 	}

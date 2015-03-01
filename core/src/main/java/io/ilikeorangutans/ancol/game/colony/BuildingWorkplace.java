@@ -16,6 +16,6 @@ public class BuildingWorkplace implements Workplace {
 
 	@Override
 	public Modifier getModifier() {
-		return building;
+		return building.getModifier();
 	}
 }

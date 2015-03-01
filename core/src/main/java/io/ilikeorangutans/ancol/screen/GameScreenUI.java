@@ -162,7 +162,7 @@ public class GameScreenUI {
 		sidebar.setX(Gdx.graphics.getWidth() - width);
 		sidebar.setHeight(Gdx.graphics.getHeight());
 		sidebar.setWidth(width);
-		sidebar.debug();
+		//sidebar.debug();
 		sidebar.setBackground("default-pane");
 		stage.addActor(sidebar);
 	}

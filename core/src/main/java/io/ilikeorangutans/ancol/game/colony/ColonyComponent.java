@@ -1,24 +1,21 @@
 package io.ilikeorangutans.ancol.game.colony;
 
-import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
+import io.ilikeorangutans.ancol.game.colonist.Job;
 import io.ilikeorangutans.ancol.game.colony.building.BuildingType;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
 import io.ilikeorangutans.ancol.game.colony.building.SimpleColonyBuildings;
+import io.ilikeorangutans.ancol.game.colony.population.Population;
 import io.ilikeorangutans.ancol.game.player.Player;
-import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
+import io.ilikeorangutans.ancol.game.player.PlayerOwned;
 import io.ilikeorangutans.ancol.game.production.Production;
 import io.ilikeorangutans.ancol.game.production.ProductionBuilder;
 import io.ilikeorangutans.ancol.game.production.Workplace;
 import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Warehouse;
-import io.ilikeorangutans.ancol.graphics.RenderableComponent;
-import io.ilikeorangutans.ancol.map.PositionComponent;
-import io.ilikeorangutans.ancol.map.surrounding.GameTileImpl;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
-import io.ilikeorangutans.ancol.map.tile.Tile;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.SimpleEventBus;
 import io.ilikeorangutans.ecs.Component;
@@ -26,12 +23,14 @@ import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entity;
 import io.ilikeorangutans.ecs.EntityFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
 
 /**
  *
  */
-public class ColonyComponent extends Observable implements Component {
+public class ColonyComponent extends Observable implements Component, PlayerOwned {
 
 	public static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(ColonyComponent.class);
 	/**
@@ -40,15 +39,19 @@ public class ColonyComponent extends Observable implements Component {
 	private transient final EventBus localBus = new SimpleEventBus();
 	private transient final Rules rules;
 	private final EntityFactory entityFactory;
-
-	private final List<Entity> colonists = new ArrayList<Entity>();
 	private final Surroundings surroundings;
+
+	private final Population population = new Population(localBus);
+	private Workplaces workplaces;
 	private Warehouse warehouse;
 	private ColonyProduction output;
 	private ColonyBuildings buildings;
 	private String name;
 	private Player player;
-	private Map<Point, TileWorkplace> workedTiles = new HashMap<Point, TileWorkplace>();
+	/**
+	 * Array of productions that we use to track what we produce on what tile.
+	 */
+	private Production[] workedTiles = new Production[9];
 
 	public ColonyComponent(String name, Surroundings surroundings, Rules rules, EntityFactory entities) {
 		this.name = name;
@@ -57,26 +60,44 @@ public class ColonyComponent extends Observable implements Component {
 		this.entityFactory = entities;
 	}
 
+	public Population getPopulation() {
+		return population;
+	}
+
+	public Workplaces getWorkplaces() {
+		return workplaces;
+	}
+
 	/**
 	 * Called when the colony is founded
 	 */
 	public void found(Player player) {
 		this.player = player;
 		warehouse = new Warehouse(rules.getWares().getAll());
-		output = new ColonyProduction();
 		buildings = new SimpleColonyBuildings(localBus);
+		constructInitialBuildings();
 
+		workplaces = new Workplaces(entityFactory, buildings, surroundings, player);
+		output = new ColonyProduction();
+		localBus.subscribe(output);
+
+
+		setupFoodConsumption();
+	}
+
+	private void setupFoodConsumption() {
+		Production foodConsumption = new ProductionBuilder()
+				.consume(rules.getWares().findByName("Corn"))
+				.with(population)
+				.create();
+
+		output.addProduction(foodConsumption);
+	}
+
+	private void constructInitialBuildings() {
 		for (BuildingType buildingType : rules.getBuildings().getInitialBuildings()) {
 			buildings.construct(buildingType);
 		}
-
-		localBus.subscribe(output);
-	}
-
-	public boolean isTileWorked(Tile p) {
-
-
-		return false;
 	}
 
 	@Override
@@ -84,69 +105,60 @@ public class ColonyComponent extends Observable implements Component {
 		return COMPONENT_TYPE;
 	}
 
+	public void addColonist(Entity colonist, Job job, Workplace workplace) {
+		population.join(colonist);
+		changeJob(colonist, job, workplace);
+	}
+
 	/**
-	 * Adds the given colonist to the colony. This will automatically pick an appropriate job for the colonist.
+	 * Add the given colonist to the colony and make him work the given job.
+	 *
+	 * @param colonist the colonist to add
+	 * @param job      the job we want the colonist to do
+	 */
+	public void addColonist(Entity colonist, Job job) {
+		Workplace workplace = workplaces.getWorkplaceFor(job.getProduces());
+		addColonist(colonist, job, workplace);
+	}
+
+	/**
+	 * Adds the given colonist to the colony. This will automatically pick an appropriate job and workplace for the
+	 * colonist.
 	 *
 	 * @param colonist the colonist to add.
 	 */
 	public void addColonist(Entity colonist) {
-		// Take the colonist off the map and remove any pending commands.
-		colonist.getComponent(RenderableComponent.class).setVisible(false);
-		ControllableComponent controllableComponent = colonist.getComponent(ControllableComponent.class);
-		controllableComponent.clearCommands();
-		controllableComponent.setActive(false);
+		Ware ware = pickBestGoodToProduce(colonist);
+		Job job = rules.getProfessions().findProducerFor(ware);
+		addColonist(colonist, job);
+	}
 
-		colonists.add(colonist);
-
-		// Figure out what we need to produce:
-
-		Ware ware = pickBestGood(colonist);
-		Workplace workplace = createWorkplaceFor(colonist, ware);
-
+	private void changeJob(Entity colonist, Job job, Workplace workplace) {
 		ColonistComponent colonistComponent = colonist.getComponent(ColonistComponent.class);
+		System.out.println("ColonyComponent.changeJob " + colonistComponent + " with job " + job + " at " + workplace);
+
+		output.unemploy(colonistComponent);
+
+		colonistComponent.setJob(job);
 		Production production = new ProductionBuilder()
-				.produce(ware)
 				.with(colonistComponent)
 				.at(workplace)
+				.produce(job.getProduces())
+				.consume(job.getConsumes())
 				.create();
-
 		output.addProduction(production);
+
+		// Notify observers!
+		setChanged();
 	}
 
 	/**
-	 * Finds the best workplace to produce the given ware
+	 * TODO this should probably go into output or something like that.
 	 *
-	 * @param ware what we want to produce
+	 * @param colonist
 	 * @return
 	 */
-	private Workplace createWorkplaceFor(Entity colonist, Ware ware) {
-		if (ware.isHarvested()) {
-
-			GameTileImpl tile = null;
-			for (GameTileImpl gameTile : surroundings.getAllWithoutCenter()) {
-
-				// TOOD: this needs to actually look at the tiles.
-				if (new Random().nextBoolean()) {
-					tile = gameTile;
-					break;
-				}
-			}
-
-			if (tile == null)
-				throw new IllegalStateException("Could not find a tile that produces " + ware.getName());
-
-			// Create an entity to record that we are working this tile
-			Entity entity = entityFactory.create(new PlayerOwnedComponent(player), new PositionComponent(tile.getPoint()), new FieldsWorkedComponent(player));
-
-			TileWorkplace tileWorkplace = new TileWorkplace(tile.getTile(), entity, colonist);
-			workedTiles.put(tile.getPoint(), tileWorkplace);
-			return tileWorkplace;
-		} else {
-			return new BuildingWorkplace(buildings.findByOutput(ware));
-		}
-	}
-
-	private Ware pickBestGood(Entity colonist) {
+	private Ware pickBestGoodToProduce(Entity colonist) {
 		// TODO Need to take into account how full buildings are and what tiles are accessible; also, if there's enough
 		// food or raw materials, etc
 		return rules.getWares().getAll().get(0);
@@ -165,11 +177,7 @@ public class ColonyComponent extends Observable implements Component {
 	}
 
 	public int getSize() {
-		return colonists.size();
-	}
-
-	public List<Entity> getColonists() {
-		return colonists;
+		return population.size();
 	}
 
 	public Surroundings getSurroundings() {
@@ -177,16 +185,14 @@ public class ColonyComponent extends Observable implements Component {
 	}
 
 	public List<Entity> getOutsideColonists() {
-
-		List<Entity> entities = surroundings.getEntities(Surroundings.Selector.Center);
+		List<Entity> entities = surroundings.getCenter().getEntities();
 		List<Entity> result = new ArrayList<Entity>();
 
 		for (Entity entity : entities) {
 			if (!entity.hasComponent(ComponentType.fromClass(ColonistComponent.class)))
 				continue;
 
-			// TODO: could just pick all non active colonists
-			if (isColonistEmployed(entity))
+			if (!entity.getComponent(ControllableComponent.class).isActive())
 				continue;
 
 			result.add(entity);
@@ -195,13 +201,8 @@ public class ColonyComponent extends Observable implements Component {
 		return result;
 	}
 
-	public boolean isColonistEmployed(Entity entity) {
-		return colonists.contains(entity);
-	}
-
 	public void beginTurn() {
 		output.produce(getWarehouse());
-		// TODO: need to consume food either directly or preferably as a specific production chain
 	}
 
 	public ColonyProduction getOutput() {
@@ -212,15 +213,13 @@ public class ColonyComponent extends Observable implements Component {
 		return buildings;
 	}
 
-
-	public boolean isTileWorked(Surroundings.Selector selector) {
-		GameTileImpl gameTile = surroundings.getTile(selector);
-		return workedTiles.containsKey(gameTile.getPoint());
-	}
-
-	public TileWorkplace getTileWorkplace(Surroundings.Selector selector) {
-		GameTileImpl gameTile = surroundings.getTile(selector);
-
-		return workedTiles.get(gameTile.getPoint());
+	/**
+	 * Returns the player owning this colony.
+	 *
+	 * @return
+	 */
+	@Override
+	public Player getPlayer() {
+		return player;
 	}
 }
