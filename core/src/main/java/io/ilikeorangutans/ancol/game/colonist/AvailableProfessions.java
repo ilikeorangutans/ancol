@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.game.colonist;
 
+import io.ilikeorangutans.ancol.game.ware.AvailableWares;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 
 import java.util.List;
@@ -25,5 +26,11 @@ public class AvailableProfessions {
 			}
 		}
 		throw new IllegalArgumentException("No job found that produces " + ware.getName());
+	}
+
+	public void postProcess(AvailableWares wares) {
+		for (Job job : jobs) {
+			job.postProcess(wares);
+		}
 	}
 }

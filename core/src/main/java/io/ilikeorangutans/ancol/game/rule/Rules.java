@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.ilikeorangutans.ancol.game.colonist.AvailableProfessions;
-import io.ilikeorangutans.ancol.game.colonist.Job;
 import io.ilikeorangutans.ancol.game.colony.building.AvailableBuildings;
 import io.ilikeorangutans.ancol.game.colony.building.BuildingType;
 import io.ilikeorangutans.ancol.game.ware.AvailableWares;
@@ -53,9 +52,7 @@ public class Rules {
 
 		professions = gson.fromJson(Gdx.files.internal("ancol/professions.json").reader(), AvailableProfessions.class);
 
-		for (Job job : professions.getJobs()) {
-			job.setWare(wares.findByName(job.getProducesString()));
-		}
+		professions.postProcess(wares);
 	}
 
 	public AvailableBuildings getBuildings() {
