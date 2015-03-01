@@ -17,7 +17,14 @@ public interface Surroundings extends Iterable<GameTile> {
 	 * @param where
 	 * @return
 	 */
-	GameTileImpl getTile(Selector where);
+	GameTile getTile(Selector where);
+
+	/**
+	 * Return the tile we are standing on.
+	 *
+	 * @return
+	 */
+	GameTile getCenter();
 
 	/**
 	 * Returns the entities at the given point.

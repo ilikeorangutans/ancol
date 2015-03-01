@@ -33,6 +33,11 @@ public class PointSurroundings implements Surroundings {
 	}
 
 	@Override
+	public GameTile getCenter() {
+		return getTile(Selector.Center);
+	}
+
+	@Override
 	public List<Entity> getEntities(Selector where) {
 		List<Entity> ents = entities.getEntityByType(ComponentType.fromClass(PositionComponent.class));
 		List<Entity> result = new ArrayList<Entity>();
