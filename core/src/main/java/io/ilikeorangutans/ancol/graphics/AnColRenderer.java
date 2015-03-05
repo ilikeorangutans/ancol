@@ -34,9 +34,6 @@ public class AnColRenderer {
 	private Mod mod;
 	private Texture terrainTexture;
 	private Texture unitTexture;
-	private Sprite grass;
-	private Sprite water;
-	private Sprite unexplored;
 	private Sprite explorer;
 	private Sprite colony;
 	private Sprite select;
@@ -52,26 +49,35 @@ public class AnColRenderer {
 		this.mod = mod;
 
 		terrainTexture = new Texture(Gdx.files.internal("tiles.png"));
-		terrain = new Sprite[12];
+		terrain = new Sprite[22];
 
-		terrain[0] = new Sprite(terrainTexture, 0, 13 * 60, 60, 60);
-		terrain[1] = new Sprite(terrainTexture, 0, 3 * 60, 60, 60);
-		terrain[2] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[3] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[4] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[5] = new Sprite(terrainTexture, 0, 2 * 60, 60, 60);
-		terrain[6] = new Sprite(terrainTexture, 0, 1 * 60, 60, 60);
-		terrain[7] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[8] = new Sprite(terrainTexture, 0, 6 * 60, 60, 60);
-		terrain[9] = new Sprite(terrainTexture, 8 * 60, 10 * 60, 60, 60);
-		terrain[10] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[11] = new Sprite(terrainTexture, 0, 540, 60, 60);
+		terrain = new Sprite[]{
+				new Sprite(terrainTexture, 0, 13 * 60, 60, 60), //0
+				new Sprite(terrainTexture, 0, 3 * 60, 60, 60), // 1
+				new Sprite(terrainTexture, 4 * 60, 10 * 60, 60, 60),
+				new Sprite(terrainTexture, 4 * 60, 10 * 60, 60, 60),
+				new Sprite(terrainTexture, 4 * 60, 10 * 60, 60, 60),
+				new Sprite(terrainTexture, 0, 2 * 60, 60, 60), // 5
+				new Sprite(terrainTexture, 0, 1 * 60, 60, 60),
+				new Sprite(terrainTexture, 0, 10 * 60, 60, 60),
+				new Sprite(terrainTexture, 0, 6 * 60, 60, 60),
+				new Sprite(terrainTexture, 4 * 60, 10 * 60, 60, 60),
+				new Sprite(terrainTexture, 8 * 60, 10 * 60, 60, 60), // 10
+				new Sprite(terrainTexture, 0, 540, 60, 60),
+				new Sprite(terrainTexture, 0, 2 * 60, 60, 60),
+				new Sprite(terrainTexture, 0, 2 * 60, 60, 60),
+				new Sprite(terrainTexture, 0, 4 * 60, 60, 60),
+				new Sprite(terrainTexture, 0, 5 * 60, 60, 60), // 15
+				new Sprite(terrainTexture, 0, 540, 60, 60),
+				new Sprite(terrainTexture, 0, 540, 60, 60),
+				new Sprite(terrainTexture, 0, 6 * 60, 60, 60),
+				new Sprite(terrainTexture, 0, 4 * 60, 60, 60),
+				new Sprite(terrainTexture, 0, 7 * 60, 60, 60),//20
+				new Sprite(terrainTexture, 0, 4 * 60, 60, 60)
+		};
 
 
-		grass = new Sprite(terrainTexture, 0, 60, 60, 60);
-		water = new Sprite(terrainTexture, 0, 540, 60, 60);
 		flag = new Sprite(terrainTexture, 16 * 60, 9 * 60, 60, 60);
-		unexplored = new Sprite(terrainTexture, 0, 13 * 60, 60, 60);
 
 		unitTexture = new Texture(Gdx.files.internal("units.png"));
 		explorer = new Sprite(unitTexture, 13 * 60, 60, 60, 60);
@@ -96,18 +102,7 @@ public class AnColRenderer {
 				final Tile tile = map.getTileAt(ix + min.x, iy + min.y);
 
 
-				Sprite draw = terrain[tile.getType().getId()];// unexplored;
-//                switch (tile.getType().getId()) {
-//                    case 1:
-//                        draw = water;
-//                        break;
-//                    case 2:
-//                        draw = grass;
-//                        break;
-//                    default:
-//                        draw = unexplored;
-//                }
-
+				Sprite draw = terrain[tile.getType().getId()];
 
 				Point p = viewport.mapToScreen((ix + min.x) * viewport.getTileWidth(), (iy + min.y) * viewport.getTileHeight());
 				draw.setPosition(p.x, p.y - viewport.getTileHeight());

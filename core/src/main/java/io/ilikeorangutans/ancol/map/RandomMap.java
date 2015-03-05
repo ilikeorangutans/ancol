@@ -38,7 +38,7 @@ public class RandomMap implements Map {
 
 				TileType tt = water;
 				if (!ocean) {
-					tt = tileTypes.getTypeForId(r.nextInt(10) + 1);
+					tt = tileTypes.getTypeForId(r.nextInt(21) + 1);
 				}
 
 				tiles[index(x, y)] = new TileImpl(tt);

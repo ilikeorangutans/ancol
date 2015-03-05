@@ -162,7 +162,61 @@
     {
       "name": "plains",
       "id": 12,
+      "settlements": true,
+      "role": "Land"
+    },
+    {
+      "name": "prairie",
+      "id": 13,
+      "settlements": true,
+      "role": "Land"
+    },
+    {
+      "name": "rain forest",
+      "id": 14,
+      "settlements": true,
+      "role": "Land"
+    },
+    {
+      "name": "savannah",
+      "id": 15,
+      "settlements": true,
+      "role": "Land"
+    },
+    {
+      "name": "sea lane",
+      "id": 16,
       "settlements": false,
+      "role": "Ocean"
+    },
+    {
+      "name": "scrub forest",
+      "id": 17,
+      "settlements": true,
+      "role": "Land"
+    },
+    {
+      "name": "swamp",
+      "id": 18,
+      "settlements": true,
+      "role": "Land"
+    },
+    {
+      "name": "tropical forest",
+      "id": 19,
+      "settlements": true,
+      "role": "Land"
+    },
+    {
+      "name": "tundra",
+      "id": 20,
+      "settlements": true,
+      "role": "Land"
+    },
+    {
+      "name": "wetland forest",
+      "id": 21,
+      "settlements": true,
       "role": "Land"
     }
   ]
