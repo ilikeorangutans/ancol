@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.game.rule;
+package io.ilikeorangutans.ancol.game.mod;
 
 import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
@@ -15,7 +15,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  *
  */
-public class Rules {
+public class Mod {
 
 	private SimpleTileTypes tileTypes;
 	private AvailableProfessions professions;

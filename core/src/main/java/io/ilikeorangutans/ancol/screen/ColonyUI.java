@@ -16,7 +16,7 @@ import io.ilikeorangutans.ancol.game.colony.building.Building;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
 import io.ilikeorangutans.ancol.game.production.Production;
 import io.ilikeorangutans.ancol.game.production.Workplace;
-import io.ilikeorangutans.ancol.game.rule.Rules;
+import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.ware.RecordingWares;
 import io.ilikeorangutans.ancol.game.ware.Stored;
 import io.ilikeorangutans.ancol.game.ware.Ware;
@@ -34,13 +34,13 @@ import java.util.Observer;
 public class ColonyUI implements Observer {
 	private final Stage stage;
 	private final Skin skin;
-	private final Rules rules;
+	private final Mod mod;
 	private final Entity entity;
 
-	public ColonyUI(Stage stage, Skin skin, Rules rules, Entity colony) {
+	public ColonyUI(Stage stage, Skin skin, Mod mod, Entity colony) {
 		this.stage = stage;
 		this.skin = skin;
-		this.rules = rules;
+		this.mod = mod;
 		this.entity = colony;
 	}
 

@@ -4,7 +4,7 @@ import io.ilikeorangutans.ancol.game.colony.event.OpenColonyEvent;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
-import io.ilikeorangutans.ancol.game.rule.Rules;
+import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.GameMap;
@@ -32,16 +32,16 @@ public class ColonyHandler {
 
 	private final Emitter emitter;
 	private final EntitiesEntityFactory entities;
-	private final Rules rules;
+	private final Mod mod;
 
 	private GameMap map;
 
 	private int counter = 1;
 
-	public ColonyHandler(Emitter emitter, EntitiesEntityFactory entities, Rules rules) {
+	public ColonyHandler(Emitter emitter, EntitiesEntityFactory entities, Mod mod) {
 		this.emitter = emitter;
 		this.entities = entities;
-		this.rules = rules;
+		this.mod = mod;
 
 	}
 
@@ -86,7 +86,7 @@ public class ColonyHandler {
 		counter++;
 		Surroundings surroundings = new PointSurroundings(position.getPoint(), map, entities);
 
-		ColonyComponent colonyComponent = new ColonyComponent(name, surroundings, rules, entities);
+		ColonyComponent colonyComponent = new ColonyComponent(name, surroundings, mod, entities);
 		Entity colony = entities.create(
 				new PlayerOwnedComponent(owner),
 				new RenderableComponent(0),

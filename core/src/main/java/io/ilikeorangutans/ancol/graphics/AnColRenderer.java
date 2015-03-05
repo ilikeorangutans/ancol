@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
-import io.ilikeorangutans.ancol.game.rule.Rules;
+import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.tile.Tile;
@@ -31,7 +31,7 @@ public class AnColRenderer {
 	private MapViewport viewport;
 	private Map map;
 	private Entities entities;
-	private Rules rules;
+	private Mod mod;
 	private Texture terrainTexture;
 	private Texture unitTexture;
 	private Sprite grass;
@@ -44,12 +44,12 @@ public class AnColRenderer {
 	private Sprite ship;
 	private Sprite[] terrain;
 
-	public AnColRenderer(SpriteBatch batch, MapViewport viewport, Map map, Entities entities, Rules rules) {
+	public AnColRenderer(SpriteBatch batch, MapViewport viewport, Map map, Entities entities, Mod mod) {
 		this.batch = batch;
 		this.viewport = viewport;
 		this.map = map;
 		this.entities = entities;
-		this.rules = rules;
+		this.mod = mod;
 
 		terrainTexture = new Texture(Gdx.files.internal("tiles.png"));
 		terrain = new Sprite[12];

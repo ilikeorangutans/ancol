@@ -10,7 +10,7 @@ import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Profession;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
-import io.ilikeorangutans.ancol.game.rule.Rules;
+import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;
@@ -33,22 +33,22 @@ import java.util.HashMap;
 public class GameStateBuilder {
 
 	private final EventBus bus;
-	private final Rules rules;
+	private final Mod mod;
 	private final java.util.Map<Integer, Player> players = new HashMap<Integer, Player>();
 	private final GameState gameState;
 	private EntitiesEntityFactory entities;
 
 	private Map map;
 
-	public GameStateBuilder(EventBus bus, Rules rules) {
+	public GameStateBuilder(EventBus bus, Mod mod) {
 		this.bus = bus;
-		this.rules = rules;
+		this.mod = mod;
 		gameState = new GameState();
 	}
 
 	public GameStateBuilder addPlayer(Player player) {
 		players.put(player.getId(), player);
-		PlayerVisibilityMap playerMap = new PlayerVisibilityMap(map, player, rules.getTileTypes().getTypeForId(0), entities);
+		PlayerVisibilityMap playerMap = new PlayerVisibilityMap(map, player, mod.getTileTypes().getTypeForId(0), entities);
 		bus.subscribe(playerMap);
 		player.setMap(playerMap);
 		gameState.addPlayer(player);
@@ -58,7 +58,7 @@ public class GameStateBuilder {
 
 	public GameState setupSampleGame() {
 
-		map = new RandomMap(rules.getTileTypes());
+		map = new RandomMap(mod.getTileTypes());
 
 		addPlayer(new Player(0, "player 1"));
 		addPlayer(new Player(1, "player 2"));

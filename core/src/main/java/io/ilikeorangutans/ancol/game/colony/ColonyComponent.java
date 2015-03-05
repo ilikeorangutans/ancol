@@ -12,7 +12,7 @@ import io.ilikeorangutans.ancol.game.player.PlayerOwned;
 import io.ilikeorangutans.ancol.game.production.Production;
 import io.ilikeorangutans.ancol.game.production.ProductionBuilder;
 import io.ilikeorangutans.ancol.game.production.Workplace;
-import io.ilikeorangutans.ancol.game.rule.Rules;
+import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Warehouse;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
@@ -37,7 +37,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 	 * Bus used to distribute events within the colony.
 	 */
 	private transient final EventBus localBus = new SimpleEventBus();
-	private transient final Rules rules;
+	private transient final Mod mod;
 	private final EntityFactory entityFactory;
 	private final Surroundings surroundings;
 
@@ -53,10 +53,10 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 	 */
 	private Production[] workedTiles = new Production[9];
 
-	public ColonyComponent(String name, Surroundings surroundings, Rules rules, EntityFactory entities) {
+	public ColonyComponent(String name, Surroundings surroundings, Mod mod, EntityFactory entities) {
 		this.name = name;
 		this.surroundings = surroundings;
-		this.rules = rules;
+		this.mod = mod;
 		this.entityFactory = entities;
 	}
 
@@ -73,7 +73,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 	 */
 	public void found(Player player) {
 		this.player = player;
-		warehouse = new Warehouse(rules.getWares().getAll());
+		warehouse = new Warehouse(mod.getWares().getAll());
 		buildings = new SimpleColonyBuildings(localBus);
 		constructInitialBuildings();
 
@@ -87,7 +87,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 
 	private void setupFoodConsumption() {
 		Production foodConsumption = new ProductionBuilder()
-				.consume(rules.getWares().findByName("Corn"))
+				.consume(mod.getWares().findByName("Corn"))
 				.with(population)
 				.create();
 
@@ -95,7 +95,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 	}
 
 	private void constructInitialBuildings() {
-		for (BuildingType buildingType : rules.getBuildings().getInitialBuildings()) {
+		for (BuildingType buildingType : mod.getBuildings().getInitialBuildings()) {
 			buildings.construct(buildingType);
 		}
 	}
@@ -129,7 +129,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 	 */
 	public void addColonist(Entity colonist) {
 		Ware ware = pickBestGoodToProduce(colonist);
-		Job job = rules.getProfessions().findProducerFor(ware);
+		Job job = mod.getProfessions().findProducerFor(ware);
 		addColonist(colonist, job);
 	}
 
@@ -161,7 +161,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 	private Ware pickBestGoodToProduce(Entity colonist) {
 		// TODO Need to take into account how full buildings are and what tiles are accessible; also, if there's enough
 		// food or raw materials, etc
-		return rules.getWares().getAll().get(0);
+		return mod.getWares().getAll().get(0);
 	}
 
 	public String getName() {
