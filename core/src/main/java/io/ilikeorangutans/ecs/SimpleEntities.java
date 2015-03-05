@@ -30,7 +30,7 @@ public class SimpleEntities implements EntitiesEntityFactory {
 			final ComponentType type = ComponentType.fromComponent(c);
 
 			if (type == null)
-				throw new NullPointerException("Component has null type");
+				throw new NullPointerException("Component isCapableOf null type");
 
 			if (!componentsByType.containsKey(type)) {
 				componentsByType.put(type, new ArrayList<Component>());

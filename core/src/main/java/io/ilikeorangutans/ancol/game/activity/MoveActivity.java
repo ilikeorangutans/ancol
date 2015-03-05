@@ -41,6 +41,8 @@ public class MoveActivity implements Activity {
 		if (!movableComponent.canAccess(p)) {
 			movableComponent.setPath(null);
 			complete = true;
+			// TODO: Fire off event that a path was cancelled... maybe keep the old destination and offer to
+			// recalculate the path?
 			return;
 		}
 

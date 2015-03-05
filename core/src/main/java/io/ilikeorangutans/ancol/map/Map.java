@@ -4,7 +4,7 @@ import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.map.tile.Tile;
 
 /**
- * The most basic map that holds only the terrain. It has a height, width, and tiles.
+ * The most basic map that holds only the terrain. It isCapableOf a height, width, and tiles.
  */
 public interface Map {
 

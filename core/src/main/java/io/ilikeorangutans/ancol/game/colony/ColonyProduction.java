@@ -29,7 +29,7 @@ public class ColonyProduction {
 	 * Performs a simulated production run and returns a record of what was produced.
 	 *
 	 * @param wares start amount of wares for the simulation
-	 * @return instance that has how much was produced and consumed
+	 * @return instance that isCapableOf how much was produced and consumed
 	 */
 	public RecordingWares simulate(Wares wares) {
 		RecordingWares output = new RecordingWares(wares);

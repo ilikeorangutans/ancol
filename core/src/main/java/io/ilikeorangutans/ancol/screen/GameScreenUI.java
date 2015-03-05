@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.game.activity.event.CannotPerformEvent;
 import io.ilikeorangutans.ancol.game.cargo.Cargo;
 import io.ilikeorangutans.ancol.game.cargo.CargoHoldComponent;
 import io.ilikeorangutans.ancol.game.cargo.ShipComponent;
@@ -19,10 +20,10 @@ import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.event.OpenColonyEvent;
 import io.ilikeorangutans.ancol.game.event.AllEntitiesSimulatedEvent;
+import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.event.BeginTurnEvent;
 import io.ilikeorangutans.ancol.game.player.event.TurnConcludedEvent;
-import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.input.MouseMoveEvent;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.GameMap;
@@ -209,7 +210,13 @@ public class GameScreenUI {
 	public void onAllEntitiesSimulated(AllEntitiesSimulatedEvent event) {
 		if (!event.player.equals(player))
 			return;
+	}
 
+	@Subscribe
+	public void onCannotPerform(CannotPerformEvent event) {
+		Dialog dialog = new Dialog("Cannot " + event.activity.getName(), skin);
+		dialog.button("OK");
+		dialog.show(stage);
 	}
 
 	@Subscribe

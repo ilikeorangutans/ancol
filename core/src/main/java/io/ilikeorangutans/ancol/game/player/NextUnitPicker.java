@@ -73,7 +73,7 @@ public class NextUnitPicker {
 	}
 
 	/**
-	 * Finds the next entity that has action points and no activity and selects it for the player.
+	 * Finds the next entity that isCapableOf action points and no activity and selects it for the player.
 	 */
 	private void selectNextEntity() {
 		if (!isEnabled()) {

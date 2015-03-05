@@ -1,6 +1,8 @@
 package io.ilikeorangutans.ancol.game;
 
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
+import io.ilikeorangutans.ancol.game.capability.BuildColonyCapability;
+import io.ilikeorangutans.ancol.game.capability.CapabilitiesComponent;
 import io.ilikeorangutans.ancol.game.cargo.CargoHoldComponent;
 import io.ilikeorangutans.ancol.game.cargo.EntityTransportable;
 import io.ilikeorangutans.ancol.game.cargo.ShipComponent;
@@ -8,9 +10,9 @@ import io.ilikeorangutans.ancol.game.cargo.TransportableComponent;
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Profession;
+import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
-import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;
@@ -68,70 +70,78 @@ public class GameStateBuilder {
 
 		Profession profession = new Profession("Free Colonist", 2);
 		Player p = getLocalPlayer();
+		CapabilitiesComponent capabilitiesComponent = new CapabilitiesComponent();
 		entities.create(
 				new PositionComponent(11, 10),
 				new RenderableComponent(1),
 				new NameComponent("test entity 1"),
 				new SelectableComponent(),
-				new MovableComponent(p.getMap(), MovableComponent.MovableType.Land),
+				new MovableComponent(p.getMap(), capabilitiesComponent),
 				new PlayerOwnedComponent(p),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(1),
 				new ColonistComponent(profession),
-				new TransportableComponent(1));
+				new TransportableComponent(1),
+				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyCapability.BUILD_COLONY));
+		capabilitiesComponent = new CapabilitiesComponent();
 		entities.create(
 				new PositionComponent(6, 5),
 				new RenderableComponent(1),
 				new NameComponent("test entity 2"),
 				new SelectableComponent(),
-				new MovableComponent(p.getMap(), MovableComponent.MovableType.Land),
+				new MovableComponent(p.getMap(), capabilitiesComponent),
 				new PlayerOwnedComponent(p),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(1),
 				new ColonistComponent(profession),
-				new TransportableComponent(1));
+				new TransportableComponent(1),
+				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyCapability.BUILD_COLONY));
+		capabilitiesComponent = new CapabilitiesComponent();
 		entities.create(
 				new PositionComponent(5, 3),
 				new RenderableComponent(1),
 				new NameComponent("test entity 3"),
 				new SelectableComponent(),
-				new MovableComponent(p.getMap(), MovableComponent.MovableType.Land),
+				new MovableComponent(p.getMap(), capabilitiesComponent),
 				new PlayerOwnedComponent(p),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(2),
 				new ColonistComponent(new Profession("Seasoned Scout", 2)),
-				new TransportableComponent(1));
-
+				new TransportableComponent(1),
+				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyCapability.BUILD_COLONY));
+		capabilitiesComponent = new CapabilitiesComponent();
 		Entity toLoad = entities.create(
 				new PositionComponent(1, 1),
 				new RenderableComponent(1),
 				new NameComponent("loaded test entity 4"),
 				new SelectableComponent(),
-				new MovableComponent(p.getMap(), MovableComponent.MovableType.Land),
+				new MovableComponent(p.getMap(), capabilitiesComponent),
 				new PlayerOwnedComponent(p),
 				new ControllableComponent(),
 				new ActivityComponent(2),
 				new VisionComponent(1),
 				new ColonistComponent(profession),
-				new TransportableComponent(1));
+				new TransportableComponent(1),
+				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyCapability.BUILD_COLONY));
+		capabilitiesComponent = new CapabilitiesComponent();
 		CargoHoldComponent cargoHoldComponent = new CargoHoldComponent(2);
 		cargoHoldComponent.getCargohold().load(new EntityTransportable(toLoad), 1);
-//		cargoHoldComponent.getCargohold().load(Ware.Muskets, 100);
 		entities.create(
 				new PositionComponent(0, 1),
 				new RenderableComponent(2),
 				new NameComponent("ship 1"),
 				new SelectableComponent(),
-				new MovableComponent(p.getMap(), MovableComponent.MovableType.Sea),
+				new MovableComponent(p.getMap(), capabilitiesComponent),
 				new PlayerOwnedComponent(p),
 				new ControllableComponent(),
 				new ActivityComponent(4),
 				new VisionComponent(2),
 				new ShipComponent(),
-				cargoHoldComponent);
+				cargoHoldComponent,
+				capabilitiesComponent.add(MovableComponent.TRAVERSE_WATER));
 
 
 		return gameState;

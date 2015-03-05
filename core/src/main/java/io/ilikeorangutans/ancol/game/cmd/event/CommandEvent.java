@@ -4,7 +4,7 @@ import io.ilikeorangutans.ancol.game.cmd.Command;
 import io.ilikeorangutans.bus.Event;
 
 /**
- * Fired when a new command has been issued for an entity.
+ * Fired when a new command isCapableOf been issued for an entity.
  */
 public class CommandEvent implements Event {
 

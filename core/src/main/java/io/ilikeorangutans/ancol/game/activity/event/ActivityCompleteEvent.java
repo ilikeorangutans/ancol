@@ -5,7 +5,7 @@ import io.ilikeorangutans.bus.Event;
 import io.ilikeorangutans.ecs.Entity;
 
 /**
- * Fired whenever an activity has been completed.
+ * Fired whenever an activity isCapableOf been completed.
  */
 public class ActivityCompleteEvent implements Event {
 
