@@ -1,14 +1,10 @@
 package io.ilikeorangutans.ancol.graphics;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
-import io.ilikeorangutans.ancol.game.rule.Rules;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.tile.Tile;
@@ -31,12 +27,8 @@ public class AnColRenderer {
 	private MapViewport viewport;
 	private Map map;
 	private Entities entities;
-	private Rules rules;
 	private Texture terrainTexture;
-	private Texture unitTexture;
-	private Sprite grass;
-	private Sprite water;
-	private Sprite unexplored;
+	private TextureRegion[][] unitTextures;
 	private Sprite explorer;
 	private Sprite colony;
 	private Sprite select;
@@ -44,41 +36,40 @@ public class AnColRenderer {
 	private Sprite ship;
 	private Sprite[] terrain;
 
-	public AnColRenderer(SpriteBatch batch, MapViewport viewport, Map map, Entities entities, Rules rules) {
+	public AnColRenderer(SpriteBatch batch, MapViewport viewport, Map map, Entities entities, TextureAtlas atlas) {
 		this.batch = batch;
 		this.viewport = viewport;
 		this.map = map;
 		this.entities = entities;
-		this.rules = rules;
 
-		terrainTexture = new Texture(Gdx.files.internal("tiles.png"));
+		TextureAtlas.AtlasRegion atlasRegion = atlas.findRegion("tiles");
+		TextureRegion[][] terrainRegions = atlasRegion.split(60, 60);
+		terrainTexture = atlasRegion.getTexture();
+
 		terrain = new Sprite[12];
+		terrain[0] = new Sprite(terrainRegions[13][0]);
+		terrain[1] = new Sprite(terrainRegions[3][0]);
+		terrain[2] = new Sprite(terrainRegions[10][5]);
+		terrain[3] = new Sprite(terrainRegions[10][5]);
+		terrain[4] = new Sprite(terrainRegions[1][0]);
+		terrain[5] = new Sprite(terrainRegions[2][0]);
+		terrain[6] = new Sprite(terrainRegions[1][0]);
+		terrain[7] = new Sprite(terrainRegions[10][0]);
+		terrain[8] = new Sprite(terrainRegions[6][0]);
+		terrain[9] = new Sprite(terrainRegions[10][5]);
+		terrain[10] = new Sprite(terrainRegions[10][8]);
+		terrain[11] = new Sprite(terrainRegions[9][0]);
 
-		terrain[0] = new Sprite(terrainTexture, 0, 13 * 60, 60, 60);
-		terrain[1] = new Sprite(terrainTexture, 0, 3 * 60, 60, 60);
-		terrain[2] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[3] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[4] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[5] = new Sprite(terrainTexture, 0, 2 * 60, 60, 60);
-		terrain[6] = new Sprite(terrainTexture, 0, 1 * 60, 60, 60);
-		terrain[7] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[8] = new Sprite(terrainTexture, 0, 6 * 60, 60, 60);
-		terrain[9] = new Sprite(terrainTexture, 8 * 60, 10 * 60, 60, 60);
-		terrain[10] = new Sprite(terrainTexture, 0, 10 * 60, 60, 60);
-		terrain[11] = new Sprite(terrainTexture, 0, 540, 60, 60);
+		flag = new Sprite(terrainRegions[9][16]);
 
+		unitTextures = atlas.findRegion("units").split(60, 60);
+		explorer = new Sprite(unitTextures[1][13]);
+		ship = new Sprite(unitTextures[0][13]);
+		colony = new Sprite(terrainRegions[12][12]);
 
-		grass = new Sprite(terrainTexture, 0, 60, 60, 60);
-		water = new Sprite(terrainTexture, 0, 540, 60, 60);
-		flag = new Sprite(terrainTexture, 16 * 60, 9 * 60, 60, 60);
-		unexplored = new Sprite(terrainTexture, 0, 13 * 60, 60, 60);
+		TextureAtlas.AtlasRegion selectRegion = atlas.findRegion("select");
 
-		unitTexture = new Texture(Gdx.files.internal("units.png"));
-		explorer = new Sprite(unitTexture, 13 * 60, 60, 60, 60);
-		ship = new Sprite(unitTexture, 13 * 60, 0, 60, 60);
-		colony = new Sprite(terrainTexture, 12 * 60, 12 * 60, 60, 60);
-
-		select = new Sprite(new Texture(Gdx.files.internal("select.png")), 0, 0, 60, 60);
+		select = new Sprite(selectRegion.split(60, 60)[0][0]);
 
 		font = new BitmapFont();
 	}
@@ -95,19 +86,7 @@ public class AnColRenderer {
 
 				final Tile tile = map.getTileAt(ix + min.x, iy + min.y);
 
-
 				Sprite draw = terrain[tile.getType().getId()];// unexplored;
-//                switch (tile.getType().getId()) {
-//                    case 1:
-//                        draw = water;
-//                        break;
-//                    case 2:
-//                        draw = grass;
-//                        break;
-//                    default:
-//                        draw = unexplored;
-//                }
-
 
 				Point p = viewport.mapToScreen((ix + min.x) * viewport.getTileWidth(), (iy + min.y) * viewport.getTileHeight());
 				draw.setPosition(p.x, p.y - viewport.getTileHeight());

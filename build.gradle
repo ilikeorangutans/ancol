@@ -11,7 +11,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '1.0'
+    version = '0.1'
     ext {
         appName = 'AnCol'
         gdxVersion = '1.5.4'
@@ -69,6 +69,8 @@ project(":core") {
 
         compile "com.google.code.gson:gson:2.3.1"
         compile 'com.google.guava:guava:18.0'
+
+        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
 
         testCompile "junit:junit:4.11"
         testCompile "org.hamcrest:hamcrest-all:1.3"

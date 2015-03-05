@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import io.ilikeorangutans.ancol.game.GameState;
 import io.ilikeorangutans.ancol.game.GameStateBuilder;
@@ -46,7 +47,7 @@ public class GameScreen implements Screen {
 	private PathFinder pathFinder;
 	private MapViewport viewport;
 
-	public GameScreen(Skin skin, InputProcessorFactory inputProcessorFactory) {
+	public GameScreen(Skin skin, InputProcessorFactory inputProcessorFactory, TextureAtlas atlas) {
 		this.skin = skin;
 		this.inputProcessorFactory = inputProcessorFactory;
 
@@ -68,14 +69,14 @@ public class GameScreen implements Screen {
 
 		// Setup Game UI for player:
 		Player player = gameStateBuilder.getLocalPlayer();
-		setupUIForPlayer(bus, rules, entities, player);
+		setupUIForPlayer(bus, rules, entities, player, atlas);
 
 		// Start the game:
 		bus.fire(new GameStartedEvent());
 
 	}
 
-	private void setupUIForPlayer(EventBus bus, Rules rules, EntitiesEntityFactory entities, Player player) {
+	private void setupUIForPlayer(EventBus bus, Rules rules, EntitiesEntityFactory entities, Player player, TextureAtlas atlas) {
 		AnColActions actions = new AnColActions(bus, pathFinder);
 		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth() - 250, Gdx.graphics.getHeight(), 60, 60, player.getMap());
 		bus.subscribe(viewport);
@@ -96,7 +97,7 @@ public class GameScreen implements Screen {
 		NextUnitPicker nextUnitPicker = new NextUnitPicker(bus, player, p1Entities);
 		bus.subscribe(nextUnitPicker);
 
-		renderer = new AnColRenderer(batch, viewport, player.getMap(), entities, rules);
+		renderer = new AnColRenderer(batch, viewport, player.getMap(), entities, atlas);
 	}
 
 	private void setupGameMechanics(EventBus bus, EntitiesEntityFactory entities, Rules rules, GameState gameState) {
