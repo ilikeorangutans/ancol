@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.screen;
+package io.ilikeorangutans.ancol.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

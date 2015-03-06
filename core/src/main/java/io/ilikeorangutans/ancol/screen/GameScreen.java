@@ -26,6 +26,7 @@ import io.ilikeorangutans.ancol.map.viewport.MapViewport;
 import io.ilikeorangutans.ancol.path.AStarPathFinder;
 import io.ilikeorangutans.ancol.path.PathFinder;
 import io.ilikeorangutans.ancol.select.SelectionHandler;
+import io.ilikeorangutans.ancol.ui.GameScreenUI;
 import io.ilikeorangutans.bus.EventBus;
 import io.ilikeorangutans.bus.SimpleEventBus;
 import io.ilikeorangutans.ecs.EntitiesEntityFactory;
