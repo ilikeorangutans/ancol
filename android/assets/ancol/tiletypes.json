@@ -16,6 +16,7 @@
       "name": "boreal forest",
       "id": 2,
       "role": "Land",
+      "settlements": "true",
       "produces": [
         {
           "ware": "Corn",
@@ -102,7 +103,7 @@
     {
       "name": "grassland",
       "id": 6,
-      "settlements": false,
+      "settlements": true,
       "role": "Land",
       "produces": [
         {
@@ -122,7 +123,7 @@
     {
       "name": "hills",
       "id": 7,
-      "settlements": false,
+      "settlements": true,
       "role": "Land",
       "produces": [
         {
@@ -138,13 +139,13 @@
     {
       "name": "marsh",
       "id": 8,
-      "settlements": false,
+      "settlements": true,
       "role": "Land"
     },
     {
       "name": "mixed forest",
       "id": 9,
-      "settlements": false,
+      "settlements": true,
       "role": "Land"
     },
     {
