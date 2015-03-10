@@ -1,10 +1,13 @@
-package io.ilikeorangutans.ancol.map;
+package io.ilikeorangutans.ancol.game.vision;
 
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
-import io.ilikeorangutans.ancol.game.vision.VisionComponent;
+import io.ilikeorangutans.ancol.map.GameMap;
+import io.ilikeorangutans.ancol.map.Map;
+import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.surrounding.GameTileImpl;
+import io.ilikeorangutans.ancol.map.surrounding.ImmutablePointSurroundings;
 import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ancol.map.tile.Tile;
 import io.ilikeorangutans.ancol.map.tile.TileImpl;
@@ -101,6 +104,8 @@ public class PlayerVisibilityMap implements GameMap {
 		updateVisibility(event.entity);
 	}
 
+	// TODO: Add a handler for entity changed owner
+
 	public void updateVisibility(Entity entity) {
 		if (!entity.hasComponent(ComponentType.fromClasses(PlayerOwnedComponent.class)))
 			return;
@@ -115,6 +120,8 @@ public class PlayerVisibilityMap implements GameMap {
 		int radius = vc.getRadius();
 		PositionComponent pc = entity.getComponent(PositionComponent.class);
 
+		ImmutablePointSurroundings surroundings = new ImmutablePointSurroundings(pc.getPoint(), this, entities);
+		vc.setSurroundings(surroundings);
 
 		int xFrom = Math.max(0, pc.getX() - radius);
 		int xTo = Math.min(getWidth(), xFrom + radius + radius + 1);

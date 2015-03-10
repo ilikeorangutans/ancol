@@ -1,8 +1,8 @@
 package io.ilikeorangutans.ancol.game;
 
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
-import io.ilikeorangutans.ancol.game.capability.BuildColonyCapability;
-import io.ilikeorangutans.ancol.game.capability.CapabilitiesComponent;
+import io.ilikeorangutans.ancol.game.ability.BuildColonyAbility;
+import io.ilikeorangutans.ancol.game.ability.AbilitiesComponent;
 import io.ilikeorangutans.ancol.game.cargo.CargoHoldComponent;
 import io.ilikeorangutans.ancol.game.cargo.EntityTransportable;
 import io.ilikeorangutans.ancol.game.cargo.ShipComponent;
@@ -16,7 +16,7 @@ import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.Map;
-import io.ilikeorangutans.ancol.map.PlayerVisibilityMap;
+import io.ilikeorangutans.ancol.game.vision.PlayerVisibilityMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.RandomMap;
 import io.ilikeorangutans.ancol.move.MovableComponent;
@@ -70,7 +70,7 @@ public class GameStateBuilder {
 
 		Profession profession = new Profession("Free Colonist", 2);
 		Player p = getLocalPlayer();
-		CapabilitiesComponent capabilitiesComponent = new CapabilitiesComponent();
+		AbilitiesComponent capabilitiesComponent = new AbilitiesComponent();
 		entities.create(
 				new PositionComponent(11, 10),
 				new RenderableComponent(1),
@@ -83,8 +83,8 @@ public class GameStateBuilder {
 				new VisionComponent(1),
 				new ColonistComponent(profession),
 				new TransportableComponent(1),
-				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyCapability.BUILD_COLONY));
-		capabilitiesComponent = new CapabilitiesComponent();
+				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyAbility.INSTANCE));
+		capabilitiesComponent = new AbilitiesComponent();
 		entities.create(
 				new PositionComponent(6, 5),
 				new RenderableComponent(1),
@@ -97,8 +97,8 @@ public class GameStateBuilder {
 				new VisionComponent(1),
 				new ColonistComponent(profession),
 				new TransportableComponent(1),
-				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyCapability.BUILD_COLONY));
-		capabilitiesComponent = new CapabilitiesComponent();
+				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyAbility.INSTANCE));
+		capabilitiesComponent = new AbilitiesComponent();
 		entities.create(
 				new PositionComponent(5, 3),
 				new RenderableComponent(1),
@@ -111,8 +111,8 @@ public class GameStateBuilder {
 				new VisionComponent(2),
 				new ColonistComponent(new Profession("Seasoned Scout", 2)),
 				new TransportableComponent(1),
-				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyCapability.BUILD_COLONY));
-		capabilitiesComponent = new CapabilitiesComponent();
+				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyAbility.INSTANCE));
+		capabilitiesComponent = new AbilitiesComponent();
 		Entity toLoad = entities.create(
 				new PositionComponent(1, 1),
 				new RenderableComponent(1),
@@ -125,8 +125,8 @@ public class GameStateBuilder {
 				new VisionComponent(1),
 				new ColonistComponent(profession),
 				new TransportableComponent(1),
-				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyCapability.BUILD_COLONY));
-		capabilitiesComponent = new CapabilitiesComponent();
+				capabilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyAbility.INSTANCE));
+		capabilitiesComponent = new AbilitiesComponent();
 		CargoHoldComponent cargoHoldComponent = new CargoHoldComponent(2);
 		cargoHoldComponent.getCargohold().load(new EntityTransportable(toLoad), 1);
 		entities.create(

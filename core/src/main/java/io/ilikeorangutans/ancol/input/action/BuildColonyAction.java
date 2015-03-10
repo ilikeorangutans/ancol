@@ -1,10 +1,15 @@
 package io.ilikeorangutans.ancol.input.action;
 
+import io.ilikeorangutans.ancol.game.ability.AbilitiesComponent;
+import io.ilikeorangutans.ancol.game.ability.Ability;
+import io.ilikeorangutans.ancol.game.ability.BuildColonyAbility;
 import io.ilikeorangutans.ancol.game.cmd.BuildColonyCommand;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandEvent;
+import io.ilikeorangutans.ancol.move.MovedEvent;
 import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.bus.Subscribe;
+import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entity;
 
 /**
@@ -13,6 +18,7 @@ import io.ilikeorangutans.ecs.Entity;
 public class BuildColonyAction extends Action {
 
 	private final Emitter emitter;
+	private final Ability ability = BuildColonyAbility.INSTANCE;
 	private Entity entity;
 
 	public BuildColonyAction(Emitter emitter) {
@@ -21,14 +27,29 @@ public class BuildColonyAction extends Action {
 
 	@Subscribe
 	public void onEntitySelected(EntitySelectedEvent event) {
-		entity = event.entity;
+		updateState(event.entity);
+	}
 
-		if (entity == null) {
-			// TODO: need more checks here: can the selected entity actually build colonies or is it a valid location to build a colony?
-			setEnabled(false);
-		} else {
-			setEnabled(true);
+	private void updateState(Entity entity) {
+		this.entity = entity;
+		setEnabled(false);
+
+		if (this.entity == null)
+			return;
+
+		if (!this.entity.hasComponent(ComponentType.fromClass(AbilitiesComponent.class)))
+			return;
+
+		if (!this.entity.getComponent(AbilitiesComponent.class).has(ability)) {
+			return;
 		}
+
+		setEnabled(ability.canBeUsedBy(this.entity));
+	}
+
+	@Subscribe
+	public void onEntityMoved(MovedEvent event) {
+		updateState(event.entity);
 	}
 
 	@Override

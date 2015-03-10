@@ -1,7 +1,7 @@
 package io.ilikeorangutans.ancol;
 
 /**
- *
+ * TODO: Rename this to PointImpl or something like that, extract interface?
  */
 public final class Point {
 

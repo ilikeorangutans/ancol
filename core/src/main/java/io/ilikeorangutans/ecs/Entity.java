@@ -56,7 +56,7 @@ public class Entity {
 	}
 
 	/**
-	 * Fires off an event notifying listeners that this entity isCapableOf been modified.
+	 * Fires off an event notifying listeners that this entity has been modified.
 	 */
 	public void updated() {
 		emitter.fire(new EntityUpdatedEvent(this));

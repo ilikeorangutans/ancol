@@ -2,8 +2,8 @@ package io.ilikeorangutans.ancol.game.activity;
 
 import io.ilikeorangutans.ancol.game.actionpoint.ActionPoints;
 import io.ilikeorangutans.ancol.game.activity.event.CannotPerformEvent;
-import io.ilikeorangutans.ancol.game.capability.BuildColonyCapability;
-import io.ilikeorangutans.ancol.game.capability.CapabilitiesComponent;
+import io.ilikeorangutans.ancol.game.ability.BuildColonyAbility;
+import io.ilikeorangutans.ancol.game.ability.AbilitiesComponent;
 import io.ilikeorangutans.ancol.game.colony.BuildColonyEvent;
 import io.ilikeorangutans.bus.Emitter;
 import io.ilikeorangutans.ecs.Entity;
@@ -27,7 +27,7 @@ public class BuildColonyActivity implements Activity {
 
 	@Override
 	public void perform(Emitter emitter, ActionPoints actionPoints) {
-		if (!builder.getComponent(CapabilitiesComponent.class).isCapableOf(BuildColonyCapability.BUILD_COLONY)) {
+		if (!builder.getComponent(AbilitiesComponent.class).has(BuildColonyAbility.INSTANCE)) {
 			complete = true;
 			emitter.fire(new CannotPerformEvent(builder, this));
 			return;

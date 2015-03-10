@@ -9,7 +9,7 @@ import io.ilikeorangutans.ancol.game.vision.VisionComponent;
 import io.ilikeorangutans.ancol.graphics.RenderableComponent;
 import io.ilikeorangutans.ancol.map.GameMap;
 import io.ilikeorangutans.ancol.map.PositionComponent;
-import io.ilikeorangutans.ancol.map.surrounding.PointSurroundings;
+import io.ilikeorangutans.ancol.map.surrounding.ImmutablePointSurroundings;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ancol.select.SelectableComponent;
 import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
@@ -84,7 +84,7 @@ public class ColonyHandler {
 
 		String name = "colony " + counter;
 		counter++;
-		Surroundings surroundings = new PointSurroundings(position.getPoint(), map, entities);
+		Surroundings surroundings = new ImmutablePointSurroundings(position.getPoint(), map, entities);
 
 		ColonyComponent colonyComponent = new ColonyComponent(name, surroundings, mod, entities);
 		Entity colony = entities.create(

@@ -1,9 +1,9 @@
 package io.ilikeorangutans.ancol.move;
 
 import io.ilikeorangutans.ancol.Point;
-import io.ilikeorangutans.ancol.game.capability.Capabilities;
-import io.ilikeorangutans.ancol.game.capability.Capability;
-import io.ilikeorangutans.ancol.game.capability.ImmutableCapability;
+import io.ilikeorangutans.ancol.game.ability.Abilities;
+import io.ilikeorangutans.ancol.game.ability.Ability;
+import io.ilikeorangutans.ancol.game.ability.ImmutableAbility;
 import io.ilikeorangutans.ancol.map.GameMap;
 import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ancol.map.tile.TileType;
@@ -17,17 +17,17 @@ import io.ilikeorangutans.ecs.ComponentType;
  */
 public class MovableComponent implements Component, Movable {
 
-	public static final Capability TRAVERSE_WATER = new ImmutableCapability("traverse-water");
-	public static final Capability TRAVERSE_LAND = new ImmutableCapability("traverse-land");
+	public static final Ability TRAVERSE_WATER = new ImmutableAbility("traverse-water");
+	public static final Ability TRAVERSE_LAND = new ImmutableAbility("traverse-land");
 
 	private static final ComponentType COMPONENT_TYPE = ComponentType.fromClass(MovableComponent.class);
 	private final GameMap map;
-	private final Capabilities capabilities;
+	private final Abilities abilities;
 	private Path path;
 
-	public MovableComponent(GameMap map, Capabilities capabilities) {
+	public MovableComponent(GameMap map, Abilities abilities) {
 		this.map = map;
-		this.capabilities = capabilities;
+		this.abilities = abilities;
 	}
 
 	public static ComponentType getComponentType() {
@@ -73,7 +73,7 @@ public class MovableComponent implements Component, Movable {
 		// to "enter" a sea tile, and vice versa, a colony will allow a ship to enter a land tile.
 
 		boolean land = role == TileType.Role.Land;
-		Capability required = TRAVERSE_WATER;
+		Ability required = TRAVERSE_WATER;
 		if (land) {
 			required = TRAVERSE_LAND;
 		}
@@ -83,7 +83,7 @@ public class MovableComponent implements Component, Movable {
 
 		// TODO: check if another player's entity is on this tile.
 
-		return capabilities.isCapableOf(required);
+		return abilities.has(required);
 	}
 
 	@Override

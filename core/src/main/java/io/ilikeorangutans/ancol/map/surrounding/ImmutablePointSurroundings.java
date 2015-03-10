@@ -15,13 +15,13 @@ import java.util.List;
 /**
  *
  */
-public class PointSurroundings implements Surroundings {
+public class ImmutablePointSurroundings implements Surroundings {
 
 	private final GameMap map;
 	private final Point point;
 	private final Entities entities;
 
-	public PointSurroundings(Point location, GameMap map, Entities entities) {
+	public ImmutablePointSurroundings(Point location, GameMap map, Entities entities) {
 		this.map = map;
 		this.point = location;
 		this.entities = entities;

@@ -42,7 +42,7 @@ public class TileType {
 	 *
 	 * @return
 	 */
-	public boolean isSettlements() {
+	public boolean canBeSettled() {
 		return settlements;
 	}
 
