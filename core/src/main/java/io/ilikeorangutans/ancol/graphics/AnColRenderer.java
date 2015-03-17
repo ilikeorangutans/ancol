@@ -49,19 +49,29 @@ public class AnColRenderer {
 		TextureRegion[][] terrainRegions = atlasRegion.split(60, 60);
 		terrainTexture = atlasRegion.getTexture();
 
-		terrain = new Sprite[12];
+		terrain = new Sprite[22];
 		terrain[0] = new Sprite(terrainRegions[13][0]);
 		terrain[1] = new Sprite(terrainRegions[3][0]);
-		terrain[2] = new Sprite(terrainRegions[10][5]);
-		terrain[3] = new Sprite(terrainRegions[10][5]);
-		terrain[4] = new Sprite(terrainRegions[1][0]);
+		terrain[2] = new Sprite(terrainRegions[10][4]);
+		terrain[3] = new Sprite(terrainRegions[10][4]);
+		terrain[4] = new Sprite(terrainRegions[10][4]);
 		terrain[5] = new Sprite(terrainRegions[2][0]);
 		terrain[6] = new Sprite(terrainRegions[1][0]);
 		terrain[7] = new Sprite(terrainRegions[10][0]);
 		terrain[8] = new Sprite(terrainRegions[6][0]);
-		terrain[9] = new Sprite(terrainRegions[10][5]);
+		terrain[9] = new Sprite(terrainRegions[10][4]);
 		terrain[10] = new Sprite(terrainRegions[10][8]);
 		terrain[11] = new Sprite(terrainRegions[9][0]);
+		terrain[12] = new Sprite(terrainRegions[2][0]);
+		terrain[13] = new Sprite(terrainRegions[2][0]);
+		terrain[14] = new Sprite(terrainRegions[4][0]);
+		terrain[15] = new Sprite(terrainRegions[5][0]);
+		terrain[16] = new Sprite(terrainRegions[9][0]);
+		terrain[17] = new Sprite(terrainRegions[2][0]);
+		terrain[18] = new Sprite(terrainRegions[6][0]);
+		terrain[19] = new Sprite(terrainRegions[4][0]);
+		terrain[20] = new Sprite(terrainRegions[7][0]);
+		terrain[21] = new Sprite(terrainRegions[4][0]);
 
 		flag = new Sprite(terrainRegions[9][16]);
 

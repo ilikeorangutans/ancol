@@ -21,7 +21,8 @@ public class DesktopLauncher {
 		settings.maxWidth = 2048;
 		settings.maxHeight = 2048;
 
-		TexturePacker.process(settings, "gfx", "packed", "ancol");
+		// TODO: this should probably be a gradle task or at least a command line option
+		TexturePacker.process(settings, "../../assets", "packed", "ancol");
 
 		new LwjglApplication(new AnCol(new InputProcessorFactory() {
 
