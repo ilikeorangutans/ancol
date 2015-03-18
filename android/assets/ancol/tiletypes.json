@@ -17,7 +17,8 @@
       "id": 2,
       "role": "Land",
       "settlements": "true",
-      "produces": [
+      "becomes": "tundra",
+      "yield": [
         {
           "ware": "Corn",
           "amount": 2
@@ -41,7 +42,8 @@
       "id": 3,
       "settlements": true,
       "role": "Land",
-      "produces": [
+      "becomes": "prairie",
+      "yield": [
         {
           "ware": "Corn",
           "amount": 2
@@ -61,7 +63,8 @@
       "id": 4,
       "settlements": true,
       "role": "Land",
-      "produces": [
+      "becomes": "grassland",
+      "yield": [
         {
           "ware": "Corn",
           "amount": 2
@@ -81,7 +84,7 @@
       "id": 5,
       "settlements": true,
       "role": "Land",
-      "produces": [
+      "yield": [
         {
           "ware": "Corn",
           "amount": 2
@@ -105,7 +108,7 @@
       "id": 6,
       "settlements": true,
       "role": "Land",
-      "produces": [
+      "yield": [
         {
           "ware": "Corn",
           "amount": 4
@@ -125,7 +128,7 @@
       "id": 7,
       "settlements": true,
       "role": "Land",
-      "produces": [
+      "yield": [
         {
           "ware": "Corn",
           "amount": 2
@@ -140,85 +143,270 @@
       "name": "marsh",
       "id": 8,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 3
+        },
+        {
+          "ware": "Tobacco",
+          "amount": 2
+        },
+        {
+          "ware": "Ore",
+          "amount": 2
+        }
+      ]
     },
     {
       "name": "mixed forest",
       "id": 9,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "becomes": "plains",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 3
+        },
+        {
+          "ware": "Cotton",
+          "amount": 1
+        },
+        {
+          "ware": "Lumber",
+          "amount": 6
+        }
+      ]
     },
     {
       "name": "mountains",
       "id": 10,
       "settlements": false,
-      "role": "Land"
+      "role": "Land",
+      "yield": [
+        {
+          "ware": "Silver",
+          "amount": 1
+        },
+        {
+          "ware": "Ore",
+          "amount": 4
+        }
+      ]
     },
     {
       "name": "ocean",
       "id": 11,
       "settlements": false,
-      "role": "Ocean"
+      "role": "Ocean",
+      "yield": [
+        {
+          "ware": "Fish",
+          "amount": 4
+        }
+      ]
     },
     {
       "name": "plains",
       "id": 12,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 5
+        },
+        {
+          "ware": "Cotton",
+          "amount": 2
+        },
+        {
+          "ware": "Ore",
+          "amount": 1
+        }
+      ]
     },
     {
       "name": "prairie",
       "id": 13,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 3
+        },
+        {
+          "ware": "Cotton",
+          "amount": 3
+        }
+      ]
     },
     {
       "name": "rain forest",
       "id": 14,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "becomes": "swamp",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 2
+        },
+        {
+          "ware": "Sugar",
+          "amount": 1
+        },
+        {
+          "ware": "Lumber",
+          "amount": 4
+        },
+        {
+          "ware": "Ore",
+          "amount": 1
+        }
+      ]
     },
     {
       "name": "savannah",
       "id": 15,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 4
+        },
+        {
+          "ware": "Sugar",
+          "amount": 3
+        },
+        {
+          "ware": "Ore",
+          "amount": 2
+        }
+      ]
     },
     {
       "name": "sea lane",
       "id": 16,
       "settlements": false,
-      "role": "Ocean"
+      "role": "Ocean",
+      "yield": [
+        {
+          "ware": "Fish",
+          "amount": 4
+        }
+      ]
     },
     {
       "name": "scrub forest",
       "id": 17,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "becomes": "desert",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 2
+        },
+        {
+          "ware": "Cotton",
+          "amount": 1
+        },
+        {
+          "ware": "Lumber",
+          "amount": 4
+        },
+        {
+          "ware": "Ore",
+          "amount": 1
+        }
+      ]
     },
     {
       "name": "swamp",
       "id": 18,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 3
+        },
+        {
+          "ware": "Sugar",
+          "amount": 2
+        },
+        {
+          "ware": "Ore",
+          "amount": 2
+        }
+      ]
     },
     {
       "name": "tropical forest",
       "id": 19,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "becomes": "savannah",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 3
+        },
+        {
+          "ware": "Sugar",
+          "amount": 1
+        },
+        {
+          "ware": "Lumber",
+          "amount": 4
+        }
+      ]
     },
     {
       "name": "tundra",
       "id": 20,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 3
+        },
+        {
+          "ware": "Ore",
+          "amount": 2
+        }
+      ]
     },
     {
       "name": "wetland forest",
       "id": 21,
       "settlements": true,
-      "role": "Land"
+      "role": "Land",
+      "becomes": "marsh",
+      "yield": [
+        {
+          "ware": "Corn",
+          "amount": 2
+        },
+        {
+          "ware": "Tobacco",
+          "amount": 1
+        },
+        {
+          "ware": "Ore",
+          "amount": 1
+        },
+        {
+          "ware": "Lumber",
+          "amount": 4
+        }
+      ]
     }
   ]
 }
