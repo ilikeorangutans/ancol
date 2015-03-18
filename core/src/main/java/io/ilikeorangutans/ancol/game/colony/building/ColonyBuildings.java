@@ -7,7 +7,7 @@ import java.util.List;
 /**
  *
  */
-public interface ColonyBuildings {
+public interface ColonyBuildings extends Iterable<Building> {
 
 	List<Building> getBuildings();
 

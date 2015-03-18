@@ -5,6 +5,7 @@ import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.bus.Emitter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -40,5 +41,10 @@ public class SimpleColonyBuildings implements ColonyBuildings {
 				return building;
 		}
 		return null;
+	}
+
+	@Override
+	public Iterator<Building> iterator() {
+		return buildings.iterator();
 	}
 }
