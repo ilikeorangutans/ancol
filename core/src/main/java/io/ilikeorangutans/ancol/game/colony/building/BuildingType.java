@@ -3,6 +3,8 @@ package io.ilikeorangutans.ancol.game.colony.building;
 import io.ilikeorangutans.ancol.game.ware.AvailableWares;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  *
  */
@@ -22,6 +24,11 @@ public class BuildingType {
 	private int costHammers;
 	private int costTools;
 	private int minPopulation;
+	private int workplaces;
+
+	public int getWorkplaces() {
+		return workplaces;
+	}
 
 	public String getUpgradeString() {
 		return upgrade;
@@ -72,7 +79,6 @@ public class BuildingType {
 	}
 
 	public String getName() {
-
 		return name;
 	}
 
@@ -91,19 +97,24 @@ public class BuildingType {
 	@Override
 	public String toString() {
 		return "BuildingType{" +
-				"name='" + name + '\'' +
-				", upgrade=" + upgrade +
+				"upgrade='" + upgrade + '\'' +
+				", input='" + input + '\'' +
+				", inputWare=" + inputWare +
+				", name='" + name + '\'' +
+				", upgradeBuildingType=" + upgradeBuildingType +
+				", output='" + output + '\'' +
 				", outputWare=" + outputWare +
 				", initial=" + initial +
 				", costHammers=" + costHammers +
 				", costTools=" + costTools +
 				", minPopulation=" + minPopulation +
+				", workplaces=" + workplaces +
 				'}';
 	}
-	
+
 	public void postProcess(AvailableBuildings availableBuildings, AvailableWares wares) {
-		outputWare = wares.findByName(output);
-		upgradeBuildingType = availableBuildings.findByName(upgrade);
-		inputWare = wares.findByName(input);
+		if (!isNullOrEmpty(output)) outputWare = wares.findByName(output);
+		if (!isNullOrEmpty(upgrade)) upgradeBuildingType = availableBuildings.findByName(upgrade);
+		if (!isNullOrEmpty(input)) inputWare = wares.findByName(input);
 	}
 }

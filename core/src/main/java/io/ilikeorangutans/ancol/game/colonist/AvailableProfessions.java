@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.game.colonist;
 
+import com.badlogic.gdx.Gdx;
 import io.ilikeorangutans.ancol.game.ware.AvailableWares;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 
@@ -25,7 +26,8 @@ public class AvailableProfessions {
 				return job;
 			}
 		}
-		throw new IllegalArgumentException("No job found that produces " + ware.getName());
+		Gdx.app.log(AvailableProfessions.class.getName(), "No job found that produces " + ware);
+		return null;
 	}
 
 	public void postProcess(AvailableWares wares) {

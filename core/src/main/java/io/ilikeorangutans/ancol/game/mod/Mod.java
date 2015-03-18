@@ -6,12 +6,9 @@ import com.google.gson.GsonBuilder;
 import io.ilikeorangutans.ancol.game.ability.AvailableAbilities;
 import io.ilikeorangutans.ancol.game.colonist.AvailableProfessions;
 import io.ilikeorangutans.ancol.game.colony.building.AvailableBuildings;
-import io.ilikeorangutans.ancol.game.colony.building.BuildingType;
 import io.ilikeorangutans.ancol.game.ware.AvailableWares;
 import io.ilikeorangutans.ancol.map.tile.SimpleTileTypes;
 import io.ilikeorangutans.ancol.map.tile.TileTypes;
-
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  *
@@ -42,18 +39,7 @@ public class Mod {
 		tileTypes.postProcess(wares);
 
 		buildings = gson.fromJson(Gdx.files.internal("ancol/buildings.json").reader(), AvailableBuildings.class);
-
-		for (BuildingType bt : buildings.getBuildings()) {
-			if (!isNullOrEmpty(bt.getUpgradeString())) {
-				bt.setUpgrade(buildings.findByName(bt.getUpgradeString()));
-			}
-			if (!isNullOrEmpty(bt.getInputString())) {
-				bt.setInput(wares.findByName(bt.getInputString()));
-			}
-			if (!isNullOrEmpty(bt.getOutputString())) {
-				bt.setOutput(wares.findByName(bt.getOutputString()));
-			}
-		}
+		buildings.postProcess(wares);
 
 		professions = gson.fromJson(Gdx.files.internal("ancol/professions.json").reader(), AvailableProfessions.class);
 

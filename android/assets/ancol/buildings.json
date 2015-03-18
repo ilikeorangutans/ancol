@@ -3,27 +3,31 @@
     {
       "name": "Townhall",
       "output": "Liberty Bells",
-      "initial": true
+      "initial": true,
+      "workplaces": 3
     },
     {
       "name": "Cathedral",
       "output": "Crosses",
       "minPopulation": 8,
       "costTools": 176,
-      "costHammers": 100
+      "costHammers": 100,
+      "workplaces": 3
     },
     {
       "name": "Church",
       "upgrade": "Cathedral",
       "output": "Crosses",
       "minPopulation": 3,
-      "costHammers": 64
+      "costHammers": 64,
+      "workplaces": 3
     },
     {
       "name": "Chapel",
       "upgrade": "Church",
       "output": "Crosses",
-      "initial": true
+      "initial": true,
+      "workplaces": 0
     },
     {
       "name": "Lumber Mill",
@@ -31,28 +35,34 @@
       "output": "Hammers",
       "costHammers": 52,
       "minPopulation": 3,
-      "multiplicativeBonus": 2
+      "multiplicativeBonus": 2,
+      "workplaces": 3
     },
     {
       "name": "Carpenter's Shop",
       "upgrade": "Lumber Mill",
       "input": "Lumber",
       "output": "Hammers",
-      "initial": true
+      "initial": true,
+      "workplaces": 3
     },
     {
-      "name": "Fortress"
+      "name": "Fortress",
+      "workplaces": 0
     },
     {
       "name": "Fort",
-      "upgrade": "Fortress"
+      "upgrade": "Fortress",
+      "workplaces": 0
     },
     {
       "name": "Stockade",
-      "upgrade": "Fort"
+      "upgrade": "Fort",
+      "workplaces": 0
     },
     {
-      "name": "Docks"
+      "name": "Docks",
+      "workplaces": 0
     }
   ]
 }

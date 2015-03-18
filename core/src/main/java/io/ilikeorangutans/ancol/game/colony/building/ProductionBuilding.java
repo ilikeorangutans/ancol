@@ -27,12 +27,18 @@ public class ProductionBuilding implements Building {
 
 	@Override
 	public Ware getOutput() {
-		return null;
+		return buildingType.getOutput();
 	}
 
 	@Override
 	public BuildingType getBuildingType() {
 		return buildingType;
+	}
+
+	@Override
+	public boolean hasAvailableWorkplaces() {
+		System.out.println("ProductionBuilding.hasAvailableWorkplaces TODO: Need to keep track how many colonists actually work here");
+		return getBuildingType().getWorkplaces() > 0;
 	}
 
 	@Override
