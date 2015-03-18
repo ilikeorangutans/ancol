@@ -7,12 +7,12 @@ import io.ilikeorangutans.ancol.game.colony.building.BuildingType;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
 import io.ilikeorangutans.ancol.game.colony.building.SimpleColonyBuildings;
 import io.ilikeorangutans.ancol.game.colony.population.Population;
+import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwned;
 import io.ilikeorangutans.ancol.game.production.Production;
 import io.ilikeorangutans.ancol.game.production.ProductionBuilder;
 import io.ilikeorangutans.ancol.game.production.Workplace;
-import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Warehouse;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
@@ -100,6 +100,21 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 		}
 	}
 
+	/**
+	 * Returns a collection of jobs that a settler can take on in this colony.
+	 *
+	 * @return
+	 */
+	public List<Job> getAvailableJobs() {
+
+		List<Job> result = new ArrayList<Job>();
+		for (Ware ware : workplaces.getProducibleWares()) {
+			result.add(mod.getProfessions().findProducerFor(ware));
+		}
+
+		return result;
+	}
+
 	@Override
 	public ComponentType getType() {
 		return COMPONENT_TYPE;
@@ -133,9 +148,13 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 		addColonist(colonist, job);
 	}
 
-	private void changeJob(Entity colonist, Job job, Workplace workplace) {
+	public void changeJob(Entity colonist, Job job) {
+		Workplace workplace = workplaces.getWorkplaceFor(job.getProduces());
+		changeJob(colonist, job, workplace);
+	}
+
+	public void changeJob(Entity colonist, Job job, Workplace workplace) {
 		ColonistComponent colonistComponent = colonist.getComponent(ColonistComponent.class);
-		System.out.println("ColonyComponent.changeJob " + colonistComponent + " with job " + job + " at " + workplace);
 
 		output.unemploy(colonistComponent);
 
@@ -148,8 +167,8 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 				.create();
 		output.addProduction(production);
 
-		// Notify observers!
 		setChanged();
+		notifyObservers();
 	}
 
 	/**

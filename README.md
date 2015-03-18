@@ -5,11 +5,14 @@ Just toying with a LibGDX implementation of colonization.
 ## TODO List
 
  * Colonies
-   * Assign colonists to jobs
+   * Assign jobs to colonists
+   * Break colony UI down into smaller ui components
    * Implement food mechanics; colonists should starve if not enough food is available
    * Surroundings map (draw using real tiles)
    * Hide transient goods like crosses or liberty bells from the warehouse view
    * Render wares as icons
+   * UI for ships/wagon trains in colony
+     * Repairing ships
  * Minimap
    * display
    * make it interactive (pan, zoom?)

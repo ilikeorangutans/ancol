@@ -1,6 +1,7 @@
 package io.ilikeorangutans.ancol.game.colony;
 
 import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.game.colony.building.Building;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
 import io.ilikeorangutans.ancol.game.player.Player;
 import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
@@ -9,11 +10,11 @@ import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ancol.map.tile.GameTile;
+import io.ilikeorangutans.ancol.map.tile.TileYield;
 import io.ilikeorangutans.ecs.Entity;
 import io.ilikeorangutans.ecs.EntityFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -31,6 +32,33 @@ public class Workplaces {
 		this.buildings = buildings;
 		this.surroundings = surroundings;
 		this.player = player;
+	}
+
+	/**
+	 * Returns all wares that can be produced with the available workplaces.
+	 * <p/>
+	 * TODO: does not take already occupied tiles or buildings into account
+	 *
+	 * @return
+	 */
+	public Collection<Ware> getProducibleWares() {
+		Set<Ware> result = new HashSet<Ware>();
+
+		for (GameTile tile : surroundings.getAllWithoutCenter()) {
+			for (TileYield tileYield : tile.getType().getYield()) {
+				result.add(tileYield.getWare());
+			}
+		}
+
+		for (Building building : buildings) {
+			if (!building.hasAvailableWorkplaces())
+				continue;
+
+			if (building.getOutput() != null)
+				result.add(building.getOutput());
+		}
+
+		return result;
 	}
 
 	/**

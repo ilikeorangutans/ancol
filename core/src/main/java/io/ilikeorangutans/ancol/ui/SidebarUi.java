@@ -18,6 +18,7 @@ import io.ilikeorangutans.ancol.input.MouseMoveEvent;
 import io.ilikeorangutans.ancol.input.action.AnColActions;
 import io.ilikeorangutans.ancol.map.GameMap;
 import io.ilikeorangutans.ancol.map.tile.GameTile;
+import io.ilikeorangutans.ancol.map.tile.TileYield;
 import io.ilikeorangutans.ancol.map.viewport.ScreenToTile;
 import io.ilikeorangutans.ancol.screen.NextUnitOrTurnButtonState;
 import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
@@ -205,6 +206,16 @@ public class SidebarUi {
 		sb.append(point.y);
 		sb.append(": ");
 		sb.append(tile.getType().getName());
+
+		sb.append("\n");
+
+		for (TileYield yield : tile.getType().getYield()) {
+			sb.append("  ");
+			sb.append(yield.getWare().getName());
+			sb.append(":");
+			sb.append(yield.getAmount());
+			sb.append("\n");
+		}
 		mousePosLabel.setText(sb.toString());
 	}
 

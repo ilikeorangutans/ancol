@@ -10,13 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
+import io.ilikeorangutans.ancol.game.colonist.Job;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyProduction;
 import io.ilikeorangutans.ancol.game.colony.building.Building;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
+import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.production.Production;
 import io.ilikeorangutans.ancol.game.production.Workplace;
-import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.ware.RecordingWares;
 import io.ilikeorangutans.ancol.game.ware.Stored;
 import io.ilikeorangutans.ancol.game.ware.Ware;
@@ -193,7 +194,7 @@ public class ColonyUI implements Observer {
 		window.add(surroundingTable).expand();
 	}
 
-	private void addColonistTable(ColonyComponent colony, Window window) {
+	private void addColonistTable(final ColonyComponent colony, Window window) {
 		Table colonists = new Table(skin);
 
 		colonists.add(new Label("Colonists in colony", skin));
@@ -210,31 +211,60 @@ public class ColonyUI implements Observer {
 		colonistInColonyList.setItems(toAdd);
 		colonistInColonyList.setSelectedIndex(-1);
 		colonistInColonyList.setSize(200, 100);
+		colonistInColonyList.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				ColonistInColony selected = colonistInColonyList.getSelected();
+				final Entity colonist = selected.entity;
+
+				java.util.List<Job> availableJobs = colony.getAvailableJobs();
+				JobSelection[] jobs = new JobSelection[availableJobs.size()];
+				int i = 0;
+				for (Job job : availableJobs) {
+					jobs[i] = new JobSelection(job);
+					i++;
+				}
+
+				Dialog dialog = new Dialog("Change Job", skin);
+
+				final List<JobSelection> jobList = new List<JobSelection>(skin);
+				jobList.setItems(jobs);
+				dialog.add(jobList);
+				dialog.button("Cancel");
+				dialog.button("OK").addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						colony.changeJob(colonist, jobList.getSelected().job);
+					}
+				});
+				dialog.show(stage);
+
+			}
+		});
 		colonistInColonyList.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				System.out.println("ColonyUI.changed");
-				ColonistInColony selected = colonistInColonyList.getSelected();
-				System.out.println("selected = " + selected);
-
-				Dialog dialog = new Dialog("Change Profession", skin);
-
-
 			}
 		});
 		colonists.add(new ScrollPane(colonistInColonyList)).expandX();
 
 
 		java.util.List<Entity> outsideColonists = colony.getOutsideColonists();
-		List<String> outside = new List<String>(skin);
-		String[] waitingOutside = new String[outsideColonists.size()];
+		final List<ColonistOutsideColony> outside = new List<ColonistOutsideColony>(skin);
+		ColonistOutsideColony[] waitingOutside = new ColonistOutsideColony[outsideColonists.size()];
 		i = 0;
 		for (Entity outsideColonist : outsideColonists) {
-			waitingOutside[i] = outsideColonist.getComponent(ColonistComponent.class).getProfession().getName();
+			waitingOutside[i] = new ColonistOutsideColony(outsideColonist);
 			i++;
 		}
 		outside.setItems(waitingOutside);
 		outside.setSelectedIndex(-1);
+		outside.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				colony.addColonist(outside.getSelected().colonist);
+			}
+		});
 		colonists.add(new ScrollPane(outside, skin));
 
 		window.add(colonists);
@@ -282,12 +312,12 @@ public class ColonyUI implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("ColonyUI.update");
+		System.out.println("ColonyUI.update TODO: refresh UI");
 		System.out.println("o = [" + o + "], arg = [" + arg + "]");
 	}
 
 	private class ColonistInColony {
-		private final Entity entity;
+		final Entity entity;
 
 		public ColonistInColony(Entity entity) {
 			this.entity = entity;
@@ -299,7 +329,35 @@ public class ColonyUI implements Observer {
 
 			ColonistComponent colonist = entity.getComponent(ColonistComponent.class);
 
-			return colonist.getProfession().getName() + " (current job)";
+			return colonist.getJob().getName() + " (" + colonist.getProfession().getName() + ")";
 		}
 	}
+
+	private class JobSelection {
+		final Job job;
+
+		public JobSelection(Job job) {
+			this.job = job;
+		}
+
+		@Override
+		public String toString() {
+			return job.getName();
+		}
+	}
+
+	private class ColonistOutsideColony {
+
+		final Entity colonist;
+
+		public ColonistOutsideColony(Entity colonist) {
+			this.colonist = colonist;
+		}
+
+		@Override
+		public String toString() {
+			return colonist.getComponent(ColonistComponent.class).getProfession().getName();
+		}
+	}
+
 }
