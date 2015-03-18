@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.game.colony.building;
 
+import io.ilikeorangutans.ancol.game.ware.AvailableWares;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 
 import java.util.ArrayList;
@@ -57,5 +58,11 @@ public class AvailableBuildings {
 		return "AvailableBuildings{" +
 				"buildings=" + buildings +
 				'}';
+	}
+
+	public void postProcess(AvailableWares wares) {
+		for (BuildingType buildingType : buildings) {
+			buildingType.postProcess(this, wares);
+		}
 	}
 }

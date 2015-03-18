@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.game.colony.building;
 
+import io.ilikeorangutans.ancol.game.ware.AvailableWares;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 
 /**
@@ -98,5 +99,11 @@ public class BuildingType {
 				", costTools=" + costTools +
 				", minPopulation=" + minPopulation +
 				'}';
+	}
+	
+	public void postProcess(AvailableBuildings availableBuildings, AvailableWares wares) {
+		outputWare = wares.findByName(output);
+		upgradeBuildingType = availableBuildings.findByName(upgrade);
+		inputWare = wares.findByName(input);
 	}
 }
