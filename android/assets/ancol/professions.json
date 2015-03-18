@@ -25,6 +25,71 @@
       "name": "Tobacco Planter",
       "produces": "Tobacco",
       "inColony": true
+    },
+    {
+      "name": "Cotton Planter",
+      "produces": "Cotton",
+      "inColony": true
+    },
+    {
+      "name": "Fur Trapper",
+      "produces": "Furs",
+      "inColony": true
+    },
+    {
+      "name": "Lumberjack",
+      "produces": "Lumber",
+      "inColony": true
+    },
+    {
+      "name": "Ore Miner",
+      "produces": "Ore",
+      "inColony": true
+    },
+    {
+      "name": "Silver Miner",
+      "produces": "Silver",
+      "inColony": true
+    },
+    {
+      "name": "Fisherman",
+      "produces": "Fish",
+      "inColony": true
+    },
+    {
+      "name": "Distiller",
+      "produces": "Rum",
+      "inColony": true
+    },
+    {
+      "name": "Tobacconist",
+      "produces": "Cigars",
+      "inColony": true
+    },
+    {
+      "name": "Weaver",
+      "produces": "Cloth",
+      "inColony": true
+    },
+    {
+      "name": "Fur Trader",
+      "produces": "Coats",
+      "inColony": true
+    },
+    {
+      "name": "Blacksmith",
+      "produces": "Tools",
+      "inColony": true
+    },
+    {
+      "name": "Gunsmith",
+      "produces": "Muskets",
+      "inColony": true
+    },
+    {
+      "name": "Preacher",
+      "produces": "Crosses",
+      "inColony": true
     }
   ]
 }
