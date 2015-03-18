@@ -15,7 +15,7 @@ public class TileType {
 	private final int id;
 	private Role role;
 	private boolean settlements;
-	private List<TileProduction> produces;
+	private List<TileYield> yield;
 
 	public TileType(String name, int id) {
 		this.name = name;
@@ -29,12 +29,12 @@ public class TileType {
 				", id=" + id +
 				", role=" + role +
 				", settlements=" + settlements +
-				", produces=" + produces +
+				", yield=" + yield +
 				'}';
 	}
 
-	public List<TileProduction> getProduces() {
-		return produces;
+	public List<TileYield> getYield() {
+		return yield;
 	}
 
 	/**
@@ -59,19 +59,19 @@ public class TileType {
 	}
 
 	public void postProduce(AvailableWares wares) {
-		if (produces == null) {
-			produces = Collections.emptyList();
+		if (yield == null) {
+			yield = Collections.emptyList();
 			return;
 		}
 
-		for (TileProduction production : produces) {
-			production.postProcess(wares);
+		for (TileYield tileYield : yield) {
+			tileYield.postProcess(wares);
 		}
 	}
 
 	public boolean produces(Ware ware) {
-		for (TileProduction produce : produces) {
-			if (produce.getWare().equals(ware))
+		for (TileYield tileYield : yield) {
+			if (tileYield.getWare().equals(ware))
 				return true;
 		}
 		return false;

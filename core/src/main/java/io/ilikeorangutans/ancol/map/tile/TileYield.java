@@ -4,17 +4,17 @@ import io.ilikeorangutans.ancol.game.ware.AvailableWares;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 
 /**
- *
+ * Describes the output of a specific ware type of a tile.
  */
-public class TileProduction {
-	private int amount;
+public class TileYield {
 
+	private int amount;
 	private String ware;
 	private Ware wareObj;
 
 	@Override
 	public String toString() {
-		return "TileProduction{" +
+		return "TileYield{" +
 				"ware=" + wareObj +
 				", amount=" + amount +
 				'}';
