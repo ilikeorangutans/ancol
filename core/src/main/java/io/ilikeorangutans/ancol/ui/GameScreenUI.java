@@ -2,6 +2,7 @@ package io.ilikeorangutans.ancol.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -38,17 +39,18 @@ public class GameScreenUI {
 	private final Mod mod;
 	private final AnColActions actions;
 	private final Player player;
+	private final TextureAtlas atlas;
 	private ScreenToTile screenToTile;
-
 	private Stage stage;
 	private Skin skin;
 
-	public GameScreenUI(EventBus bus, Mod mod, AnColActions actions, Player player, ScreenToTile screenToTile) {
+	public GameScreenUI(EventBus bus, Mod mod, AnColActions actions, Player player, ScreenToTile screenToTile, TextureAtlas atlas) {
 		this.bus = bus;
 		this.mod = mod;
 		this.actions = actions;
 		this.player = player;
 		this.screenToTile = screenToTile;
+		this.atlas = atlas;
 	}
 
 	public void setupUI(Skin skin) {
@@ -76,9 +78,9 @@ public class GameScreenUI {
 	}
 
 	private void setupSidebar(final Skin skin) {
-		SidebarUi sidebarUi = new SidebarUi(skin, stage, bus, actions, player, screenToTile);
-		bus.subscribe(sidebarUi);
-		sidebarUi.buildUI();
+		SidebarUI sidebarUI = new SidebarUI(skin, stage, bus, actions, player, screenToTile);
+		bus.subscribe(sidebarUI);
+		sidebarUI.buildUI();
 	}
 
 	public InputProcessor getInputProcessor() {
@@ -100,7 +102,7 @@ public class GameScreenUI {
 
 	@Subscribe
 	public void onOpenColony(final OpenColonyEvent event) {
-		ColonyUI ui = new ColonyUI(stage, skin, mod, event.colony);
+		ColonyUI ui = new ColonyUI(stage, skin, mod, atlas, event.colony);
 		ui.setupAndShowUI();
 	}
 

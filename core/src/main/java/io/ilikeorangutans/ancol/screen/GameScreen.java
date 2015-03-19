@@ -82,7 +82,7 @@ public class GameScreen implements Screen {
 		viewport = new MapViewport(bus, 30, 30, Gdx.graphics.getWidth() - 250, Gdx.graphics.getHeight(), 60, 60, player.getMap());
 		bus.subscribe(viewport);
 
-		ui = new GameScreenUI(bus, mod, actions, player, viewport);
+		ui = new GameScreenUI(bus, mod, actions, player, viewport, atlas);
 		bus.subscribe(ui);
 		ui.setupUI(skin);
 

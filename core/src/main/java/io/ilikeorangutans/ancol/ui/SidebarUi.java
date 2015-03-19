@@ -30,7 +30,7 @@ import io.ilikeorangutans.ecs.Entity;
 /**
  *
  */
-public class SidebarUi {
+public class SidebarUI {
 	private final Skin skin;
 	private final Stage stage;
 	private final EventBus bus;
@@ -44,7 +44,7 @@ public class SidebarUi {
 	private Label mousePosLabel;
 	private Label currentPlayerLabel;
 
-	public SidebarUi(Skin skin, Stage stage, EventBus bus, AnColActions actions, Player player, ScreenToTile screenToTile) {
+	public SidebarUI(Skin skin, Stage stage, EventBus bus, AnColActions actions, Player player, ScreenToTile screenToTile) {
 		this.skin = skin;
 		this.stage = stage;
 		this.bus = bus;
@@ -125,11 +125,9 @@ public class SidebarUi {
 
 
 		int width = 250;
-		sidebar.align(Align.top);
 		sidebar.setX(Gdx.graphics.getWidth() - width);
 		sidebar.setHeight(Gdx.graphics.getHeight());
 		sidebar.setWidth(width);
-		//sidebar.debug();
 		sidebar.setBackground("default-pane");
 		stage.addActor(sidebar);
 	}

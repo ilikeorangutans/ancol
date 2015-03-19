@@ -1,9 +1,11 @@
 package io.ilikeorangutans.ancol.game.ware;
 
+import java.util.Observable;
+
 /**
  *
  */
-public class Stored {
+public class Stored extends Observable {
 
 	private final Ware ware;
 
