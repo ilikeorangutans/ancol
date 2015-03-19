@@ -2,6 +2,7 @@ package io.ilikeorangutans.ancol.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -12,14 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Job;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
-import io.ilikeorangutans.ancol.game.colony.ColonyProduction;
 import io.ilikeorangutans.ancol.game.colony.building.Building;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
 import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.production.Production;
 import io.ilikeorangutans.ancol.game.production.Workplace;
-import io.ilikeorangutans.ancol.game.ware.RecordingWares;
-import io.ilikeorangutans.ancol.game.ware.Stored;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Warehouse;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
@@ -36,12 +34,14 @@ public class ColonyUI implements Observer {
 	private final Stage stage;
 	private final Skin skin;
 	private final Mod mod;
+	private final TextureAtlas atlas;
 	private final Entity entity;
 
-	public ColonyUI(Stage stage, Skin skin, Mod mod, Entity colony) {
+	public ColonyUI(Stage stage, Skin skin, Mod mod, TextureAtlas atlas, Entity colony) {
 		this.stage = stage;
 		this.skin = skin;
 		this.mod = mod;
+		this.atlas = atlas;
 		this.entity = colony;
 	}
 
@@ -64,7 +64,7 @@ public class ColonyUI implements Observer {
 			}
 		});
 		window.setPosition((Gdx.graphics.getWidth() / 2) - 384, Gdx.graphics.getHeight());
-		window.setDebug(true);
+//		window.setDebug(true);
 
 		window.add(new Label("Buildings", skin)).expand();
 		window.add(new Label("Surroundings", skin)).width(268);
@@ -107,53 +107,8 @@ public class ColonyUI implements Observer {
 		Warehouse warehouse = colony.getWarehouse();
 		Table table = new Table(skin);
 
-		for (Stored stored : warehouse.getWares()) {
-			Label label = new Label(stored.getWare().getName(), skin);
-			label.setFontScale(.7F);
-			table.add(label).pad(3);
-		}
-
-		table.row();
-		for (Stored stored : warehouse.getWares()) {
-			table.add(new Label(stored.getAmount() + "", skin));
-		}
-
-		table.row();
-		ColonyProduction output = colony.getOutput();
-
-		RecordingWares simulated = output.simulate(warehouse);
-
-		for (Stored stored : warehouse.getWares()) {
-			Ware type = stored.getWare();
-			StringBuilder sb = new StringBuilder();
-
-			boolean produced = simulated.getProduced(type) > 0;
-			boolean consumed = simulated.getConsumed(type) > 0;
-
-			if (produced) {
-				sb.append("+");
-				sb.append(simulated.getProduced(type));
-			}
-			if (consumed) {
-				sb.append("-");
-				sb.append(simulated.getConsumed(type));
-			}
-
-			if (produced && consumed) {
-				sb.append(" = ");
-				sb.append(simulated.getProduced(type) - simulated.getConsumed(type));
-			}
-
-			if (!consumed && !produced)
-				sb.append("-");
-
-
-			Label label = new Label(sb.toString(), skin);
-			label.setFontScale(.7F);
-			table.add(label).pad(3);
-		}
-
-		window.add(table).expandX();
+		WarehouseAndProductionUI warehouseAndProductionUI = new WarehouseAndProductionUI(skin, atlas, warehouse, colony.getOutput().simulate(colony.getWarehouse()));
+		window.add(warehouseAndProductionUI).expandX();
 	}
 
 	private void addColonyMap(ColonyComponent colony, Window window) {
