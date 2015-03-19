@@ -26,4 +26,10 @@ Just toying with a LibGDX implementation of colonization.
 ## Done
 
  * ~~UI squishing and broken click targets on resize~~
+ * ~~Texture packing as gradle task~~
  
+
+
+# Packing Textures
+
+``./gradlew core:pack``

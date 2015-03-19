@@ -75,6 +75,13 @@ project(":core") {
         testCompile "junit:junit:4.11"
         testCompile "org.hamcrest:hamcrest-all:1.3"
     }
+
+    task pack(type: JavaExec, dependsOn:[classes]) {
+        classpath = sourceSets.main.runtimeClasspath
+        main = 'io.ilikeorangutans.util.TexturePackerTask'
+        args = ['../assets', '../android/assets/packed', 'ancol']
+    }
+
 }
 
 tasks.eclipse.doLast {
