@@ -1,99 +1,119 @@
 {
   "all": [
     {
+      "id": 1,
       "name": "Corn",
       "type": "Food",
       "harvested": true
     },
     {
+      "id": 2,
       "name": "Fish",
       "type": "Food",
       "harvested": true
     },
     {
+      "id": 3,
       "name": "Sugar",
       "type": "Resource",
       "harvested": true
     },
     {
+      "id": 4,
       "name": "Tobacco",
       "type": "Resource",
       "harvested": true
     },
     {
+      "id": 5,
       "name": "Cotton",
       "type": "Resource",
       "harvested": true
     },
     {
+      "id": 6,
       "name": "Furs",
       "type": "Resource",
       "harvested": true
     },
     {
+      "id": 7,
       "name": "Lumber",
       "type": "Construction",
       "harvested": true
     },
     {
+      "id": 8,
       "name": "Ore",
       "type": "Resource",
       "harvested": true
     },
     {
+      "id": 9,
       "name": "Silver",
       "type": "Resource",
       "manufactured": true
     },
     {
+      "id": 10,
       "name": "Horses"
     },
     {
+      "id": 11,
       "name": "Rum",
       "type": "Refined",
       "manufactured": true
     },
     {
+      "id": 12,
       "name": "Cigars",
       "type": "Refined",
       "manufactured": true
     },
     {
+      "id": 13,
       "name": "Cloth",
       "type": "Refined",
       "manufactured": true
     },
     {
+      "id": 14,
       "name": "Coats",
       "type": "Refined",
       "manufactured": true
     },
     {
+      "id": 15,
       "name": "Trade Goods",
       "type": "Refined",
       "manufactured": true
     },
     {
+      "id": 16,
       "name": "Tools",
       "type": "Construction",
       "manufactured": true
     },
     {
+      "id": 17,
       "name": "Muskets",
       "type": "Weapon",
       "manufactured": true
     },
     {
+      "id": 18,
       "name": "Hammers",
       "notStorable": true,
       "manufactured": true
     },
     {
+      "id": 19,
       "name": "Liberty Bells",
       "notStorable": true,
       "manufactured": true
     },
     {
+      "id": 20,
       "name": "Crosses",
       "notStorable": true,
       "manufactured": true

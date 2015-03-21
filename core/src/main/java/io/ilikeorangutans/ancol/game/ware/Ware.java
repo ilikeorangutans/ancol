@@ -7,16 +7,22 @@ import io.ilikeorangutans.ancol.game.cargo.Transportable;
  */
 public class Ware implements Transportable {
 
+	private final int id;
 	private final WareType wareType;
 	private final String name;
 	private boolean notStorable;
 	private boolean harvested;
 	private boolean manufactured;
 
-	Ware(WareType wareType, String name, boolean storable) {
+	public Ware(int id, WareType wareType, String name, boolean storable) {
+		this.id = id;
 		this.wareType = wareType;
 		this.notStorable = !storable;
 		this.name = name;
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public boolean isHarvested() {
@@ -49,7 +55,6 @@ public class Ware implements Transportable {
 	}
 
 	@Override
-
 	public int getRequiredSpace() {
 		return 1;
 	}
