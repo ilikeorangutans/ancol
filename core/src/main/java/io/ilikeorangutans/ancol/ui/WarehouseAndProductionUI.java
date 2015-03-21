@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import io.ilikeorangutans.ancol.game.ware.RecordingWares;
@@ -50,6 +51,13 @@ public class WarehouseAndProductionUI extends HorizontalGroup {
 		public void refresh(int amount, int produced, int consumed) {
 			amountLabel.setText(Integer.toString(amount));
 			simulatedLabel.setText(createSimulatedLabel(produced, consumed));
+			if (produced > consumed) {
+				simulatedLabel.setColor(Color.GREEN);
+			} else if (produced < consumed) {
+				simulatedLabel.setColor(Color.RED);
+			} else {
+				simulatedLabel.setColor(Color.WHITE);
+			}
 		}
 
 		private String createSimulatedLabel(int amountProduced, int amountConsumed) {
