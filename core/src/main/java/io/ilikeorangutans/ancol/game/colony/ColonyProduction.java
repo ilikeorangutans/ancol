@@ -3,9 +3,12 @@ package io.ilikeorangutans.ancol.game.colony;
 import io.ilikeorangutans.ancol.game.colony.population.ColonistLeftEvent;
 import io.ilikeorangutans.ancol.game.production.Production;
 import io.ilikeorangutans.ancol.game.production.Workplace;
+import io.ilikeorangutans.ancol.game.production.chain.Link;
 import io.ilikeorangutans.ancol.game.production.chain.ProductionChain;
 import io.ilikeorangutans.ancol.game.production.worker.Worker;
 import io.ilikeorangutans.ancol.game.ware.RecordingWares;
+import io.ilikeorangutans.ancol.game.ware.SimpleWares;
+import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Wares;
 import io.ilikeorangutans.bus.Subscribe;
 
@@ -32,7 +35,7 @@ public class ColonyProduction {
 	 * @return instance that has how much was produced and consumed
 	 */
 	public RecordingWares simulate(Wares wares) {
-		RecordingWares output = new RecordingWares(wares);
+		RecordingWares output = new RecordingWares(new SimpleWares(wares));
 
 		produce(output);
 

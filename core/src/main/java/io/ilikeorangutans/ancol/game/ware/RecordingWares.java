@@ -1,62 +1,64 @@
 package io.ilikeorangutans.ancol.game.ware;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
- * Wares that will record all store and retrieve calls separately.
+ * Wares that will record all store and retrieve calls to its delegate.
  */
 public class RecordingWares implements Wares {
 
-	private Map<Ware, Line> lines = new LinkedHashMap<Ware, Line>();
+	private final Wares delegate;
+	private int[] deposits;
+	private int[] withdrawals;
 
-	public RecordingWares(Wares start) {
-		for (Stored stored : start.getWares()) {
-			lines.put(stored.getWare(), new Line(stored.getAmount()));
-		}
+	/**
+	 * Record all calls for the given delegate.
+	 *
+	 * @param delegate
+	 */
+	public RecordingWares(Wares delegate) {
+		this.delegate = delegate;
+		int numberOfWares = delegate.getWares().size();
+		deposits = new int[numberOfWares];
+		withdrawals = new int[numberOfWares];
 	}
 
 	@Override
 	public void store(Ware ware, int amount) {
-		if (!lines.containsKey(ware))
-			lines.put(ware, new Line(0));
-		lines.get(ware).effective += amount;
-		lines.get(ware).produced += amount;
+		deposits[ware.getId()] += amount;
+		delegate.store(ware, amount);
 	}
 
 	@Override
 	public Collection<Stored> getWares() {
-		throw new RuntimeException("Implement me");
+		return delegate.getWares();
 	}
 
 	@Override
 	public int retrieve(Ware ware, int amount) {
-		int effective = Math.min(amount, lines.get(ware).effective);
-		lines.get(ware).effective -= effective;
-		lines.get(ware).consumed += effective;
-		return effective;
+		withdrawals[ware.getId()] += amount;
+		return delegate.retrieve(ware, amount);
 	}
 
 	@Override
 	public int getAmount(Ware type) {
-		return lines.get(type).effective;
+		return delegate.getAmount(type);
 	}
 
+	/**
+	 * @param type
+	 * @return how much of the given type was consumed.
+	 */
 	public int getConsumed(Ware type) {
-		return lines.get(type).consumed;
+		return withdrawals[type.getId()];
 	}
 
+	/**
+	 * @param type
+	 * @return how much of the given ware was produced.
+	 */
 	public int getProduced(Ware type) {
-		return lines.get(type).produced;
+		return deposits[type.getId()];
 	}
 
-	private class Line {
-
-		int consumed, produced, effective;
-
-		public Line(int start) {
-			this.effective = start;
-		}
-	}
 }

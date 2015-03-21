@@ -11,6 +11,7 @@ public class Warehouse extends SimpleWares {
 	private int maxPerWare = 100;
 
 	public Warehouse(List<Ware> wares) {
+		super(wares);
 		for (Ware type : wares) {
 			store(type, 0);
 		}
