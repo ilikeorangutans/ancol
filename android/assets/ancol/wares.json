@@ -85,15 +85,18 @@
     },
     {
       "name": "Hammers",
-      "notStorable": true
+      "notStorable": true,
+      "manufactured": true
     },
     {
       "name": "Liberty Bells",
-      "notStorable": true
+      "notStorable": true,
+      "manufactured": true
     },
     {
       "name": "Crosses",
-      "notStorable": true
+      "notStorable": true,
+      "manufactured": true
     }
   ]
 }
