@@ -68,9 +68,13 @@ public class Workplaces {
 	 * @return
 	 */
 	public Workplace getWorkplaceFor(Ware ware) {
-		// TODO: actually check what we are producing (might not be a tile based resource)
-		GameTile tile = findTileThatProduces(ware);
-		return getForTile(tile);
+		if (ware.isManufactured()) {
+			return buildings.findByOutput(ware);
+		} else {
+			GameTile tile = findTileThatProduces(ware);
+			return getForTile(tile);
+		}
+
 	}
 
 	private GameTile findTileThatProduces(Ware ware) {

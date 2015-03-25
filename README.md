@@ -12,6 +12,8 @@ Just toying with a LibGDX implementation of colonization.
    * Merge corn and fish wares into a single food type in warehouse view
    * UI for ships/wagon trains in colony
      * Repairing ships
+ * Path finding for ships should allow them to enter land tiles with friendly colonies
+ * Path finding for land units should allow them to enter sea tiles with friendly ships with empty cargo bays on them
  * Minimap
    * display
    * make it interactive (pan, zoom?)
@@ -20,7 +22,7 @@ Just toying with a LibGDX implementation of colonization.
  * Custom UI for Android
  * Tilerenderer squishing on resize
  * Sidebar positioning on resize
- * Add Europe screen
+ * Europe screen
  
 ## Done
 
