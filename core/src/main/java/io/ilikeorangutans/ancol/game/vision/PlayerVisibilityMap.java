@@ -67,6 +67,10 @@ public class PlayerVisibilityMap implements GameMap {
 	}
 
 	private boolean isVisible(int x, int y) {
+		if (x < 0 || y < 0) {
+			System.out.println("PlayerVisibilityMap.isVisible invalid index " + x + "/" + y );
+			return false;
+		}
 		return visibility.get(y * getWidth() + x);
 	}
 

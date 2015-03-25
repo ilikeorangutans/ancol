@@ -17,7 +17,7 @@ public class ProductionChain implements Iterable<Link> {
 	private static final Comparator<Link> COMPARATOR = new Comparator<Link>() {
 		@Override
 		public int compare(Link o1, Link o2) {
-			boolean o2IsInputToO1 = o1.requiresInput() && o2.getOutput().equals(o1.getInput());
+			boolean o2IsInputToO1 = o1.requiresInput() && o2.getOutput() != null && o2.getOutput().equals(o1.getInput());
 			if (o2IsInputToO1) {
 				return 1;
 			}
