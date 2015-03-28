@@ -1,11 +1,12 @@
 package io.ilikeorangutans.ancol.graphics;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import io.ilikeorangutans.ancol.Point;
 import io.ilikeorangutans.ancol.game.activity.ActivityComponent;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.mod.Mod;
+import io.ilikeorangutans.ancol.game.player.Player;
+import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.map.Map;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.tile.Tile;
@@ -24,12 +25,12 @@ import java.util.List;
  */
 public class AnColRenderer {
 	private final BitmapFont font;
+	private final Sprite shield;
 	private SpriteBatch batch;
 	private MapViewport viewport;
 	private Map map;
 	private Entities entities;
 	private Mod mod;
-	private Texture terrainTexture;
 	private TextureRegion[][] unitTextures;
 	private Sprite explorer;
 	private Sprite colony;
@@ -47,7 +48,6 @@ public class AnColRenderer {
 
 		TextureAtlas.AtlasRegion atlasRegion = atlas.findRegion("tiles");
 		TextureRegion[][] terrainRegions = atlasRegion.split(60, 60);
-		terrainTexture = atlasRegion.getTexture();
 
 		terrain = new Sprite[22];
 		terrain[0] = new Sprite(terrainRegions[13][0]);
@@ -79,6 +79,7 @@ public class AnColRenderer {
 		explorer = new Sprite(unitTextures[1][13]);
 		ship = new Sprite(unitTextures[0][13]);
 		colony = new Sprite(terrainRegions[12][12]);
+		shield = new Sprite(terrainRegions[11][3]);
 
 		TextureAtlas.AtlasRegion selectRegion = atlas.findRegion("select");
 
@@ -164,6 +165,12 @@ public class AnColRenderer {
 					break;
 			}
 
+			if (e.hasComponent(ComponentType.fromClass(PlayerOwnedComponent.class))) {
+				Player player = e.getComponent(PlayerOwnedComponent.class).getPlayer();
+				shield.setPosition(point.x - 20, point.y - viewport.getTileHeight() + 20);
+				shield.setColor(player.getNation().getColor());
+				shield.draw(batch);
+			}
 
 			draw.setPosition(point.x, point.y - viewport.getTileHeight());
 			draw.draw(batch);
