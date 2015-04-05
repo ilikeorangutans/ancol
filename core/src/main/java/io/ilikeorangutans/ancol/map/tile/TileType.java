@@ -58,7 +58,7 @@ public class TileType {
 		return id;
 	}
 
-	public void postProduce(AvailableWares wares) {
+	public void postProcess(AvailableWares wares) {
 		if (yield == null) {
 			yield = Collections.emptyList();
 			return;

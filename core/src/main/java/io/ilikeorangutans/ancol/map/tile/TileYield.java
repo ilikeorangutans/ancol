@@ -24,16 +24,8 @@ public class TileYield {
 		return wareObj;
 	}
 
-	public void setWare(Ware wareObj) {
-		this.wareObj = wareObj;
-	}
-
 	public int getAmount() {
 		return amount;
-	}
-
-	public String getWareString() {
-		return ware;
 	}
 
 	public void postProcess(AvailableWares wares) {

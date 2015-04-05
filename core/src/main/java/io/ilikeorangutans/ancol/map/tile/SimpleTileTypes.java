@@ -42,7 +42,7 @@ public class SimpleTileTypes implements TileTypes {
 
 	public void postProcess(AvailableWares wares) {
 		for (TileType type : types) {
-			type.postProduce(wares);
+			type.postProcess(wares);
 		}
 	}
 

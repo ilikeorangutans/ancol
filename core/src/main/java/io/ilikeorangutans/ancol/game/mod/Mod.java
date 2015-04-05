@@ -38,12 +38,12 @@ public class Mod {
 
 		tileTypes.postProcess(wares);
 
-		buildings = gson.fromJson(Gdx.files.internal("ancol/buildings.json").reader(), AvailableBuildings.class);
-		buildings.postProcess(wares);
-
 		professions = gson.fromJson(Gdx.files.internal("ancol/professions.json").reader(), AvailableProfessions.class);
-
 		professions.postProcess(wares);
+
+		buildings = gson.fromJson(Gdx.files.internal("ancol/buildings.json").reader(), AvailableBuildings.class);
+		buildings.postProcess(wares, professions);
+
 	}
 
 	public AvailableBuildings getBuildings() {
