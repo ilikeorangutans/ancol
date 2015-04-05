@@ -26,10 +26,6 @@ public class BuildingUI extends Group {
 		setBounds(getX(), getY(), image.getWidth(), image.getHeight());
 	}
 
-	public DragAndDrop.Target getTarget() {
-		return new WorkplaceTarget(this, colony, building);
-	}
-
 	public DragAndDrop.Source getSource() {
 		return new WorkplaceSource(this, building);
 	}

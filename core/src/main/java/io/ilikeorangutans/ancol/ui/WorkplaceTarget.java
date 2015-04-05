@@ -9,20 +9,24 @@ import io.ilikeorangutans.ecs.Entity;
 
 import java.util.Set;
 
+
 /**
  *
  */
-public class WorkplaceTarget extends DragAndDrop.Target {
+public class WorkplaceTarget extends DragAndDrop.Target implements JobSelectListener {
 
 	private final Actor actor;
 	private final ColonyComponent colony;
 	private final Workplace workplace;
+	private JobSelect jobSelect;
 
-	public WorkplaceTarget(Actor actor, ColonyComponent colony, Workplace workplace) {
+	public WorkplaceTarget(Actor actor, ColonyComponent colony, Workplace workplace, JobSelect jobSelect) {
 		super(actor);
 		this.actor = actor;
 		this.colony = colony;
 		this.workplace = workplace;
+		this.jobSelect = jobSelect;
+		jobSelect.addJobSelectListener(this);
 	}
 
 	@Override
@@ -45,10 +49,18 @@ public class WorkplaceTarget extends DragAndDrop.Target {
 		}
 
 		Entity colonist = (Entity) payload.getObject();
+		Job job;
 		if (jobs.size() == 1) {
-			colony.changeJob(colonist, jobs.iterator().next(), workplace);
+			job = jobs.iterator().next();
 		} else {
-			// show job selection screen
+			jobSelect.select(jobs);
+			return;
 		}
+		colony.changeJob(colonist, job, workplace);
+	}
+
+	@Override
+	public void jobSelected(Job job) {
+		System.out.println("WorkplaceTarget.jobSelected " + job);
 	}
 }

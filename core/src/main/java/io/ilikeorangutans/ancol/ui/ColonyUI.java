@@ -18,14 +18,13 @@ import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.building.Building;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
 import io.ilikeorangutans.ancol.game.mod.Mod;
-import io.ilikeorangutans.ancol.game.production.Production;
 import io.ilikeorangutans.ancol.game.production.Workplace;
-import io.ilikeorangutans.ancol.game.ware.Ware;
 import io.ilikeorangutans.ancol.game.ware.Warehouse;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ecs.Entity;
 
+import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -100,7 +99,7 @@ public class ColonyUI implements Observer {
 
 		for (Building b : buildings.getBuildings()) {
 			BuildingUI buildingUI = new BuildingUI(atlas, colony, b);
-			dragAndDrop.addTarget(buildingUI.getTarget());
+			dragAndDrop.addTarget(new WorkplaceTarget(buildingUI, colony, b, new JobSelectUi()));
 			table.add(buildingUI);
 			table.row();
 		}
@@ -129,23 +128,11 @@ public class ColonyUI implements Observer {
 
 			GameTile tile = colony.getSurroundings().getTile(selector);
 			Workplace workplace = colony.getWorkplaces().getForTile(tile);
-			Production p = colony.getOutput().getProductionAt(workplace);
 
-			String worker = "";
-
-			if (p != null) {
-				Ware output = p.getOutput();
-
-			}
-
-			// TODO: Check if tile is worked by another colony!
-
-			// TODO: Wheeeeeee trainwreck!
-			{
-				Label label = new Label(tile.getType().getName() + "\n" + worker, skin);
-				label.setWrap(true);
-				surroundingTable.add(label);
-			}
+			Label label = new Label(tile.getType().getName(), skin);
+			JobSelect jobSelect = new JobSelectUi();
+			dragAndDrop.addTarget(new WorkplaceTarget(label, colony, workplace, jobSelect));
+			surroundingTable.add(label);
 			counter++;
 		}
 
@@ -331,4 +318,38 @@ public class ColonyUI implements Observer {
 		}
 	}
 
+	private class JobSelectUi implements JobSelect {
+		private JobSelectListener listener;
+
+		@Override
+		public void select(Collection<Job> jobs) {
+			final Dialog dialog = new Dialog("Select Job", skin);
+			Button ok = new TextButton("OK", skin);
+			dialog.button(ok);
+			dialog.button("Cancel");
+
+			Table table = dialog.getContentTable();
+			table.add("Select job for colonist:");
+			table.row();
+			for (Job job : jobs) {
+				table.add(job.getName());
+				table.row();
+			}
+
+			ok.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					listener.jobSelected(null);
+				}
+			});
+
+
+			dialog.show(stage);
+		}
+
+		@Override
+		public void addJobSelectListener(JobSelectListener listener) {
+			this.listener = listener;
+		}
+	}
 }
