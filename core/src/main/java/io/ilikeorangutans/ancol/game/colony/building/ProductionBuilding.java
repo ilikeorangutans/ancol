@@ -1,23 +1,33 @@
 package io.ilikeorangutans.ancol.game.colony.building;
 
+import com.google.common.collect.Sets;
+import io.ilikeorangutans.ancol.game.colonist.Job;
+import io.ilikeorangutans.ancol.game.production.AbstractWorkplace;
 import io.ilikeorangutans.ancol.game.production.Modifier;
 import io.ilikeorangutans.ancol.game.ware.Ware;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  *
  */
-public class ProductionBuilding implements Building {
+public class ProductionBuilding extends AbstractWorkplace implements Building {
 
 	private int additiveBonus = 0;
 	private float multiplicativeBonus = 1;
 
 	private BuildingType buildingType;
+	private final Set<Job> jobs;
 
 	public ProductionBuilding(BuildingType buildingType, int additiveBonus, int multiplicativeBonus) {
+		super(buildingType.getWorkplaces());
 		this.buildingType = buildingType;
 
 		this.additiveBonus = additiveBonus;
 		this.multiplicativeBonus = multiplicativeBonus;
+
+		jobs = Collections.unmodifiableSet(Sets.newHashSet(buildingType.getJob()));
 	}
 
 	@Override
@@ -36,13 +46,19 @@ public class ProductionBuilding implements Building {
 	}
 
 	@Override
-	public boolean hasAvailableWorkplaces() {
-		System.out.println("ProductionBuilding.hasAvailableWorkplaces TODO: Need to keep track how many colonists actually work here");
-		return getBuildingType().getWorkplaces() > 0;
+	public Modifier getModifier() {
+		return null;
 	}
 
 	@Override
-	public Modifier getModifier() {
-		return null;
+	public Set<Job> getAvailableJobs() {
+		return jobs;
+	}
+
+	@Override
+	public String toString() {
+		return "ProductionBuilding{" +
+				"buildingType=" + buildingType +
+				'}';
 	}
 }

@@ -1,18 +1,14 @@
 package io.ilikeorangutans.ancol.game.colony;
 
 import io.ilikeorangutans.ancol.Point;
+import io.ilikeorangutans.ancol.game.colonist.AvailableProfessions;
 import io.ilikeorangutans.ancol.game.colony.building.Building;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
-import io.ilikeorangutans.ancol.game.player.Player;
-import io.ilikeorangutans.ancol.game.player.PlayerOwnedComponent;
 import io.ilikeorangutans.ancol.game.production.Workplace;
 import io.ilikeorangutans.ancol.game.ware.Ware;
-import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ancol.map.tile.GameTile;
 import io.ilikeorangutans.ancol.map.tile.TileYield;
-import io.ilikeorangutans.ecs.Entity;
-import io.ilikeorangutans.ecs.EntityFactory;
 
 import java.util.*;
 
@@ -21,17 +17,15 @@ import java.util.*;
  */
 public class Workplaces {
 	private final List<Workplace> workplaces = new ArrayList<Workplace>();
-	private EntityFactory entityFactory;
+	private final AvailableProfessions professions;
 	private ColonyBuildings buildings;
 	private Surroundings surroundings;
-	private Player player;
 	private TileWorkplace[] tileWorkplaces = new TileWorkplace[9];
 
-	public Workplaces(EntityFactory entityFactory, ColonyBuildings buildings, Surroundings surroundings, Player player) {
-		this.entityFactory = entityFactory;
+	public Workplaces(AvailableProfessions professions, ColonyBuildings buildings, Surroundings surroundings) {
+		this.professions = professions;
 		this.buildings = buildings;
 		this.surroundings = surroundings;
-		this.player = player;
 	}
 
 	/**
@@ -74,11 +68,9 @@ public class Workplaces {
 			GameTile tile = findTileThatProduces(ware);
 			return getForTile(tile);
 		}
-
 	}
 
 	private GameTile findTileThatProduces(Ware ware) {
-		List<GameTile> candidates = new ArrayList<GameTile>(10);
 		for (GameTile tile : surroundings.getAllWithoutCenter()) {
 			if (tile.getType().produces(ware)) {
 				// TODO: don't pick first but "best" tile.
@@ -89,28 +81,12 @@ public class Workplaces {
 		throw new IllegalArgumentException("Cannot find tile that produces " + ware.getName());
 	}
 
-	/**
-	 * Finds the best workplace to produce the given ware
-	 *
-	 * @return
-	 */
-	private Workplace createWorkplaceForTile(Entity colonist, GameTile tile) {
-		// Create an entity to record that we are working this tile
-		Entity entity = entityFactory.create(
-				new PlayerOwnedComponent(player),
-				new PositionComponent(tile.getPoint()),
-				new WorkedByPlayerComponent(player));
-
-		TileWorkplace tileWorkplace = new TileWorkplace(tile);
-		return tileWorkplace;
-	}
-
 	public TileWorkplace getForTile(GameTile tile) {
 		int index = getTileIndex(tile.getPoint());
 		if (tileWorkplaces[index] != null)
 			return tileWorkplaces[index];
 
-		TileWorkplace tileWorkplace = new TileWorkplace(tile);
+		TileWorkplace tileWorkplace = new TileWorkplace(professions, tile);
 		tileWorkplaces[index] = tileWorkplace;
 
 		return tileWorkplace;

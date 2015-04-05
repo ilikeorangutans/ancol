@@ -48,10 +48,10 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 	private ColonyBuildings buildings;
 	private String name;
 	private Player player;
-	/**
-	 * Array of productions that we use to track what we produce on what tile.
-	 */
-	private Production[] workedTiles = new Production[9];
+
+	// TODO:
+	// Create one workplace instance per building/tile
+	// Add workers to workplaces and let the workplace deal with the details
 
 	public ColonyComponent(String name, Surroundings surroundings, Mod mod, EntityFactory entities) {
 		this.name = name;
@@ -77,7 +77,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 		buildings = new SimpleColonyBuildings(localBus);
 		constructInitialBuildings();
 
-		workplaces = new Workplaces(entityFactory, buildings, surroundings, player);
+		workplaces = new Workplaces(mod.getProfessions(), buildings, surroundings);
 		output = new ColonyProduction();
 		localBus.subscribe(output);
 

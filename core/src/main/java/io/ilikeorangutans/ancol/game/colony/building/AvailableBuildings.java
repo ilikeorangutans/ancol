@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.game.colony.building;
 
+import io.ilikeorangutans.ancol.game.colonist.AvailableProfessions;
 import io.ilikeorangutans.ancol.game.ware.AvailableWares;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 
@@ -11,11 +12,7 @@ import java.util.List;
  */
 public class AvailableBuildings {
 
-	private List<BuildingType> buildings;
-
-	public List<BuildingType> getBuildings() {
-		return buildings;
-	}
+	private List<BuildingTypeFromJSON> buildings;
 
 	public BuildingType findByName(String name) {
 		for (BuildingType b : buildings) {
@@ -60,9 +57,9 @@ public class AvailableBuildings {
 				'}';
 	}
 
-	public void postProcess(AvailableWares wares) {
-		for (BuildingType buildingType : buildings) {
-			buildingType.postProcess(this, wares);
+	public void postProcess(AvailableWares wares, AvailableProfessions professions) {
+		for (BuildingTypeFromJSON buildingType : buildings) {
+			buildingType.postProcess(this, wares, professions);
 		}
 	}
 }

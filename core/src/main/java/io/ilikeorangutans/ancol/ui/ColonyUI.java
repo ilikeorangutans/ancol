@@ -3,6 +3,7 @@ package io.ilikeorangutans.ancol.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Job;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
@@ -36,6 +38,7 @@ public class ColonyUI implements Observer {
 	private final Mod mod;
 	private final TextureAtlas atlas;
 	private final Entity entity;
+	private final DragAndDrop dragAndDrop;
 
 	public ColonyUI(Stage stage, Skin skin, Mod mod, TextureAtlas atlas, Entity colony) {
 		this.stage = stage;
@@ -43,6 +46,7 @@ public class ColonyUI implements Observer {
 		this.mod = mod;
 		this.atlas = atlas;
 		this.entity = colony;
+		dragAndDrop = new DragAndDrop();
 	}
 
 	public void setupAndShowUI() {
@@ -64,7 +68,6 @@ public class ColonyUI implements Observer {
 			}
 		});
 		window.setPosition((Gdx.graphics.getWidth() / 2) - 384, Gdx.graphics.getHeight());
-//		window.setDebug(true);
 
 		window.add(new Label("Buildings", skin)).expand();
 		window.add(new Label("Surroundings", skin)).width(268);
@@ -90,13 +93,15 @@ public class ColonyUI implements Observer {
 
 	private void addBuildings(ColonyComponent colony, Window window) {
 		Table table = new Table(skin);
+		table.debug();
 		table.pad(3);
 
 		ColonyBuildings buildings = colony.getBuildings();
 
 		for (Building b : buildings.getBuildings()) {
-
-			table.add(new Label(b.getName(), skin));
+			BuildingUI buildingUI = new BuildingUI(atlas, colony, b);
+			dragAndDrop.addTarget(buildingUI.getTarget());
+			table.add(buildingUI);
 			table.row();
 		}
 
@@ -105,9 +110,7 @@ public class ColonyUI implements Observer {
 
 	private void addWares(ColonyComponent colony, Window window) {
 		Warehouse warehouse = colony.getWarehouse();
-		Table table = new Table(skin);
-
-		WarehouseAndProductionUI warehouseAndProductionUI = new WarehouseAndProductionUI(skin, atlas, warehouse, colony.getOutput().simulate(colony.getWarehouse()));
+		WarehouseAndProductionUI warehouseAndProductionUI = new WarehouseAndProductionUI(skin, dragAndDrop, atlas, warehouse, colony.getOutput().simulate(colony.getWarehouse()));
 		window.add(warehouseAndProductionUI).expandX();
 	}
 
@@ -150,6 +153,19 @@ public class ColonyUI implements Observer {
 	}
 
 	private void addColonistTable(final ColonyComponent colony, Window window) {
+		VerticalGroup inColony = new VerticalGroup();
+
+		for (Entity colonist : colony.getPopulation()) {
+			TextureRegion textureRegion = atlas.findRegion("units").split(60, 60)[1][13];
+			ColonistUI colonistUI = new ColonistUI(colonist, textureRegion);
+			inColony.addActor(colonistUI);
+			dragAndDrop.addSource(colonistUI.getSource());
+		}
+
+		window.add(inColony);
+	}
+
+	private void XXXaddColonistTable(final ColonyComponent colony, Window window) {
 		Table colonists = new Table(skin);
 
 		colonists.add(new Label("Colonists in colony", skin));

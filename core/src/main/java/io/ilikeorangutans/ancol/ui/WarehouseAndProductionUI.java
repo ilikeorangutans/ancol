@@ -15,8 +15,7 @@ import io.ilikeorangutans.ancol.game.ware.Wares;
 public class WarehouseAndProductionUI extends HorizontalGroup {
 	private final Skin skin;
 
-	public WarehouseAndProductionUI(Skin skin, TextureAtlas atlas, Wares warehouse, RecordingWares simulated) {
-		DragAndDrop dragAndDrop = new DragAndDrop();
+	public WarehouseAndProductionUI(Skin skin, DragAndDrop dragAndDrop, TextureAtlas atlas, Wares warehouse, RecordingWares simulated) {
 		this.skin = skin;
 
 		for (Stored stored : warehouse.getWares()) {

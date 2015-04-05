@@ -35,4 +35,14 @@ public class AvailableProfessions {
 			job.postProcess(wares);
 		}
 	}
+
+	public Job findJobThatProduces(Ware ware) {
+		for (Job job : jobs) {
+			if (job.getProduces().equals(ware)) {
+				return job;
+			}
+		}
+
+		throw new IllegalArgumentException("Can't find job that produces " + ware);
+	}
 }

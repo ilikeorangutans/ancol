@@ -14,5 +14,4 @@ public interface Building extends Workplace {
 
 	BuildingType getBuildingType();
 
-	boolean hasAvailableWorkplaces();
 }

@@ -1,10 +1,8 @@
 package io.ilikeorangutans.ancol.game.production;
 
 import io.ilikeorangutans.ancol.game.colony.building.Building;
-import io.ilikeorangutans.ancol.game.production.worker.FixedWorker;
 import io.ilikeorangutans.ancol.game.production.worker.Worker;
 import io.ilikeorangutans.ancol.game.ware.Ware;
-import io.ilikeorangutans.ancol.map.tile.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,20 +33,10 @@ public class ProductionBuilder {
 		return this;
 	}
 
-	public ProductionBuilder withFixedOutput(int output) {
-		with(new FixedWorker(output));
-		return this;
-	}
-
 	public ProductionBuilder in(Building building) {
 		modifiers.add(building.getModifier());
 
 		produce(building.getOutput());
-		return this;
-	}
-
-	@Deprecated
-	public ProductionBuilder on(Tile tile) {
 		return this;
 	}
 
