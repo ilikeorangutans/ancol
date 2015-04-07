@@ -10,8 +10,8 @@
       "name": "Cathedral",
       "output": "Crosses",
       "minPopulation": 8,
-      "costTools": 176,
-      "costHammers": 100,
+      "costTools": 100,
+      "costHammers": 176,
       "workplaces": 3
     },
     {
@@ -45,6 +45,84 @@
       "output": "Hammers",
       "initial": true,
       "workplaces": 3
+    },
+    {
+      "name": "Iron Works",
+      "input": "Ore",
+      "output": "Hammers",
+      "costTools": 100,
+      "costHammers": 240,
+      "workplaces": 8
+    },
+    {
+      "name": "Blacksmith's Shop",
+      "upgrade": "Iron Works",
+      "input": "Ore",
+      "minPopulation": 4,
+      "output": "Hammers",
+      "costTools": 20,
+      "costHammers": 64,
+      "workplaces": 3
+    },
+    {
+      "name": "Blacksmith's House",
+      "upgrade": "Blacksmith's Shop",
+      "input": "Ore",
+      "output": "Tools",
+      "initial": true,
+      "workplaces": 3
+    },
+    {
+      "name": "Fur Factory",
+      "input": "Furs",
+      "output": "Coats",
+      "costTools": 100,
+      "costHammers": 160,
+      "workplaces": 8
+    },
+    {
+      "name": "Fur Trading Post",
+      "upgrade": "Fur Factory",
+      "input": "Furs",
+      "output": "Coats",
+      "minPopulation": 4,
+      "costTools": 20,
+      "costHammers": 56,
+      "workplaces": 3
+    },
+    {
+      "name": "Fur Trader's House",
+      "upgrade": "Fur Trading Post",
+      "input": "Furs",
+      "output": "Coats",
+      "initial": true,
+      "workplaces": 3
+    },
+    {
+      "name": "Rum Factory",
+      "input": "Sugar",
+      "output": "Rum",
+      "costTools": 100,
+      "costHammers": 160,
+      "workplaces": 8
+    },
+    {
+      "name": "Rum Distillery",
+      "upgrade": "Rum Factory",
+      "input": "Sugar",
+      "output": "Rum",
+      "minPopulation": 4,
+      "costTools": 20,
+      "costHammers": 64,
+      "workplaces": 3
+    },
+    {
+      "name": "Rum Distiller's House",
+      "upgrade": "Rum Distillery",
+      "input": "Sugar",
+      "output": "Rum",
+      "initial": true,
+      "workplaces": 4
     },
     {
       "name": "Fortress",
