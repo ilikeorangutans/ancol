@@ -3,17 +3,15 @@ package io.ilikeorangutans.ancol.ui.colony;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Job;
+import io.ilikeorangutans.ancol.game.colony.ColonistsImpl;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.colony.building.Building;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
@@ -91,20 +89,23 @@ public class ColonyUI implements Observer {
 	}
 
 	private void addBuildings(ColonyComponent colony, Window window) {
-		Table table = new Table(skin);
-		table.pad(3);
+		Table group = new Table();
+		group.pad(3);
 
 		ColonyBuildings buildings = colony.getBuildings();
 
+		int counter = 1;
 		for (Building b : buildings.getBuildings()) {
-			BuildingUI buildingUI = new BuildingUI(atlas, colony, b);
-			dragAndDrop.addTarget(new WorkplaceTarget(buildingUI, colony, b, new JobSelectUI(skin, stage)));
-			table.add(buildingUI);
-			table.add(b.getName());
-			table.row();
+			BuildingUI buildingUI = new BuildingUI(atlas, colony, b, dragAndDrop, skin);
+			dragAndDrop.addTarget(new WorkplaceTarget(buildingUI, colony, b, b, new JobSelectUI(skin, stage)));
+			group.add(buildingUI);
+
+			if (counter % 3 == 0)
+				group.row();
+			counter++;
 		}
 
-		window.add(table);
+		window.add(group);
 	}
 
 	private void addWares(ColonyComponent colony, Window window) {
@@ -129,9 +130,10 @@ public class ColonyUI implements Observer {
 			GameTile tile = colony.getSurroundings().getTile(selector);
 			Workplace workplace = colony.getWorkplaces().getForTile(tile);
 
+			// TODO: add wrapper around GameTile that implements Colonists so we can keep track of who's there
 			Label label = new Label(tile.getType().getName(), skin);
 			JobSelect jobSelect = new JobSelectUI(skin, stage);
-			dragAndDrop.addTarget(new WorkplaceTarget(label, colony, workplace, jobSelect));
+			dragAndDrop.addTarget(new WorkplaceTarget(label, colony, workplace, new ColonistsImpl(), jobSelect));
 			surroundingTable.add(label);
 			counter++;
 		}
@@ -140,92 +142,16 @@ public class ColonyUI implements Observer {
 	}
 
 	private void addColonistTable(final ColonyComponent colony, Window window) {
-		VerticalGroup inColony = new VerticalGroup();
+		HorizontalGroup group = new HorizontalGroup();
+		group.fill();
 
-		for (Entity colonist : colony.getPopulation()) {
-			TextureRegion textureRegion = atlas.findRegion("units").split(60, 60)[1][13];
-			ColonistUI colonistUI = new ColonistUI(colonist, textureRegion);
-			inColony.addActor(colonistUI);
-			dragAndDrop.addSource(colonistUI.getSource());
-		}
+		ColonistsUI populationUI = new ColonistsUI(colony.getPopulation(), atlas, dragAndDrop);
+		group.addActor(populationUI);
 
-		window.add(inColony);
-	}
+		ColonistsUI outsideUI = new ColonistsUI(colony.getOutsideColonists(), atlas, dragAndDrop);
+		group.addActor(outsideUI);
 
-	private void XXXaddColonistTable(final ColonyComponent colony, Window window) {
-		Table colonists = new Table(skin);
-
-		colonists.add(new Label("Colonists in colony", skin));
-		colonists.add(new Label("Colonists outside of colony", skin));
-		colonists.row();
-
-		final List<ColonistInColony> colonistInColonyList = new List<ColonistInColony>(skin);
-		ColonistInColony[] toAdd = new ColonistInColony[colony.getPopulation().size()];
-		int i = 0;
-		for (Entity colonist : colony.getPopulation()) {
-			toAdd[i] = new ColonistInColony(colonist);
-			i++;
-		}
-		colonistInColonyList.setItems(toAdd);
-		colonistInColonyList.setSelectedIndex(-1);
-		colonistInColonyList.setSize(200, 100);
-		colonistInColonyList.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				ColonistInColony selected = colonistInColonyList.getSelected();
-				final Entity colonist = selected.entity;
-
-				java.util.List<Job> availableJobs = colony.getAvailableJobs();
-				JobSelection[] jobs = new JobSelection[availableJobs.size()];
-				int i = 0;
-				for (Job job : availableJobs) {
-					jobs[i] = new JobSelection(job);
-					i++;
-				}
-
-				Dialog dialog = new Dialog("Change Job", skin);
-
-				final List<JobSelection> jobList = new List<JobSelection>(skin);
-				jobList.setItems(jobs);
-				dialog.add(jobList);
-				dialog.button("Cancel");
-				dialog.button("OK").addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						colony.changeJob(colonist, jobList.getSelected().job);
-					}
-				});
-				dialog.show(stage);
-
-			}
-		});
-		colonistInColonyList.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-			}
-		});
-		colonists.add(new ScrollPane(colonistInColonyList)).expandX();
-
-
-		java.util.List<Entity> outsideColonists = colony.getOutsideColonists();
-		final List<ColonistOutsideColony> outside = new List<ColonistOutsideColony>(skin);
-		ColonistOutsideColony[] waitingOutside = new ColonistOutsideColony[outsideColonists.size()];
-		i = 0;
-		for (Entity outsideColonist : outsideColonists) {
-			waitingOutside[i] = new ColonistOutsideColony(outsideColonist);
-			i++;
-		}
-		outside.setItems(waitingOutside);
-		outside.setSelectedIndex(-1);
-		outside.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				colony.addColonist(outside.getSelected().colonist);
-			}
-		});
-		colonists.add(new ScrollPane(outside, skin));
-
-		window.add(colonists);
+		window.add(group).fillX();
 	}
 
 	private void addButtons(final ColonyComponent colony, final Window window) {

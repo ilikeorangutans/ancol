@@ -72,9 +72,6 @@ public class GameStateBuilder {
 		Profession profession = new Profession("Free Colonist", 2);
 		Player p = getLocalPlayer();
 		AbilitiesComponent abilitiesComponent = new AbilitiesComponent();
-		System.out.println("GameStateBuilder.setupSampleGame");
-		System.out.println("entities = " + entities);
-		System.out.println("p = " + p);
 		entities.create(
 				new PositionComponent(11, 10),
 				new RenderableComponent(1),
@@ -104,7 +101,7 @@ public class GameStateBuilder {
 				abilitiesComponent.add(MovableComponent.TRAVERSE_LAND, BuildColonyAbility.INSTANCE));
 		abilitiesComponent = new AbilitiesComponent();
 		entities.create(
-				new PositionComponent(5, 3),
+				new PositionComponent(10, 10),
 				new RenderableComponent(1),
 				new NameComponent("test entity 3"),
 				new SelectableComponent(),

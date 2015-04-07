@@ -5,8 +5,10 @@ Just toying with a LibGDX implementation of colonization.
 ## TODO List
 
  * Colonies
-   * Assign jobs to colonists (partially done; can assign job on tiles)
    * Break colony UI down into smaller ui components (started working on this)
+   * ~~Workplaces should be drag and drop targets, colonists should be sources~~ (partially done, still needs some work)
+   * Warehouses should have a limit
+   * Warehouse slots should retain their wares
    * Implement food mechanics; colonists should starve if not enough food is available
    * Surroundings map (draw using real tiles)
    * Merge corn and fish wares into a single food type in warehouse view
@@ -30,6 +32,10 @@ Just toying with a LibGDX implementation of colonization.
  * ~~Texture packing as gradle task~~
  * ~~Hide transient goods like crosses or liberty bells from the warehouse view~~
  * ~~Render wares as icons~~
+ * ~~Nations and unit's allegiance~~
+ * Colonies
+   * ~~Assign jobs to colonists (partially done; can assign job on tiles)~~
+
  
 
 

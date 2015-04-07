@@ -20,25 +20,4 @@ public class ColonistUI extends Image {
 		this.texture = texture;
 	}
 
-	public DragAndDrop.Source getSource() {
-		return new ColonistSource(this, new Image(texture));
-	}
-
-	public class ColonistSource extends DragAndDrop.Source {
-
-		private final Image image;
-
-		public ColonistSource(Actor actor, Image image) {
-			super(actor);
-			this.image = image;
-		}
-
-		@Override
-		public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
-			DragAndDrop.Payload payload = new DragAndDrop.Payload();
-			payload.setDragActor(image);
-			payload.setObject(colonist);
-			return payload;
-		}
-	}
 }

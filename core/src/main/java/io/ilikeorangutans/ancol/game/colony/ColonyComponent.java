@@ -2,6 +2,7 @@ package io.ilikeorangutans.ancol.game.colony;
 
 import io.ilikeorangutans.ancol.game.cmd.ControllableComponent;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
+import io.ilikeorangutans.ancol.game.colonist.Colonists;
 import io.ilikeorangutans.ancol.game.colonist.Job;
 import io.ilikeorangutans.ancol.game.colony.building.BuildingType;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
@@ -121,7 +122,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 	}
 
 	public void addColonist(Entity colonist, Job job, Workplace workplace) {
-		population.join(colonist);
+		population.add(colonist);
 		changeJob(colonist, job, workplace);
 	}
 
@@ -203,10 +204,10 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 		return surroundings;
 	}
 
-	public List<Entity> getOutsideColonists() {
+	public Colonists getOutsideColonists() {
 		List<Entity> entities = surroundings.getCenter().getEntities();
-		List<Entity> result = new ArrayList<Entity>();
 
+		Colonists result = new ColonistsImpl();
 		for (Entity entity : entities) {
 			if (!entity.hasComponent(ComponentType.fromClass(ColonistComponent.class)))
 				continue;

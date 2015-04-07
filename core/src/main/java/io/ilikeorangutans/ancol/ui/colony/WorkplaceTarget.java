@@ -3,6 +3,7 @@ package io.ilikeorangutans.ancol.ui.colony;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
+import io.ilikeorangutans.ancol.game.colonist.Colonists;
 import io.ilikeorangutans.ancol.game.colonist.Job;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.production.Workplace;
@@ -18,17 +19,17 @@ import java.util.Set;
  */
 public class WorkplaceTarget extends DragAndDrop.Target implements JobSelectListener {
 
-	private final Actor actor;
 	private final ColonyComponent colony;
 	private final Workplace workplace;
+	private final Colonists colonists;
 	private JobSelect jobSelect;
 	private Entity colonist;
 
-	public WorkplaceTarget(Actor actor, ColonyComponent colony, Workplace workplace, JobSelect jobSelect) {
+	public WorkplaceTarget(Actor actor, ColonyComponent colony, Workplace workplace, Colonists colonists, JobSelect jobSelect) {
 		super(actor);
-		this.actor = actor;
 		this.colony = colony;
 		this.workplace = workplace;
+		this.colonists = colonists;
 		this.jobSelect = jobSelect;
 		jobSelect.addJobSelectListener(this);
 	}
@@ -62,7 +63,12 @@ public class WorkplaceTarget extends DragAndDrop.Target implements JobSelectList
 		} else {
 			job = jobs.iterator().next();
 		}
-		colony.changeJob(colonist, job, workplace);
+		assignJob(job);
+	}
+
+	private void assignJob(Job job) {
+		colony.addColonist(colonist, job, workplace);
+		colonists.add(colonist);
 	}
 
 	@Override
@@ -70,6 +76,6 @@ public class WorkplaceTarget extends DragAndDrop.Target implements JobSelectList
 		if (job == null)
 			return;
 
-		colony.changeJob(colonist, job, workplace);
+		assignJob(job);
 	}
 }
