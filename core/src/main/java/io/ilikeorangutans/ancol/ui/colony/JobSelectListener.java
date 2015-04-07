@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.ui;
+package io.ilikeorangutans.ancol.ui.colony;
 
 import io.ilikeorangutans.ancol.game.colonist.Job;
 

@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.ui;
+package io.ilikeorangutans.ancol.ui.colony;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;

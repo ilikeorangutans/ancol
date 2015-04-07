@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.ui;
+package io.ilikeorangutans.ancol.ui.colony;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -22,9 +22,9 @@ import io.ilikeorangutans.ancol.game.production.Workplace;
 import io.ilikeorangutans.ancol.game.ware.Warehouse;
 import io.ilikeorangutans.ancol.map.surrounding.Surroundings;
 import io.ilikeorangutans.ancol.map.tile.GameTile;
+import io.ilikeorangutans.ancol.ui.JobSelect;
 import io.ilikeorangutans.ecs.Entity;
 
-import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -92,15 +92,15 @@ public class ColonyUI implements Observer {
 
 	private void addBuildings(ColonyComponent colony, Window window) {
 		Table table = new Table(skin);
-		table.debug();
 		table.pad(3);
 
 		ColonyBuildings buildings = colony.getBuildings();
 
 		for (Building b : buildings.getBuildings()) {
 			BuildingUI buildingUI = new BuildingUI(atlas, colony, b);
-			dragAndDrop.addTarget(new WorkplaceTarget(buildingUI, colony, b, new JobSelectUi()));
+			dragAndDrop.addTarget(new WorkplaceTarget(buildingUI, colony, b, new JobSelectUI(skin, stage)));
 			table.add(buildingUI);
+			table.add(b.getName());
 			table.row();
 		}
 
@@ -130,7 +130,7 @@ public class ColonyUI implements Observer {
 			Workplace workplace = colony.getWorkplaces().getForTile(tile);
 
 			Label label = new Label(tile.getType().getName(), skin);
-			JobSelect jobSelect = new JobSelectUi();
+			JobSelect jobSelect = new JobSelectUI(skin, stage);
 			dragAndDrop.addTarget(new WorkplaceTarget(label, colony, workplace, jobSelect));
 			surroundingTable.add(label);
 			counter++;
@@ -318,38 +318,4 @@ public class ColonyUI implements Observer {
 		}
 	}
 
-	private class JobSelectUi implements JobSelect {
-		private JobSelectListener listener;
-
-		@Override
-		public void select(Collection<Job> jobs) {
-			final Dialog dialog = new Dialog("Select Job", skin);
-			Button ok = new TextButton("OK", skin);
-			dialog.button(ok);
-			dialog.button("Cancel");
-
-			Table table = dialog.getContentTable();
-			table.add("Select job for colonist:");
-			table.row();
-			for (Job job : jobs) {
-				table.add(job.getName());
-				table.row();
-			}
-
-			ok.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					listener.jobSelected(null);
-				}
-			});
-
-
-			dialog.show(stage);
-		}
-
-		@Override
-		public void addJobSelectListener(JobSelectListener listener) {
-			this.listener = listener;
-		}
-	}
 }

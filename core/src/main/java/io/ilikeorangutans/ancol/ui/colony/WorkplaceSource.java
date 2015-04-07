@@ -1,4 +1,4 @@
-package io.ilikeorangutans.ancol.ui;
+package io.ilikeorangutans.ancol.ui.colony;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

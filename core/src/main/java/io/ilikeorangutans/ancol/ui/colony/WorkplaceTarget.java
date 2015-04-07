@@ -1,17 +1,20 @@
-package io.ilikeorangutans.ancol.ui;
+package io.ilikeorangutans.ancol.ui.colony;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import io.ilikeorangutans.ancol.game.colonist.ColonistComponent;
 import io.ilikeorangutans.ancol.game.colonist.Job;
 import io.ilikeorangutans.ancol.game.colony.ColonyComponent;
 import io.ilikeorangutans.ancol.game.production.Workplace;
+import io.ilikeorangutans.ancol.ui.JobSelect;
+import io.ilikeorangutans.ecs.ComponentType;
 import io.ilikeorangutans.ecs.Entity;
 
 import java.util.Set;
 
 
 /**
- *
+ * Drag and drop target for workplaces.
  */
 public class WorkplaceTarget extends DragAndDrop.Target implements JobSelectListener {
 
@@ -19,6 +22,7 @@ public class WorkplaceTarget extends DragAndDrop.Target implements JobSelectList
 	private final ColonyComponent colony;
 	private final Workplace workplace;
 	private JobSelect jobSelect;
+	private Entity colonist;
 
 	public WorkplaceTarget(Actor actor, ColonyComponent colony, Workplace workplace, JobSelect jobSelect) {
 		super(actor);
@@ -34,33 +38,38 @@ public class WorkplaceTarget extends DragAndDrop.Target implements JobSelectList
 		if (!workplace.hasAvailableWorkplaces())
 			return false;
 
-		System.out.println("WorkplaceTarget.drag Check if worker can actually do the job");
+		if (!(payload.getObject() instanceof Entity)) {
+			return false;
+		}
+
+		Entity entity = (Entity) payload.getObject();
+		if (!entity.hasComponent(ComponentType.fromClass(ColonistComponent.class)))
+			return false;
+
+		// TODO: check if the colonist can actually perform the given job (converts e.g. can't act as priests etc)
 
 		return true;
 	}
 
 	@Override
 	public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-		System.out.println("BuildingTarget.drop on " + workplace);
-
 		Set<Job> jobs = workplace.getAvailableJobs();
-		for (Job job : jobs) {
-			System.out.println("  - " + job.getName() + " " + job.getConsumes() + " -> " + job.getProduces());
-		}
-
-		Entity colonist = (Entity) payload.getObject();
+		colonist = (Entity) payload.getObject();
 		Job job;
-		if (jobs.size() == 1) {
-			job = jobs.iterator().next();
-		} else {
+		if (jobs.size() > 1) {
 			jobSelect.select(jobs);
 			return;
+		} else {
+			job = jobs.iterator().next();
 		}
 		colony.changeJob(colonist, job, workplace);
 	}
 
 	@Override
 	public void jobSelected(Job job) {
-		System.out.println("WorkplaceTarget.jobSelected " + job);
+		if (job == null)
+			return;
+
+		colony.changeJob(colonist, job, workplace);
 	}
 }

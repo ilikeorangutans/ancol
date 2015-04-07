@@ -1,6 +1,7 @@
 package io.ilikeorangutans.ancol.ui;
 
 import io.ilikeorangutans.ancol.game.colonist.Job;
+import io.ilikeorangutans.ancol.ui.colony.JobSelectListener;
 
 import java.util.Collection;
 
