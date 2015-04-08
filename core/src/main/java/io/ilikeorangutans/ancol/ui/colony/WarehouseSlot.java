@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import io.ilikeorangutans.ancol.game.ware.Stored;
 import io.ilikeorangutans.ancol.game.ware.Ware;
 
 /**
@@ -19,19 +18,21 @@ public class WarehouseSlot extends VerticalGroup {
 	public static final int MARGIN = 3;
 	private final Label amountLabel;
 	private final Label simulatedLabel;
-	private final Stored stored;
 	private final DragAndDrop.Source source;
+	private final Ware ware;
+	private final int amount;
 
-	public WarehouseSlot(Skin skin, TextureAtlas atlas, Stored stored, int produced, int consumed) {
-		this.stored = stored;
-		final String regionName = "goods/" + stored.getWare().getName().toLowerCase().replaceAll(" ", "_");
+	public WarehouseSlot(Skin skin, TextureAtlas atlas, Ware ware, int amount) {
+		this.ware = ware;
+		this.amount = amount;
+		final String regionName = "goods/" + ware.getName().toLowerCase().replaceAll(" ", "_");
 		TextureAtlas.AtlasRegion region = atlas.findRegion(regionName);
 		final Image icon = new Image(region);
 		addActor(icon);
 
 		source = new WarehouseSlotSource(this, new Image(region));
 
-		amountLabel = new Label(Integer.toString(stored.getAmount()), skin);
+		amountLabel = new Label("", skin);
 		addActor(amountLabel);
 
 		simulatedLabel = new Label("", skin);
@@ -39,7 +40,6 @@ public class WarehouseSlot extends VerticalGroup {
 		addActor(simulatedLabel);
 
 		setBounds(getX(), getY(), WIDTH + 2 * MARGIN, HEIGHT);
-		refresh(stored.getAmount(), produced, consumed);
 	}
 
 	public void refresh(int amount, int produced, int consumed) {
@@ -55,11 +55,11 @@ public class WarehouseSlot extends VerticalGroup {
 	}
 
 	public Ware getWare() {
-		return stored.getWare();
+		return ware;
 	}
 
 	public int getAmount() {
-		return stored.getAmount();
+		return amount;
 	}
 
 	public boolean isEmpty() {

@@ -110,7 +110,8 @@ public class ColonyUI implements Observer {
 
 	private void addWares(ColonyComponent colony, Window window) {
 		Warehouse warehouse = colony.getWarehouse();
-		WarehouseAndProductionUI warehouseAndProductionUI = new WarehouseAndProductionUI(skin, dragAndDrop, atlas, warehouse, colony.getOutput().simulate(colony.getWarehouse()));
+		WarehouseAndProductionUI warehouseAndProductionUI = new WarehouseAndProductionUI(skin, dragAndDrop, atlas, warehouse, colony.getProduction());
+		colony.getLocalBus().subscribe(warehouseAndProductionUI);
 		window.add(warehouseAndProductionUI).expandX();
 	}
 
@@ -196,8 +197,11 @@ public class ColonyUI implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("ColonyUI.update TODO: refresh UI");
-		System.out.println("o = [" + o + "], arg = [" + arg + "]");
+		refresh();
+	}
+
+	private void refresh() {
+
 	}
 
 	private class ColonistInColony {

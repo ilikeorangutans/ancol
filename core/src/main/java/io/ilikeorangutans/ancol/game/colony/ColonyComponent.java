@@ -7,6 +7,7 @@ import io.ilikeorangutans.ancol.game.colonist.Job;
 import io.ilikeorangutans.ancol.game.colony.building.BuildingType;
 import io.ilikeorangutans.ancol.game.colony.building.ColonyBuildings;
 import io.ilikeorangutans.ancol.game.colony.building.SimpleColonyBuildings;
+import io.ilikeorangutans.ancol.game.colony.event.JobAssignedEvent;
 import io.ilikeorangutans.ancol.game.colony.population.Population;
 import io.ilikeorangutans.ancol.game.mod.Mod;
 import io.ilikeorangutans.ancol.game.player.Player;
@@ -46,6 +47,16 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 	private Workplaces workplaces;
 	private Warehouse warehouse;
 	private ColonyProduction output;
+
+	/**
+	 * Returns the local event bus for this colony.
+	 *
+	 * @return
+	 */
+	public EventBus getLocalBus() {
+		return localBus;
+	}
+
 	private ColonyBuildings buildings;
 	private String name;
 	private Player player;
@@ -168,6 +179,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 				.create();
 		output.addProduction(production);
 
+		localBus.fire(new JobAssignedEvent(colonist));
 		setChanged();
 		notifyObservers();
 	}
@@ -225,7 +237,7 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 		output.produce(getWarehouse());
 	}
 
-	public ColonyProduction getOutput() {
+	public ColonyProduction getProduction() {
 		return output;
 	}
 
