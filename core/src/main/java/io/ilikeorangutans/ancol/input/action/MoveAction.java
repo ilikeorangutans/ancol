@@ -5,6 +5,7 @@ import io.ilikeorangutans.ancol.game.cmd.MoveCommand;
 import io.ilikeorangutans.ancol.game.cmd.event.CommandEvent;
 import io.ilikeorangutans.ancol.map.PositionComponent;
 import io.ilikeorangutans.ancol.move.MovableComponent;
+import io.ilikeorangutans.ancol.path.Path;
 import io.ilikeorangutans.ancol.path.PathFinder;
 import io.ilikeorangutans.ancol.select.event.EntitySelectedEvent;
 import io.ilikeorangutans.bus.Emitter;
@@ -36,7 +37,8 @@ public class MoveAction extends Action {
 		PositionComponent positionComponent = entity.getComponent(PositionComponent.class);
 		MovableComponent mc = entity.getComponent(MovableComponent.class);
 
-		emitter.fire(new CommandEvent(new MoveCommand(pathFinder.find(mc, new Point(positionComponent.getX(), positionComponent.getY()), destination))));
+		Path path = pathFinder.find(mc, new Point(positionComponent.getX(), positionComponent.getY()), destination);
+		emitter.fire(new CommandEvent(new MoveCommand(path)));
 	}
 
 	private boolean hasEntity() {

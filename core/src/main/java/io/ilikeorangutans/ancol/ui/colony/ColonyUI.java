@@ -170,7 +170,7 @@ public class ColonyUI implements Observer {
 					@Override
 					public void clicked(InputEvent e, float x, float y) {
 						colony.setName(textField.getText());
-						window.setTitle(colony.getName());
+						window.setName(colony.getName());
 						entity.updated();
 					}
 				});
