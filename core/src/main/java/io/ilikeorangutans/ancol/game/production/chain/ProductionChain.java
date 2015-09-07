@@ -22,7 +22,7 @@ public class ProductionChain implements Iterable<Link> {
 				return 1;
 			}
 
-			boolean o1IsInputToO2 = o2.requiresInput() && o1.getOutput().equals(o2.getInput());
+			boolean o1IsInputToO2 = o2.requiresInput() && o1.getOutput() != null && o1.getOutput().equals(o2.getInput());
 			if (o1IsInputToO2) {
 				return -1;
 			}

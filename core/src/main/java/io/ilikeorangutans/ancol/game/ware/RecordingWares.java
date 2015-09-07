@@ -1,5 +1,6 @@
 package io.ilikeorangutans.ancol.game.ware;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -19,6 +20,7 @@ public class RecordingWares implements Wares {
 	public RecordingWares(Wares delegate) {
 		this.delegate = delegate;
 		int numberOfWares = delegate.getWares().size();
+		System.out.println("numberOfWares = " + numberOfWares);
 		deposits = new int[numberOfWares];
 		withdrawals = new int[numberOfWares];
 	}

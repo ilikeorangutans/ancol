@@ -93,7 +93,6 @@ public class ColonyComponent extends Observable implements Component, PlayerOwne
 		output = new ColonyProduction();
 		localBus.subscribe(output);
 
-
 		setupFoodConsumption();
 	}
 

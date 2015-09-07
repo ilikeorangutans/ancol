@@ -25,7 +25,7 @@ public class Production implements Link {
 	private final Ware input;
 	private final Workplace workplace;
 
-	Production(Ware input, Ware output, Worker worker, Workplace workplace) {
+	public Production(Ware input, Ware output, Worker worker, Workplace workplace) {
 		this.output = output;
 		this.input = input;
 		this.workplace = workplace;
